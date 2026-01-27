@@ -1,68 +1,173 @@
 <x-layouts::auth>
-    <div class="flex flex-col gap-6">
-        <x-auth-header :title="__('Create an account')" :description="__('Enter your details below to create your account')" />
+    <div class="flex w-full h-screen overflow-hidden bg-[#121212]"
+         x-data="{ rol: @js(request('rol') ?? 'cliente') }">
 
-        <!-- Session Status -->
-        <x-auth-session-status class="text-center" :status="session('status')" />
+        <div class="w-full md:w-1/2 h-full overflow-y-auto flex flex-col items-center px-8 md:px-16 lg:px-24 py-12">
+            <div class="w-full max-w-[450px] flex flex-col gap-4">
 
-        <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
-            @csrf
+                <img src="{{ asset('app-touch-icon.png') }}" alt="ComfortFood" class="h-16 w-auto mx-auto mb-2">
 
-            <!-- Name -->
-            <flux:input
-                name="name"
-                :label="__('Name')"
-                :value="old('name')"
-                type="text"
-                required
-                autofocus
-                autocomplete="name"
-                :placeholder="__('Full name')"
-            />
+                <x-auth-header
+                    :title="__('Crea tu cuenta')"
+                    :description="__('Introduce tus datos para registrarte en Comfort Food')"
+                    class="text-center"
+                />
 
-            <!-- Email Address -->
-            <flux:input
-                name="email"
-                :label="__('Email address')"
-                :value="old('email')"
-                type="email"
-                required
-                autocomplete="email"
-                placeholder="email@example.com"
-            />
+                <x-auth-session-status class="text-center mb-4" :status="session('status')"/>
 
-            <!-- Password -->
-            <flux:input
-                name="password"
-                :label="__('Password')"
-                type="password"
-                required
-                autocomplete="new-password"
-                :placeholder="__('Password')"
-                viewable
-            />
+                <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
+                    @csrf
+                    <input type="hidden" name="rol" :value="rol">
 
-            <!-- Confirm Password -->
-            <flux:input
-                name="password_confirmation"
-                :label="__('Confirm password')"
-                type="password"
-                required
-                autocomplete="new-password"
-                :placeholder="__('Confirm password')"
-                viewable
-            />
 
-            <div class="flex items-center justify-end">
-                <flux:button type="submit" variant="primary" class="w-full">
-                    {{ __('Create account') }}
-                </flux:button>
+                    <!-- Campos solo para Restaurante -->
+                    <div x-show="rol === 'restaurante'" class="flex flex-col gap-4" x-transition>
+                        <!-- Nombre completo -->
+                        <flux:input
+                            name="nombre_completo"
+                            label="Nombre de la empresa"
+                            :value="old('nombre_completo')"
+                            type="text"
+                            required
+                            autofocus
+                            placeholder="La Buena Mesa Italiana"
+                        />
+
+
+                        <!-- Dirección -->
+                        <flux:input
+                            name="direccion"
+                            :label="__('Dirección')"
+                            :value="old('direccion')"
+                            type="text"
+                            placeholder="Calle Ejemplo 123"
+                        />
+                        <!-- Teléfono -->
+                        <flux:input
+                            name="telefono"
+                            :label="__('Teléfono')"
+                            :value="old('telefono')"
+                            type="tel"
+                            placeholder="+34 600 123 456"
+                        />
+                    </div>
+
+                    <!-- Campos solo para Cliente -->
+                    <div x-show="rol === 'cliente'" class="flex flex-col gap-4" x-transition>
+                        <!-- Nombre completo -->
+                        <flux:input
+                            name="nombre_completo"
+                            label="Nombre completo"
+                            :value="old('nombre_completo')"
+                            type="text"
+                            required
+                            autofocus
+                            placeholder="Juan Pérez"
+                        />
+
+
+                        <!-- Dirección -->
+                        <flux:input
+                            name="direccion"
+                            :label="__('Dirección')"
+                            :value="old('direccion')"
+                            type="text"
+                            placeholder="Calle Ejemplo 123"
+                        />
+                        <!-- Teléfono -->
+                        <flux:input
+                            name="telefono"
+                            :label="__('Teléfono')"
+                            :value="old('telefono')"
+                            type="tel"
+                            placeholder="+34 600 123 456"
+                        />
+                    </div>
+
+                    <!-- Email -->
+                    <flux:input
+                        name="email"
+                        :label="__('Correo electrónico')"
+                        :value="old('email')"
+                        type="email"
+                        required
+                        autocomplete="email"
+                        placeholder="email@example.com"
+                    />
+
+                    <!-- Contraseña -->
+                    <flux:input
+                        name="password"
+                        :label="__('Contraseña')"
+                        type="password"
+                        required
+                        viewable
+                        placeholder="••••••••"
+                    />
+
+                    <!-- Confirmar contraseña -->
+                    <flux:input
+                        name="password_confirmation"
+                        :label="__('Confirmar contraseña')"
+                        type="password"
+                        required
+                        viewable
+                        placeholder="••••••••"
+                    />
+
+                    <!-- Campos solo para Restaurante -->
+                    <div x-show="rol === 'restaurante'" class="flex flex-col gap-4" x-transition>
+                        <flux:input
+                            name="tipo_cocina"
+                            :label="__('Tipo de cocina')"
+                            :value="old('tipo_cocina')"
+                            type="text"
+                            required
+                            placeholder="Italiana, Mexicana..."
+                        />
+
+                        <flux:input
+                            name="NIF"
+                            :label="__('NIF')"
+                            :value="old('NIF')"
+                            type="text"
+                            required
+                            placeholder="X1234567Y"
+                        />
+
+                        <flux:textarea
+                            name="descripcion"
+                            :label="__('Descripción del restaurante')"
+                            :value="old('descripcion')"
+                            placeholder="Breve descripción de tu restaurante"
+                        />
+                    </div>
+
+
+                    <div class="pt-2">
+                        <flux:button type="submit" variant="primary" class="w-full py-3">
+                            {{ __('Crear cuenta') }}
+                        </flux:button>
+                    </div>
+                </form>
+
+                <div class="text-center text-sm text-zinc-400">
+                    <span>{{ __('¿Ya tienes una cuenta?') }}</span>
+                    <flux:link :href="route('login')" wire:navigate class="text-white font-semibold ml-1">
+                        {{ __('Inicia sesión') }}
+                    </flux:link>
+                </div>
             </div>
-        </form>
-
-        <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
-            <span>{{ __('Already have an account?') }}</span>
-            <flux:link :href="route('login')" wire:navigate>{{ __('Log in') }}</flux:link>
         </div>
+
+        <div class="hidden md:block md:w-1/2 relative">
+            <img
+                src="{{ asset('img.png') }}"
+                alt="Imagen Registro"
+                class="absolute inset-0 w-full h-full object-cover"
+            >
+            <div class="absolute inset-0 bg-black/20"></div>
+        </div>
+
     </div>
 </x-layouts::auth>
