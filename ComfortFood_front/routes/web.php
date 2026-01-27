@@ -12,7 +12,7 @@ Route::view('dashboard', 'dashboard')
 
 
 // Mockup Routes
-Route::view('welcome-mockup', 'welcome_mockup')->name('welcome.mockup');
+Route::view('welcome-mockup', 'welcome')->name('welcome.mockup');
 Route::view('orders/history', 'orders.history')->name('orders.history');
 Route::view('orders/details', 'orders.details')->name('orders.details');
 Route::view('menu', 'menu.index')->name('menu.index');
