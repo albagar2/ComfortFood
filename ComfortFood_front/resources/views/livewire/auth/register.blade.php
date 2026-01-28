@@ -6,7 +6,7 @@
             <div class="w-full max-w-[450px] flex flex-col gap-4">
 
            <a href="{{ route('welcome.mockup') }}">   
-             <img src="{{ asset('app-touch-icon.png') }}" alt="ComfortFood" class="h-16 w-auto mx-auto mb-2">
+             <img src="{{ asset('images/logo.png') }}" alt="ComfortFood" class="h-16 w-auto mx-auto mb-2">
         </a>
                 <x-auth-header
                     :title="__('Crea tu cuenta')"
@@ -163,7 +163,7 @@
 
         <div class="hidden md:block md:w-1/2 relative">
             <img
-                src="{{ asset('img.png') }}"
+                src="{{ asset('images/img.png') }}"
                 alt="Imagen Registro"
                 class="absolute inset-0 w-full h-full object-cover"
             >

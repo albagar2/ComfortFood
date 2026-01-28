@@ -119,7 +119,7 @@
             </div>
             <div class="rounded-lg overflow-hidden aspect-[16/9]">
                 <img
-                    src="{{ asset('welcome.png') }}"
+                    src="{{ asset('images/welcome.png') }}"
                     alt="ComfortFood - Bienvenida"
                     class="w-full h-full object-cover"
                 >
