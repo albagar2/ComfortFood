@@ -39,7 +39,7 @@ class OrderHistory extends Component
     public function render()
     {
         $user = Auth::user();
-        $query = Pedido::with(['cliente.usuario', 'restaurante.usuario', 'estado']);
+        $query = Pedido::with(['cliente.user', 'restaurante.user', 'estado']);
 
         // Role-based filtering
         if ($user->isCliente()) {
@@ -52,10 +52,10 @@ class OrderHistory extends Component
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('id_pedido', 'like', '%' . $this->search . '%')
-                  ->orWhereHas('cliente.usuario', function ($sq) {
+                  ->orWhereHas('cliente.user', function ($sq) {
                       $sq->where('nombre_completo', 'like', '%' . $this->search . '%');
                   })
-                  ->orWhereHas('restaurante.usuario', function ($sq) {
+                  ->orWhereHas('restaurante.user', function ($sq) {
                       $sq->where('nombre_completo', 'like', '%' . $this->search . '%');
                   });
             });

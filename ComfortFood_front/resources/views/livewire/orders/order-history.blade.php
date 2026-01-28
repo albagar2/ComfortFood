@@ -60,7 +60,7 @@
                             <td class="px-6 py-5">
                                 <div class="flex items-center gap-3">
                                     @php
-                                        $displayUser = $isRestaurant ? $pedido->cliente->usuario : $pedido->restaurante->usuario;
+                                        $displayUser = $isRestaurant ? $pedido->cliente->user : $pedido->restaurante->user;
                                     @endphp
                                     <flux:avatar size="sm" :name="$displayUser->nombre_completo" />
                                     <span class="font-semibold text-zinc-950 dark:text-zinc-100">{{ $displayUser->nombre_completo }}</span>
