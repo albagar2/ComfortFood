@@ -14,15 +14,20 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
+    protected $table = 'usuario';
+    protected $primaryKey = 'id_usuario';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'nombre_completo',
         'email',
         'password',
+        'id_rol',
+        'es_activo',
     ];
 
     /**
@@ -32,9 +37,9 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'remember_token',
         'two_factor_secret',
         'two_factor_recovery_codes',
-        'remember_token',
     ];
 
     /**
@@ -47,7 +52,23 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'es_activo' => 'boolean',
         ];
+    }
+
+    public function rol()
+    {
+        return $this->belongsTo(Rol::class, 'id_rol', 'id_rol');
+    }
+
+    public function cliente()
+    {
+        return $this->hasOne(Cliente::class, 'id_usuario', 'id_usuario');
+    }
+
+    public function restaurante()
+    {
+        return $this->hasOne(Restaurante::class, 'id_usuario', 'id_usuario');
     }
 
     /**
@@ -55,10 +76,34 @@ class User extends Authenticatable
      */
     public function initials(): string
     {
-        return Str::of($this->name)
+        return Str::of($this->nombre_completo)
             ->explode(' ')
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    /**
+     * Check if user is a client
+     */
+    public function isCliente(): bool
+    {
+        return $this->rol && $this->rol->nombre_rol === 'Cliente';
+    }
+
+    /**
+     * Check if user is a restaurant
+     */
+    public function isRestaurante(): bool
+    {
+        return $this->rol && $this->rol->nombre_rol === 'Restaurante';
+    }
+
+    /**
+     * Check if user is an admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->rol && $this->rol->nombre_rol === 'Administrador';
     }
 }

@@ -18,54 +18,21 @@
 
                 <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
                     @csrf
-                    <input type="hidden" name="rol" :value="rol">
+                    <input type="hidden" name="rol" x-bind:value="rol">
 
 
-                    <!-- Campos solo para Restaurante -->
-                    <div x-show="rol === 'restaurante'" class="flex flex-col gap-4" x-transition>
+                    <!-- Campos comunes (Nombre, Dirección, Teléfono) -->
+                    <div class="flex flex-col gap-4">
                         <!-- Nombre completo -->
                         <flux:input
                             name="nombre_completo"
-                            label="Nombre de la empresa"
+                            x-bind:label="rol === 'restaurante' ? 'Nombre de la empresa' : 'Nombre completo'"
                             :value="old('nombre_completo')"
                             type="text"
                             required
                             autofocus
-                            placeholder="La Buena Mesa Italiana"
+                            x-bind:placeholder="rol === 'restaurante' ? 'La Buena Mesa Italiana' : 'Juan Pérez'"
                         />
-
-
-                        <!-- Dirección -->
-                        <flux:input
-                            name="direccion"
-                            :label="__('Dirección')"
-                            :value="old('direccion')"
-                            type="text"
-                            placeholder="Calle Ejemplo 123"
-                        />
-                        <!-- Teléfono -->
-                        <flux:input
-                            name="telefono"
-                            :label="__('Teléfono')"
-                            :value="old('telefono')"
-                            type="tel"
-                            placeholder="+34 600 123 456"
-                        />
-                    </div>
-
-                    <!-- Campos solo para Cliente -->
-                    <div x-show="rol === 'cliente'" class="flex flex-col gap-4" x-transition>
-                        <!-- Nombre completo -->
-                        <flux:input
-                            name="nombre_completo"
-                            label="Nombre completo"
-                            :value="old('nombre_completo')"
-                            type="text"
-                            required
-                            autofocus
-                            placeholder="Juan Pérez"
-                        />
-
 
                         <!-- Dirección -->
                         <flux:input
@@ -123,7 +90,7 @@
                             :label="__('Tipo de cocina')"
                             :value="old('tipo_cocina')"
                             type="text"
-                            required
+                            x-bind:required="rol === 'restaurante'"
                             placeholder="Italiana, Mexicana..."
                         />
 
@@ -132,7 +99,7 @@
                             :label="__('NIF')"
                             :value="old('NIF')"
                             type="text"
-                            required
+                            x-bind:required="rol === 'restaurante'"
                             placeholder="X1234567Y"
                         />
 

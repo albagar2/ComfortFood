@@ -5,7 +5,7 @@
 
     <x-settings.layout :heading="__('Perfil')" :subheading="__('Actualiza tu nombre y dirección de correo electrónico')">
         <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
-            <flux:input wire:model="name" :label="__('Nombre')" type="text" required autofocus autocomplete="name" />
+            <flux:input wire:model="nombre_completo" :label="__('Nombre completo')" type="text" required autofocus autocomplete="name" />
 
             <div>
                 <flux:input wire:model="email" :label="__('Correo electrónico')" type="email" required autocomplete="email" />

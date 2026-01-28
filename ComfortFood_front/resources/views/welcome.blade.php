@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ComfortFood - Bienvenida</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @fluxAppearance
 </head>
 <body class="font-sans antialiased text-zinc-900 bg-white dark:bg-zinc-900 dark:text-zinc-100">
 <div class="min-h-screen flex flex-col">
@@ -39,6 +40,7 @@
                 </nav>
             </div>
             <div class="flex items-center gap-4">
+                <x-appearance-dropdown />
                 <button class="p-2 text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                          stroke="currentColor" class="size-5">
@@ -77,40 +79,28 @@
                     Descubre los menús del día, comparte tus platos y mantente al tanto de todo lo que ocurre en la
                     gastronomía local. Todo en un mismo espacio que une a cocineros y comensales.
                 </p>
-                <div x-data="{ open: false }" class="relative inline-block">
-                    <button
-                        @click="open = !open"
-                        class="inline-flex items-center justify-center px-8 py-3 text-base font-medium rounded-md bg-white text-zinc-900 border border-zinc-300 shadow-sm hover:bg-zinc-50"
+                <flux:dropdown>
+                    <flux:button
+                        icon-trailing="chevron-down"
+                        class="inline-flex items-center w-64 justify-center px-6 py-6 text-xl rounded-lg bg-white text-zinc-900 border border-zinc-300 shadow-sm hover:bg-zinc-50"
                     >
-                        Regístrate
-                        <svg class="ml-2 size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="m19.5 8.25-7.5 7.5-7.5-7.5"/>
-                        </svg>
-                    </button>
+                        {{ __('Regístrate') }}
+                    </flux:button>
 
-                    <div
-                        x-show="open"
-                        x-cloak
-                        x-transition
-                        @click.outside="open = false"
-                        class="absolute left-0 mt-2 w-52 bg-white dark:bg-zinc-900 rounded-lg shadow-lg p-2 z-50"
-                    >
-                        <a
+                    <flux:menu class="w-52">
+                        <flux:menu.item
                             href="{{ route('register', ['rol' => 'cliente']) }}"
-                            class="block px-4 py-2 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800"
                         >
                             👤 Registrarme como Cliente
-                        </a>
+                        </flux:menu.item>
 
-                        <a
+                        <flux:menu.item
                             href="{{ route('register', ['rol' => 'restaurante']) }}"
-                            class="block px-4 py-2 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800"
                         >
                             🏪 Registrar mi Restaurante
-                        </a>
-                    </div>
-                </div>
+                        </flux:menu.item>
+                    </flux:menu>
+                </flux:dropdown>
 
 
                 <div class="mt-4">
@@ -164,5 +154,6 @@
         </div>
     </footer>
 </div>
+    @fluxScripts
 </body>
 </html>
