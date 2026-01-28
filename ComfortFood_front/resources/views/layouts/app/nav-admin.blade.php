@@ -19,16 +19,32 @@
 
             <!-- Search and Selectors (Desktop) -->
             <div class="flex items-center gap-4 max-lg:hidden">
-                <flux:input icon="magnifying-glass" placeholder="{{ __('Buscar') }}" class="w-64" />
+                <flux:input 
+                    icon="magnifying-glass" 
+                    placeholder="{{ __('Buscar por DNI, nombre, email o dirección...') }}" 
+                    class="w-80" 
+                    x-on:input.debounce.500ms="Livewire.dispatch('searchUpdated', { query: $event.target.value })"
+                    :disabled="request()->routeIs('admin.users.show') || request()->routeIs('admin.users.edit')"
+                />
                 
-                <flux:select class="w-44 bg-white/5 border-zinc-700/50 rounded-lg" icon="user-group">
-                    <flux:select.option icon="user">{{ __('Cliente') }}</flux:select.option>
-                    <flux:select.option icon="building-storefront">{{ __('Restaurante') }}</flux:select.option>
+                <flux:select 
+                    class="w-44 bg-white/5 border-zinc-700/50 rounded-lg" 
+                    x-on:change="Livewire.dispatch('typeUpdated', { type: $event.target.value })"
+                    :disabled="request()->routeIs('admin.users.show') || request()->routeIs('admin.users.edit')"
+                >
+                    <flux:select.option value="" icon="user-group">{{ __('Todos los tipos') }}</flux:select.option>
+                    <flux:select.option value="cliente" icon="user">{{ __('Cliente') }}</flux:select.option>
+                    <flux:select.option value="restaurante" icon="building-storefront">{{ __('Restaurante') }}</flux:select.option>
                 </flux:select>
 
-                <flux:select class="w-44 bg-white/5 border-zinc-700/50 rounded-lg" icon="signal">
-                    <flux:select.option icon="check-circle">{{ __('Activo') }}</flux:select.option>
-                    <flux:select.option icon="x-circle">{{ __('Inactivo') }}</flux:select.option>
+                <flux:select 
+                    class="w-44 bg-white/5 border-zinc-700/50 rounded-lg" 
+                    x-on:change="Livewire.dispatch('statusUpdated', { status: $event.target.value })"
+                    :disabled="request()->routeIs('admin.users.show') || request()->routeIs('admin.users.edit')"
+                >
+                    <flux:select.option value="" icon="signal">{{ __('Todos los estados') }}</flux:select.option>
+                    <flux:select.option value="activo" icon="check-circle">{{ __('Activo') }}</flux:select.option>
+                    <flux:select.option value="inactivo" icon="x-circle">{{ __('Inactivo') }}</flux:select.option>
                 </flux:select>
             </div>
 
@@ -53,18 +69,34 @@
 
             <flux:sidebar.nav class="px-2 space-y-4">
                 <div class="px-2 py-4">
-                    <flux:input icon="magnifying-glass" placeholder="{{ __('Buscar') }}" class="w-full" />
+                    <flux:input 
+                        icon="magnifying-glass" 
+                        placeholder="{{ __('Buscar por DNI, nombre, email o dirección...') }}" 
+                        class="w-full" 
+                        x-on:input.debounce.500ms="Livewire.dispatch('searchUpdated', { query: $event.target.value })"
+                        :disabled="request()->routeIs('admin.users.show') || request()->routeIs('admin.users.edit')"
+                    />
                 </div>
 
                 <div class="space-y-4">
-                    <flux:select class="w-full bg-white/5 border-zinc-700/50 rounded-lg" icon="user-group">
-                        <flux:select.option icon="user">{{ __('Cliente') }}</flux:select.option>
-                        <flux:select.option icon="building-storefront">{{ __('Restaurante') }}</flux:select.option>
+                    <flux:select 
+                        class="w-full bg-white/5 border-zinc-700/50 rounded-lg" 
+                        x-on:change="Livewire.dispatch('typeUpdated', { type: $event.target.value })"
+                        :disabled="request()->routeIs('admin.users.show') || request()->routeIs('admin.users.edit')"
+                    >
+                        <flux:select.option value="" icon="user-group">{{ __('Todos los tipos') }}</flux:select.option>
+                        <flux:select.option value="cliente" icon="user">{{ __('Cliente') }}</flux:select.option>
+                        <flux:select.option value="restaurante" icon="building-storefront">{{ __('Restaurante') }}</flux:select.option>
                     </flux:select>
 
-                    <flux:select class="w-full bg-white/5 border-zinc-700/50 rounded-lg" icon="signal">
-                        <flux:select.option icon="check-circle">{{ __('Activo') }}</flux:select.option>
-                        <flux:select.option icon="x-circle">{{ __('Inactivo') }}</flux:select.option>
+                    <flux:select 
+                        class="w-full bg-white/5 border-zinc-700/50 rounded-lg" 
+                        x-on:change="Livewire.dispatch('statusUpdated', { status: $event.target.value })"
+                        :disabled="request()->routeIs('admin.users.show') || request()->routeIs('admin.users.edit')"
+                    >
+                        <flux:select.option value="" icon="signal">{{ __('Todos los estados') }}</flux:select.option>
+                        <flux:select.option value="activo" icon="check-circle">{{ __('Activo') }}</flux:select.option>
+                        <flux:select.option value="inactivo" icon="x-circle">{{ __('Inactivo') }}</flux:select.option>
                     </flux:select>
                 </div>
             </flux:sidebar.nav>

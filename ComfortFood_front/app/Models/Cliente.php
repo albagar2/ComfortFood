@@ -14,6 +14,7 @@ class Cliente extends Model
 
     protected $fillable = [
         'id_usuario',
+        'DNI',
         'url_imagen_perfil',
         'direccion',
         'telefono',

@@ -5,7 +5,7 @@
         <div class="w-full md:w-1/2 h-full overflow-y-auto flex flex-col items-center px-8 md:px-16 lg:px-24 py-12">
             <div class="w-full max-w-[450px] flex flex-col gap-4">
 
-           <a href="{{ route('welcome.mockup') }}">   
+           <a href="{{ route('home') }}">   
              <img src="{{ asset('images/logo.png') }}" alt="ComfortFood" class="h-16 w-auto mx-auto mb-2">
         </a>
                 <x-auth-header

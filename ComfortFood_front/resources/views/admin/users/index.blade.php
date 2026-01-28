@@ -1,5 +1,5 @@
 <x-layouts::app title="Lista de usuarios">
     <div class="p-6">
-        @include('admin.users.partials.list')
+        <livewire:admin.user-list />
     </div>
 </x-layouts::app>

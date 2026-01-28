@@ -1,7 +1,7 @@
 <x-layouts::app :title="__('Dashboard')">
     @if(auth()->user()->isAdmin())
         <div class="p-6">
-            @include('admin.users.partials.list')
+            <livewire:admin.user-list />
         </div>
     @else
         <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">

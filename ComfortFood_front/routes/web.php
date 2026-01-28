@@ -11,11 +11,13 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+
 // Admin Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::view('users', 'admin.users.index')->name('admin.users.index');
-    Route::view('users/details', 'admin.users.show')->name('admin.users.show');
-    Route::view('users/edit', 'admin.users.edit')->name('admin.users.edit');
+    Route::get('users/{user}', [AdminUserController::class, 'show'])->name('admin.users.show');
+    Route::get('users/{user}/edit', [AdminUserController::class, 'edit'])->name('admin.users.edit');
 });
 
 Route::middleware(['auth'])->group(function () {
