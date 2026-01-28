@@ -4,16 +4,16 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <flux:header sticky class="bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700 py-4">
+        <flux:header sticky class="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/50 py-4">
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
             <x-app-logo class="max-lg:hidden" href="{{ route('dashboard') }}" wire:navigate />
             <x-app-logo :sidebar="true" class="lg:hidden" href="{{ route('dashboard') }}" wire:navigate />
 
             <flux:navbar class="-mb-px max-lg:hidden ps-10">
-                <flux:navbar.item icon="home" href="{{ route('dashboard') }}" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('INICIO') }}</flux:navbar.item>
-                <flux:navbar.item icon="clipboard-document-list" href="#" wire:navigate>{{ __('MIS PEDIDOS') }}</flux:navbar.item>
-                <flux:navbar.item icon="heart" href="#" wire:navigate>{{ __('FAVORITOS') }}</flux:navbar.item>
+                <flux:navbar.item icon="home" href="{{ route('dashboard') }}" :current="request()->routeIs('dashboard')" wire:navigate class="!text-slate-700 dark:!text-white font-bold tracking-wider data-[current]:!text-indigo-600 data-[current]:border-b-2 data-[current]:border-indigo-500">{{ __('INICIO') }}</flux:navbar.item>
+                <flux:navbar.item icon="clipboard-document-list" href="{{ route('orders.history') }}" :current="request()->routeIs('orders.history')" wire:navigate class="!text-slate-700 dark:!text-white font-bold tracking-wider data-[current]:!text-indigo-600 data-[current]:border-b-2 data-[current]:border-indigo-500">{{ __('MIS PEDIDOS') }}</flux:navbar.item>
+                <flux:navbar.item icon="heart" href="#" wire:navigate class="!text-slate-700 dark:!text-white font-bold tracking-wider hover:!text-indigo-600">{{ __('FAVORITOS') }}</flux:navbar.item>
             </flux:navbar>
 
             <flux:spacer />
@@ -48,7 +48,7 @@
 
             <flux:sidebar.nav>
                 <flux:sidebar.item icon="home" href="{{ route('dashboard') }}" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Inicio') }}</flux:sidebar.item>
-                <flux:sidebar.item icon="clipboard-document-list" href="#" wire:navigate>{{ __('Mis Pedidos') }}</flux:sidebar.item>
+                <flux:sidebar.item icon="clipboard-document-list" href="{{ route('orders.history') }}" :current="request()->routeIs('orders.history')" wire:navigate>{{ __('Mis Pedidos') }}</flux:sidebar.item>
                 <flux:sidebar.item icon="heart" href="#" wire:navigate>{{ __('Favoritos') }}</flux:sidebar.item>
                 <flux:sidebar.item icon="cog" href="{{ route('profile.edit') }}" wire:navigate>{{ __('Configuración') }}</flux:sidebar.item>
             </flux:sidebar.nav>
@@ -75,8 +75,8 @@
                     :initials="auth()->user()->initials()"
                 />
                 <div class="grid flex-1 text-start text-sm leading-tight">
-                    <span class="truncate font-semibold text-zinc-800 dark:text-white">{{ auth()->user()->nombre_completo }}</span>
-                    <span class="truncate text-xs text-zinc-500 dark:text-zinc-400">{{ auth()->user()->email }}</span>
+                    <span class="truncate font-semibold text-zinc-950 dark:text-white">{{ auth()->user()->nombre_completo }}</span>
+                    <span class="truncate text-xs text-zinc-700 dark:text-zinc-400">{{ auth()->user()->email }}</span>
                 </div>
             </div>
         </flux:sidebar>

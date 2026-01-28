@@ -4,7 +4,7 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <flux:header sticky class="bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700 py-4">
+        <flux:header sticky class="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/50 py-4">
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
             <!-- Logout on the left (Desktop) -->

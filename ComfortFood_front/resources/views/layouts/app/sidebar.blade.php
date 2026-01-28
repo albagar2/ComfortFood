@@ -4,31 +4,32 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-            <flux:sidebar.header>
-                <div class="flex items-center gap-2">
+        <flux:sidebar sticky collapsible="mobile" class="border-e border-slate-700/30 bg-slate-800 dark:bg-zinc-900 !text-white">
+            <flux:sidebar.header class="border-b border-slate-700/30 py-6">
+                <div class="flex mx-auto items-center gap-2">
                     <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
-                    <x-appearance-dropdown />
                 </div>
-                <flux:sidebar.collapse class="lg:hidden" />
+                <flux:sidebar.collapse class="lg:hidden text-white/70 hover:text-white" />
             </flux:sidebar.header>
 
-            <flux:sidebar.nav>
-                <flux:sidebar.group :heading="__('')" class="grid gap-5">
+            <flux:sidebar.nav class="px-2 space-y-1">
+                <flux:sidebar.group :heading="__('')" class="grid gap-2">
                     <!-- Inicio -->
                     <flux:sidebar.item
                         icon="home"
                         :href="route('dashboard')"
                         :current="request()->routeIs('dashboard')"
-                        wire:navigate>
+                        wire:navigate
+                        class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-indigo-500/20 data-[current]:!text-white data-[current]:border-l-2 data-[current]:border-indigo-400 font-medium tracking-wide">
                         INICIO
                     </flux:sidebar.item>
                     <!-- Historial pedidos -->
                     <flux:sidebar.item
                         icon="clock"
-                        :href="route('dashboard')"
-                        :current="request()->routeIs('dashboard')"
-                        wire:navigate>
+                        :href="route('orders.history')"
+                        :current="request()->routeIs('orders.history')"
+                        wire:navigate
+                        class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-indigo-500/20 data-[current]:!text-white data-[current]:border-l-2 data-[current]:border-indigo-400 font-medium tracking-wide">
                         HISTORIAL PEDIDOS
                     </flux:sidebar.item>
                     <!-- Estadísticas -->
@@ -36,7 +37,8 @@
                         icon="chart-bar"
                         :href="route('dashboard')"
                         :current="request()->routeIs('dashboard')"
-                        wire:navigate>
+                        wire:navigate
+                        class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-indigo-500/20 data-[current]:!text-white data-[current]:border-l-2 data-[current]:border-indigo-400 font-medium tracking-wide">
                         ESTADÍSTICAS
                     </flux:sidebar.item>
                     <!-- Soporte -->
@@ -44,7 +46,8 @@
                         icon="lifebuoy"
                         :href="route('dashboard')"
                         :current="request()->routeIs('dashboard')"
-                        wire:navigate>
+                        wire:navigate
+                        class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-indigo-500/20 data-[current]:!text-white data-[current]:border-l-2 data-[current]:border-indigo-400 font-medium tracking-wide">
                         SOPORTE
                     </flux:sidebar.item>
                     <!-- Configuración -->
@@ -52,7 +55,7 @@
                         icon="adjustments-horizontal" 
                         href="{{ route('profile.edit') }}" 
                         wire:navigate
-                        class="max-lg:hidden">
+                        class="max-lg:hidden !text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-indigo-500/20 data-[current]:!text-white data-[current]:border-l-2 data-[current]:border-indigo-400 font-medium tracking-wide">
                         CONFIGURACIÓN
                     </flux:sidebar.item>
                 </flux:sidebar.group>
@@ -71,22 +74,22 @@
                                 as="button"
                                 type="submit"
                                 icon="arrow-right-start-on-rectangle"
-                                class="w-full cursor-pointer"
+                                class="w-full cursor-pointer !text-white/70 hover:!text-white hover:!bg-white/10"
                             >
                                 CERRAR SESIÓN
                             </flux:sidebar.item>
                         </form>
                     </flux:sidebar.nav>
 
-                    <div class="flex items-center gap-3 px-3 py-4 border-t border-zinc-200 dark:border-zinc-700 mt-2">
+                    <div class="flex items-center gap-3 px-3 py-4 border-t border-slate-700/30 mt-2">
                         <flux:avatar
                             :name="auth()->user()->nombre_completo"
                             :initials="auth()->user()->initials()"
                             size="sm"
                         />
                         <div class="grid flex-1 text-start text-sm leading-tight">
-                            <span class="truncate font-semibold text-zinc-800 dark:text-white uppercase">{{ auth()->user()->nombre_completo }}</span>
-                            <span class="truncate text-xs text-zinc-500 dark:text-zinc-400">{{ auth()->user()->email }}</span>
+                            <span class="truncate font-semibold text-white uppercase">{{ auth()->user()->nombre_completo }}</span>
+                            <span class="truncate text-xs text-white/60">{{ auth()->user()->email }}</span>
                         </div>
                         <x-appearance-dropdown />
                     </div>

@@ -1,6 +1,6 @@
 <flux:dropdown {{ $attributes->merge(['align' => 'end']) }}>
     <flux:button variant="ghost" square aria-label="{{ __('Cambiar apariencia') }}">
-        <flux:icon.sun class="dark:hidden" />
+        <flux:icon.sun class="dark:hidden text-yellow-500" />
         <flux:icon.moon class="hidden dark:block" />
     </flux:button>
 
