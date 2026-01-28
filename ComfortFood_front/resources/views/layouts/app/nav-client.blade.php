@@ -11,11 +11,10 @@
             <x-app-logo :sidebar="true" class="lg:hidden" href="{{ route('dashboard') }}" wire:navigate />
 
             <flux:navbar class="-mb-px max-lg:hidden ps-10">
-                <flux:navbar.item icon="home" href="{{ route('dashboard') }}" :current="request()->routeIs('dashboard')" wire:navigate class="!text-slate-700 dark:!text-white font-bold tracking-wider data-[current]:!text-indigo-600 data-[current]:border-b-2 data-[current]:border-indigo-500">{{ __('INICIO') }}</flux:navbar.item>
-                <flux:navbar.item icon="clipboard-document-list" href="{{ route('orders.history') }}" :current="request()->routeIs('orders.history')" wire:navigate class="!text-slate-700 dark:!text-white font-bold tracking-wider data-[current]:!text-indigo-600 data-[current]:border-b-2 data-[current]:border-indigo-500">{{ __('MIS PEDIDOS') }}</flux:navbar.item>
-                <flux:navbar.item icon="heart" href="#" wire:navigate class="!text-slate-700 dark:!text-white font-bold tracking-wider hover:!text-indigo-600">{{ __('FAVORITOS') }}</flux:navbar.item>
+                 <flux:sidebar.item icon="home" href="{{ route('dashboard') }}" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Inicio') }}</flux:sidebar.item>
+                <flux:sidebar.item icon="clipboard-document-list" href="{{ route('orders.history') }}" :current="request()->routeIs('orders.history')" wire:navigate>{{ __('Mis Pedidos') }}</flux:sidebar.item>
+                <flux:sidebar.item icon="heart" href="#" wire:navigate>{{ __('Favoritos') }}</flux:sidebar.item>
             </flux:navbar>
-
             <flux:spacer />
 
             <!-- Desktop Icons -->
