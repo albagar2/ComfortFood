@@ -20,8 +20,8 @@
                     class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-sm flex flex-col gap-4 relative group hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors">
                     <div class="flex justify-between items-start">
                         <div>
-                            <span class="text-xs font-bold text-zinc-500 uppercase tracking-wider block mb-1">Restaurante</span>
                             <a href="{{ route('restaurant.show', $menu->restaurante->id_restaurante) }}" wire:navigate
+                                title="Ver restaurante"
                                 class="text-sm font-semibold text-zinc-800 dark:text-zinc-200 hover:underline hover:text-blue-600">
                                 {{ $menu->restaurante->user->nombre_completo ?? 'Restaurante' }}
                             </a>
@@ -33,7 +33,7 @@
                     </div>
 
                     <!-- Image -->
-                    <a href="{{ route('menu.show', $menu->id_menu) }}" wire:navigate
+                    <a href="{{ route('menu.show', $menu->id_menu) }}" wire:navigate title="Ver menú"
                         class="aspect-square bg-zinc-100 dark:bg-zinc-800 rounded-lg flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
                         @if($menu->url_foto)
                             <img src="{{ $menu->url_foto }}" alt="{{ $menu->nombre_menu }}" class="w-full h-full object-cover">

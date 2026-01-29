@@ -10,12 +10,18 @@ use Livewire\Component;
 class OrderDetails extends Component
 {
     public Pedido $order;
-    public $search = '';
+    public $rating = 5;
+    public $comment = '';
+
+    protected $rules = [
+        'rating' => 'required|integer|min:1|max:5',
+        'comment' => 'nullable|string|max:500',
+    ];
 
     public function mount(Pedido $order)
     {
         $this->order = $order->load(['detalles.menu', 'estado', 'cliente.user', 'restaurante.user', 'resena']);
-        
+
         $user = Auth::user();
 
         // Authorization check: User must be related to the order or admin
@@ -23,7 +29,7 @@ class OrderDetails extends Component
             abort(403);
         }
         if ($user->isCliente() && $this->order->id_cliente !== $user->cliente->id_cliente) {
-             abort(403);
+            abort(403);
         }
     }
 
@@ -31,16 +37,36 @@ class OrderDetails extends Component
     {
         $status = EstadoPedido::where('nombre_estado', 'Completado')->first();
         if ($status) {
-             $this->order->update(['id_estado_pedido' => $status->id_estado_pedido]);
+            $this->order->update(['id_estado_pedido' => $status->id_estado_pedido]);
         }
     }
 
     public function cancelOrder()
     {
         $status = EstadoPedido::where('nombre_estado', 'Cancelado')->first();
-         if ($status) {
-             $this->order->update(['id_estado_pedido' => $status->id_estado_pedido]);
+        if ($status) {
+            $this->order->update(['id_estado_pedido' => $status->id_estado_pedido]);
         }
+    }
+
+    public function saveReview()
+    {
+        if (!auth()->user()->isCliente() || $this->order->estado->nombre_estado !== 'Completado') {
+            return;
+        }
+
+        $this->validate();
+
+        \App\Models\Resena::create([
+            'id_pedido' => $this->order->id_pedido,
+            'id_cliente' => auth()->user()->cliente->id_cliente,
+            'puntuacion' => $this->rating,
+            'comentario' => $this->comment,
+        ]);
+
+        $this->order->load('resena');
+
+        $this->dispatch('review-saved');
     }
 
     public function render()
@@ -49,15 +75,15 @@ class OrderDetails extends Component
         // This is optional based on the specific design requirement "Lista pedidos"
         $quickAccessOrders = collect();
         if (Auth::user()->isRestaurante()) {
-             $quickAccessOrders = Pedido::where('id_restaurante', Auth::user()->restaurante->id_restaurante)
+            $quickAccessOrders = Pedido::where('id_restaurante', Auth::user()->restaurante->id_restaurante)
                 ->where('id_estado_pedido', '!=', EstadoPedido::where('nombre_estado', 'Completado')->first()->id_estado_pedido ?? 0) // Show pending/active
-                 ->latest()
-                 ->take(10)
-                 ->get();
+                ->latest()
+                ->take(10)
+                ->get();
         }
 
         return view('livewire.orders.order-details', [
-             'quickAccessOrders' => $quickAccessOrders
+            'quickAccessOrders' => $quickAccessOrders
         ]);
     }
 }
