@@ -12,18 +12,46 @@ use Livewire\Component;
 class Profile extends Component
 {
     use ProfileValidationRules;
+    use \Livewire\WithFileUploads;
 
     public string $nombre_completo = '';
-
     public string $email = '';
+    
+    // Client specific fields
+    public $foto_perfil; // For the file upload
+    public string $direccion = '';
+    public string $telefono = '';
+    public string $tarjeta_mock = '';
+
+    // Restaurant specific fields
+    public string $tipo_cocina = '';
+    public string $redes_sociales = '';
+    public string $descripcion = '';
+    public string $cuenta_bancaria_mock = '';
+    public string $NIF = '';
 
     /**
      * Mount the component.
      */
     public function mount(): void
     {
-        $this->nombre_completo = Auth::user()->nombre_completo;
-        $this->email = Auth::user()->email;
+        $user = Auth::user();
+        $this->nombre_completo = $user->nombre_completo;
+        $this->email = $user->email;
+
+        if ($user->isCliente() && $user->cliente) {
+            $this->direccion = $user->cliente->direccion ?? '';
+            $this->telefono = $user->cliente->telefono ?? '';
+            $this->tarjeta_mock = $user->cliente->tarjeta_mock ?? '';
+        } elseif ($user->isRestaurante() && $user->restaurante) {
+            $this->direccion = $user->restaurante->direccion ?? '';
+            $this->telefono = $user->restaurante->telefono ?? '';
+            $this->tipo_cocina = $user->restaurante->tipo_cocina ?? '';
+            $this->redes_sociales = $user->restaurante->redes_sociales ?? '';
+            $this->descripcion = $user->restaurante->descripcion ?? '';
+            $this->cuenta_bancaria_mock = $user->restaurante->cuenta_bancaria_mock ?? '';
+            $this->NIF = $user->restaurante->NIF ?? '';
+        }
     }
 
     /**
@@ -33,15 +61,74 @@ class Profile extends Component
     {
         $user = Auth::user();
 
-        $validated = $this->validate($this->profileRules($user->id_usuario));
+        $rules = $this->profileRules($user->id_usuario);
 
-        $user->fill($validated);
+        if ($user->isCliente()) {
+            $rules['direccion'] = ['nullable', 'string', 'max:255'];
+            $rules['telefono'] = ['nullable', 'string', 'max:20'];
+            $rules['tarjeta_mock'] = ['nullable', 'string', 'max:19']; 
+            $rules['foto_perfil'] = ['nullable', 'image', 'max:1024']; 
+        } elseif ($user->isRestaurante()) {
+            $rules['direccion'] = ['nullable', 'string', 'max:255'];
+            $rules['telefono'] = ['nullable', 'string', 'max:20'];
+            $rules['tipo_cocina'] = ['nullable', 'string', 'max:255'];
+            $rules['redes_sociales'] = ['nullable', 'string', 'max:255'];
+            $rules['descripcion'] = ['nullable', 'string', 'max:1000'];
+            $rules['cuenta_bancaria_mock'] = ['nullable', 'string', 'max:50'];
+            $rules['NIF'] = ['nullable', 'string', 'max:20'];
+            $rules['foto_perfil'] = ['nullable', 'image', 'max:1024'];
+        }
+
+        $validated = $this->validate($rules);
+
+        $user->fill([
+            'nombre_completo' => $validated['nombre_completo'],
+            'email' => $validated['email'],
+        ]);
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }
 
         $user->save();
+
+        if ($user->isCliente()) {
+            $clienteData = [
+                'direccion' => $this->direccion,
+                'telefono' => $this->telefono,
+                'tarjeta_mock' => $this->tarjeta_mock,
+            ];
+
+            if ($this->foto_perfil) {
+                $path = $this->foto_perfil->store('perfiles', 'public');
+                $clienteData['url_imagen_perfil'] = asset('storage/' . $path);
+            }
+
+            $user->cliente()->updateOrCreate(
+                ['id_usuario' => $user->id_usuario],
+                $clienteData
+            );
+        } elseif ($user->isRestaurante()) {
+            $restauranteData = [
+                'direccion' => $this->direccion,
+                'telefono' => $this->telefono,
+                'tipo_cocina' => $this->tipo_cocina,
+                'redes_sociales' => $this->redes_sociales,
+                'descripcion' => $this->descripcion,
+                'cuenta_bancaria_mock' => $this->cuenta_bancaria_mock,
+                'NIF' => $this->NIF,
+            ];
+
+            if ($this->foto_perfil) {
+                $path = $this->foto_perfil->store('restaurantes', 'public');
+                $restauranteData['url_imagen_perfil'] = asset('storage/' . $path);
+            }
+
+            $user->restaurante()->updateOrCreate(
+                ['id_usuario' => $user->id_usuario],
+                $restauranteData
+            );
+        }
 
         $this->dispatch('profile-updated', name: $user->nombre_completo);
     }

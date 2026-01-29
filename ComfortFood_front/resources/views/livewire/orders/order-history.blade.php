@@ -89,7 +89,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-5 text-center">
-                                <flux:button variant="ghost" size="sm" icon="eye" class="text-zinc-400 hover:text-blue-600" />
+                                <flux:button variant="ghost" size="sm" icon="eye" href="{{ route('orders.details', $pedido->id_pedido) }}" wire:navigate class="text-zinc-400 hover:text-blue-600" />
                             </td>
                         </tr>
                     @empty

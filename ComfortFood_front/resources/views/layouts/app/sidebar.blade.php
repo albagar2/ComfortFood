@@ -82,15 +82,17 @@
                     </flux:sidebar.nav>
 
                     <div class="flex items-center gap-3 px-3 py-4 border-t border-slate-700/30 mt-2">
-                        <flux:avatar
-                            :name="auth()->user()->nombre_completo"
-                            :initials="auth()->user()->initials()"
-                            size="sm"
-                        />
-                        <div class="grid flex-1 text-start text-sm leading-tight">
-                            <span class="truncate font-semibold text-white uppercase">{{ auth()->user()->nombre_completo }}</span>
-                            <span class="truncate text-xs text-white/60">{{ auth()->user()->email }}</span>
-                        </div>
+                        <a href="{{ route('profile.edit') }}" wire:navigate class="flex items-center gap-3 flex-1 hover:opacity-80 transition-opacity">
+                            <flux:avatar
+                                :name="auth()->user()->nombre_completo"
+                                :initials="auth()->user()->initials()"
+                                size="sm"
+                            />
+                            <div class="grid flex-1 text-start text-sm leading-tight">
+                                <span class="truncate font-semibold text-white uppercase">{{ auth()->user()->nombre_completo }}</span>
+                                <span class="truncate text-xs text-white/60">{{ auth()->user()->email }}</span>
+                            </div>
+                        </a>
                         <x-appearance-dropdown />
                     </div>
                 </div>

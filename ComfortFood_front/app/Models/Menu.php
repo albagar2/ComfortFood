@@ -40,4 +40,9 @@ class Menu extends Model
     {
         return $this->hasMany(DetallePedido::class, 'id_menu', 'id_menu');
     }
+
+    public function favoritos()
+    {
+        return $this->hasMany(Favorito::class, 'id_menu', 'id_menu');
+    }
 }

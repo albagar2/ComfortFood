@@ -15,6 +15,7 @@ class Favorito extends Model
     protected $fillable = [
         'id_cliente',
         'id_restaurante',
+        'id_menu',
     ];
 
     public function cliente()
@@ -25,5 +26,10 @@ class Favorito extends Model
     public function restaurante()
     {
         return $this->belongsTo(Restaurante::class, 'id_restaurante', 'id_restaurante');
+    }
+
+    public function menu()
+    {
+        return $this->belongsTo(Menu::class, 'id_menu', 'id_menu');
     }
 }
