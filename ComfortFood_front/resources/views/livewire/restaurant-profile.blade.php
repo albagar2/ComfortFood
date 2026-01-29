@@ -60,10 +60,6 @@
         </div>
     </div>
 
-    <div class="flex justify-end mb-6">
-        <button class="text-blue-500 hover:text-blue-700 font-medium text-sm">ver más</button>
-    </div>
-
     <!-- Menus Grid -->
      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach($restaurante->menus as $menu)
@@ -95,4 +91,7 @@
         </div>
         @endforeach
      </div>
+         <div class="flex justify-end mb-6">
+        <button class="text-blue-500 hover:text-blue-700 font-medium text-sm">ver más</button>
+    </div>
 </div>

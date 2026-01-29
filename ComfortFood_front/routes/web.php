@@ -32,4 +32,4 @@ Route::middleware(['auth'])->group(function () {
     Route::view('customer/orders/details', 'customer.orders.details')->name('customer.orders.details');
 });
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';

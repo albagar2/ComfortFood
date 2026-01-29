@@ -1,4 +1,4 @@
-<x-layouts::app :title="__('Dashboard')">
+<x-layouts::app :title="__('ComfortFood')">
     @if(auth()->user()->isAdmin())
         <div class="p-6">
             <livewire:admin.user-list />
