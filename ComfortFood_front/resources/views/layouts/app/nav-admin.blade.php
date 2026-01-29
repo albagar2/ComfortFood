@@ -6,7 +6,8 @@
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800">
-    <flux:header sticky class="!bg-navy-dark backdrop-blur-xl border-b border-slate-700/30 py-4 !text-white">
+    <flux:header sticky
+        class="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/50 py-4">
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
         <!-- Logout on the left (Desktop) -->
@@ -56,7 +57,7 @@
 
     <!-- Mobile Sidebar -->
     <flux:sidebar stashable sticky collapsible="mobile"
-        class="lg:hidden !bg-navy-dark border-e border-slate-700/30 !text-white">
+        class="lg:hidden bg-zinc-50 dark:bg-zinc-900 border-e border-zinc-200 dark:border-zinc-700">
         <flux:sidebar.header>
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" inset="left" />
             <div class="flex items-center gap-2">

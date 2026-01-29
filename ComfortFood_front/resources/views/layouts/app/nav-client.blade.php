@@ -38,11 +38,13 @@
                 class="p-2 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
                 <flux:avatar :name="auth()->user()->nombre_completo" :initials="auth()->user()->initials()" size="xs" />
             </a>
-            <flux:button variant="ghost" icon="cog" :href="route('profile.edit')" wire:navigate />
+            <flux:button variant="ghost" icon="cog" :href="route('profile.edit')" wire:navigate
+                class="!text-white/80 hover:!text-white" />
 
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <flux:button type="submit" variant="ghost" icon="arrow-right-start-on-rectangle" />
+                <flux:button type="submit" variant="ghost" icon="arrow-right-start-on-rectangle"
+                    class="!text-white/80 hover:!text-white" />
             </form>
         </div>
     </flux:header>
