@@ -1,134 +1,147 @@
-<div class="flex flex-col gap-8 p-6">
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-        <div class="w-full md:w-96">
-            <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass" placeholder="Buscar"
-                class="w-full" />
-        </div>
-        <flux:button variant="primary" icon="plus" href="{{ route('menu.edit') }}" wire:navigate>Añadir Menú
-        </flux:button>
-        <a href="{{ route('menu.index') }}" wire:navigate
-            class="px-6 py-2.5 text-sm font-medium text-zinc-600 bg-white border border-zinc-200 rounded-lg hover:bg-zinc-50 transition-colors uppercase">
-            EDITAR MENÚS
-        </a>
-        <div class="flex gap-4">
-            <!-- Used standard buttons to match the exact look in the image (White with border) -->
-            <a href="{{ route('restaurant.show', auth()->user()->restaurante->id_restaurante) }}" wire:navigate
-                class="px-6 py-2.5 text-sm font-medium text-zinc-600 bg-white border border-zinc-200 rounded-lg hover:bg-zinc-50 transition-colors">
-                Vista restaurante
-            </a>
-
-        </div>
-    </div>
-
-    <!-- Top List (Pending/Active Orders) -->
-    <div>
-        <h2 class="text-lg font-bold text-zinc-800 dark:text-zinc-100 mb-4">Lista pedidos</h2>
-        <div class="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">
-            @foreach($orders as $order)
-                <div
-                    class="flex items-center gap-3 px-4 py-2 min-w-[100px] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-sm whitespace-nowrap opacity-{{ $order->estado->nombre_estado == 'Cancelado' ? '50' : '100' }}">
-                    <span class="text-zinc-400">
-                        @if($order->estado->nombre_estado == 'Completado')
-                            <flux:icon.check class="size-4 text-zinc-400" />
-                        @elseif($order->estado->nombre_estado == 'Cancelado')
-                            <flux:icon.x-mark class="size-4 text-zinc-400" />
-                        @else
-                            <!-- Diagonal line icon or just slash -->
-                            <svg class="size-4 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 5L5 19" />
-                            </svg>
-                        @endif
-                    </span>
-                    <span class="text-sm font-medium text-zinc-500 dark:text-zinc-400">#{{ $order->id_pedido }}</span>
+<div class="min-h-screen bg-zinc-50 dark:bg-zinc-950 px-4 py-8 md:px-8">
+    <div class="max-w-7xl mx-auto space-y-10">
+        <!-- Header Section -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+            <div class="space-y-1">
+                <h1 class="text-3xl font-black text-zinc-950 dark:text-white tracking-tight">Panel de Gestión</h1>
+                <p class="text-zinc-500 font-medium">¡Hola, {{ auth()->user()->nombre_completo }}! Tienes <span class="text-indigo-600 dark:text-indigo-400 font-bold">{{ $orders->whereNotIn('estado.nombre_estado', ['Completado', 'Cancelado'])->count() }}</span> pedidos activos para hoy.</p>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                <div class="flex-1 md:flex-none">
+                    <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass" placeholder="Buscar pedido..." class="min-w-[240px] !rounded-xl" />
                 </div>
-            @endforeach
-        </div>
-    </div>
-
-    <!-- Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-        @foreach($orders as $order)
-            <a href="{{ route('orders.details', $order->id_pedido) }}" wire:navigate
-                class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 flex flex-col gap-6 shadow-sm group hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors cursor-pointer">
-                <!-- Card Header -->
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="font-bold text-base text-zinc-900 dark:text-white">Pedido #{{ $order->id_pedido }}</h3>
-                        <p class="text-xs text-zinc-400 mt-1">{{ $order->created_at->format('d M Y, h:i A') }}</p>
-                    </div>
-                    <!-- Placeholder Icon for Order/User -->
-                    <div
-                        class="size-10 bg-zinc-100 dark:bg-zinc-800 rounded-lg flex items-center justify-center text-zinc-400">
-                        <flux:icon.photo class="size-6" />
-                    </div>
+                <flux:button variant="primary" icon="plus" href="{{ route('menu.edit') }}" wire:navigate class="!rounded-xl">Añadir Menú</flux:button>
+                
+                <div class="flex gap-2">
+                    <a href="{{ route('menu.index') }}" wire:navigate title="Gestionar Carta" class="p-2.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-all">
+                        <flux:icon.document-text class="size-5" />
+                    </a>
+                    <a href="{{ route('restaurant.show', auth()->user()->restaurante->id_restaurante) }}" wire:navigate title="Ver Perfil Público" class="p-2.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-all">
+                        <flux:icon.eye class="size-5" />
+                    </a>
                 </div>
+            </div>
+        </div>
 
-                <!-- Items -->
-                <div class="space-y-6 flex-1">
-                    @foreach($order->detalles as $detalle)
-                        <div class="flex gap-4">
-                            <!-- Item Image -->
-                            <div
-                                class="size-16 bg-zinc-100 dark:bg-zinc-800 rounded-full flex-shrink-0 overflow-hidden border-2 border-zinc-50 dark:border-zinc-800">
-                                @if($detalle->menu && $detalle->menu->url_foto)
-                                    <img src="{{ $detalle->menu->url_foto }}" alt="" class="w-full h-full object-cover">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center text-zinc-300">
-                                        <flux:icon.photo class="size-6" />
+        <!-- Order Activity Tracker -->
+        <section class="space-y-4">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xs font-black text-zinc-400 uppercase tracking-[0.2em]">Actividad Reciente</h2>
+                <div class="h-px flex-1 bg-zinc-200 dark:bg-zinc-800 mx-6"></div>
+            </div>
+            
+            <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+                @forelse($orders->take(8) as $topOrder)
+                    @php
+                        $isFinished = in_array($topOrder->estado->nombre_estado, ['Completado', 'Cancelado']);
+                        $statusStyles = match($topOrder->estado->nombre_estado) {
+                            'Completado' => 'border-emerald-500/30 bg-emerald-50 dark:bg-emerald-900/10',
+                            'Cancelado' => 'border-rose-500/30 bg-rose-50 dark:bg-rose-900/10',
+                            'En preparación' => 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/10',
+                            default => 'border-zinc-200 bg-white dark:bg-zinc-800 dark:border-zinc-700'
+                        };
+                    @endphp
+                    <a href="{{ route('orders.details', $topOrder->id_pedido) }}" wire:navigate 
+                       class="flex items-center gap-3 px-5 py-3 min-w-[160px] border rounded-2xl shadow-sm snap-start hover:scale-105 transition-all duration-300 {{ $statusStyles }}">
+                        <div class="size-2 rounded-full {{ $isFinished ? 'bg-zinc-300' : 'bg-indigo-500 animate-pulse' }}"></div>
+                        <div class="flex flex-col">
+                            <span class="text-xs font-black text-zinc-950 dark:text-white">#{{ $topOrder->id_pedido }}</span>
+                            <span class="text-[10px] font-bold text-zinc-400 uppercase">{{ $topOrder->created_at->format('H:i') }}</span>
+                        </div>
+                    </a>
+                @empty
+                    <div class="py-4 text-zinc-400 text-sm italic">No hay actividad hoy.</div>
+                @endforelse
+            </div>
+        </section>
+
+        <!-- Main Orders Grid -->
+        <section class="space-y-6">
+            <h2 class="text-2xl font-black text-zinc-950 dark:text-white uppercase tracking-tight">Gestión de Comandas</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                @foreach($orders as $order)
+                    <div class="group bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-zinc-200/50 dark:hover:shadow-none transition-all duration-500 flex flex-col h-full relative">
+                        <!-- Card Status Badge -->
+                        @php
+                            $statusInfo = match ($order->estado->nombre_estado) {
+                                'En espera', 'Pendiente' => ['class' => 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', 'icon' => 'clock'],
+                                'En preparación' => ['class' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', 'icon' => 'fire'],
+                                'Completado' => ['class' => 'bg-emerald-500 text-white', 'icon' => 'check-circle'],
+                                'Cancelado' => ['class' => 'bg-rose-500 text-white', 'icon' => 'x-circle'],
+                                default => ['class' => 'bg-zinc-100 text-zinc-600', 'icon' => 'hashtag']
+                            };
+                        @endphp
+                        <div class="absolute top-4 right-4 z-10 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest {{ $statusInfo['class'] }}">
+                            {{ $order->estado->nombre_estado }}
+                        </div>
+
+                        <a href="{{ route('orders.details', $order->id_pedido) }}" wire:navigate class="p-6 flex-1 space-y-6">
+                            <!-- Customer Info -->
+                            <div class="flex items-center gap-4">
+                                <div class="size-12 bg-zinc-100 dark:bg-zinc-800 rounded-2xl flex items-center justify-center text-zinc-400 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/30 group-hover:text-indigo-600 transition-colors">
+                                    <flux:icon.user class="size-6" />
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-zinc-950 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                        {{ $order->cliente->user->nombre_completo }}
+                                    </h3>
+                                    <p class="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Pedido #{{ $order->id_pedido }} • {{ $order->created_at->diffForHumans() }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Items Preview -->
+                            <div class="space-y-4">
+                                @foreach($order->detalles->take(2) as $detalle)
+                                    <div class="flex items-center gap-3">
+                                        <div class="size-10 rounded-xl bg-zinc-50 dark:bg-zinc-800 overflow-hidden border border-zinc-100 dark:border-zinc-700 shrink-0">
+                                            @if($detalle->menu && $detalle->menu->url_foto)
+                                                <img src="{{ $detalle->menu->url_foto }}" class="w-full h-full object-cover">
+                                            @else
+                                                <div class="w-full h-full flex items-center justify-center">
+                                                    <flux:icon.photo class="size-4 text-zinc-300" />
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-xs font-bold text-zinc-800 dark:text-zinc-200 truncate">{{ $detalle->menu->nombre_menu ?? 'Item' }}</p>
+                                            <p class="text-[10px] text-zinc-500 tracking-tight">Cantidad: {{ $detalle->cantidad }}</p>
+                                        </div>
                                     </div>
+                                @endforeach
+
+                                @if($order->detalles->count() > 2)
+                                    <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">+{{ $order->detalles->count() - 2 }} artículos más</p>
                                 @endif
                             </div>
+                        </a>
 
-                            <!-- Item Details -->
-                            <div class="flex-1 min-w-0">
-                                <div class="flex justify-between items-start gap-2">
-                                    <h4 class="font-bold text-sm text-zinc-900 dark:text-white truncate">
-                                        {{ $detalle->menu->nombre_menu ?? 'Item eliminado' }}
-                                    </h4>
-                                </div>
-                                <p class="text-xs text-zinc-500 mb-1 truncate">{{ $detalle->menu->descripcion_menu ?? '' }}</p>
-                                <div class="flex justify-between items-center">
-                                    <span
-                                        class="font-bold text-sm text-zinc-700 dark:text-zinc-300">{{ number_format($detalle->precio_unitario, 2) }}€</span>
-                                    <span class="text-xs font-medium text-zinc-500">cantidad: {{ $detalle->cantidad }}</span>
-                                </div>
+                        <!-- Actions Area -->
+                        <div class="p-4 bg-zinc-50/50 dark:bg-zinc-900/50 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between gap-3">
+                            <div class="flex flex-col">
+                                <span class="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Total</span>
+                                <span class="font-black text-zinc-950 dark:text-white">{{ number_format($order->precio_total, 2) }}€</span>
+                            </div>
+
+                            <div class="flex gap-2">
+                                @if(!in_array($order->estado->nombre_estado, ['Completado', 'Cancelado']))
+                                    <button wire:click="cancelOrder({{ $order->id_pedido }})" class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-xl transition-all" title="Cancelar">
+                                        <flux:icon.x-mark class="size-5" />
+                                    </button>
+                                    <button wire:click="acceptOrder({{ $order->id_pedido }})" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2">
+                                        <flux:icon.check class="size-4" /> Completar
+                                    </button>
+                                @else
+                                    <a href="{{ route('orders.details', $order->id_pedido) }}" wire:navigate class="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all">
+                                        Ver Detalles
+                                    </a>
+                                @endif
                             </div>
                         </div>
-                    @endforeach
-                </div>
-
-                <!-- Footer/Actions -->
-                <div class="mt-auto pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
-                    <span
-                        class="text-xs font-medium text-zinc-400 uppercase tracking-wide">{{ $order->detalles->sum('cantidad') }}
-                        Artículos</span>
-
-                    <div class="flex gap-3">
-                        @if($order->estado->nombre_estado == 'Cancelado')
-                            <button disabled
-                                class="flex items-center gap-2 px-4 py-2 text-xs font-bold text-zinc-400 border border-zinc-300 rounded-lg uppercase tracking-wider">
-                                <flux:icon.x-mark class="size-4" /> CANCELADO
-                            </button>
-                        @elseif($order->estado->nombre_estado == 'Completado')
-                            <button disabled
-                                class="flex items-center gap-2 px-4 py-2 text-xs font-bold text-zinc-400 border border-zinc-300 rounded-lg uppercase tracking-wider">
-                                <flux:icon.check class="size-4" /> COMPLETADO
-                            </button>
-                        @else
-                            <!-- Action Buttons -->
-                            <button wire:click="cancelOrder({{ $order->id_pedido }})"
-                                class="size-10 flex items-center justify-center text-zinc-400 hover:text-zinc-600 border border-zinc-300 rounded-lg hover:bg-zinc-50 transition-colors">
-                                <flux:icon.x-mark class="size-5" />
-                            </button>
-                            <button wire:click="acceptOrder({{ $order->id_pedido }})"
-                                class="size-10 flex items-center justify-center text-zinc-400 hover:text-zinc-600 border border-zinc-300 rounded-lg hover:bg-zinc-50 transition-colors">
-                                <flux:icon.check class="size-5" />
-                            </button>
-                        @endif
                     </div>
-                </div>
-            </a>
-        @endforeach
+                @endforeach
+            </div>
+        </section>
     </div>
 </div>

@@ -54,17 +54,17 @@
 
                     <div class="flex gap-2">
                         <button wire:click="deleteMenu({{ $menu->id_menu }})"
-                            wire:confirm="¿Estás seguro de que quieres eliminar este menú?"
+                            wire:confirm="¿Estás seguro de que quieres eliminar este menú?" title="Eliminar menú"
                             class="size-9 flex items-center justify-center rounded-lg border border-red-200 text-red-500 hover:bg-red-50 transition-colors">
                             <flux:icon.trash class="size-4" />
                         </button>
 
-                        <a href="{{ route('menu.edit', ['menu' => $menu->id_menu]) }}" wire:navigate
+                        <a href="{{ route('menu.edit', ['menu' => $menu->id_menu]) }}" wire:navigate title="Editar menú"
                             class="size-9 flex items-center justify-center rounded-lg border border-yellow-200 text-yellow-500 hover:bg-yellow-50 transition-colors">
                             <flux:icon.pencil class="size-4" />
                         </a>
 
-                        <button wire:click="toggleStatus({{ $menu->id_menu }})"
+                        <button wire:click="toggleStatus({{ $menu->id_menu }})" title="Cambiar estado"
                             class="size-9 flex items-center justify-center rounded-lg border border-zinc-200 text-zinc-500 hover:bg-zinc-50 transition-colors">
                             <flux:icon.arrow-path class="size-4" />
                             <!-- Using arrow-path as toggle/switch icon alternative, or eye -->
