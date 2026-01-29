@@ -6,8 +6,7 @@
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800">
-    <flux:sidebar sticky collapsible="mobile"
-        class="border-e border-slate-700/30 bg-slate-800 dark:bg-zinc-900 !text-white">
+    <flux:sidebar sticky collapsible="mobile" class="border-e border-slate-700/30 !bg-navy-dark !text-white">
         <flux:sidebar.header class="border-b border-slate-700/30 py-6">
             <div class="flex mx-auto items-center gap-2">
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
@@ -20,30 +19,30 @@
                 <!-- Inicio -->
                 <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                     wire:navigate
-                    class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-indigo-500/20 data-[current]:!text-white data-[current]:border-l-2 data-[current]:border-indigo-400 font-medium tracking-wide">
+                    class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-white/10 data-[current]:!text-pastel-orange data-[current]:!border-pastel-orange data-[current]:border font-medium tracking-wide !rounded-xl">
                     INICIO
                 </flux:sidebar.item>
                 <!-- Historial pedidos -->
                 <flux:sidebar.item icon="clock" :href="route('orders.history')"
                     :current="request()->routeIs('orders.history')" wire:navigate
-                    class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-indigo-500/20 data-[current]:!text-white data-[current]:border-l-2 data-[current]:border-indigo-400 font-medium tracking-wide">
+                    class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-white/10 data-[current]:!text-pastel-orange data-[current]:!border-pastel-orange data-[current]:border font-medium tracking-wide !rounded-xl">
                     HISTORIAL PEDIDOS
                 </flux:sidebar.item>
                 <!-- Estadísticas -->
                 <flux:sidebar.item icon="presentation-chart-bar" :href="route('restaurant.statistics')"
                     :current="request()->routeIs('restaurant.statistics')" wire:navigate
-                    class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-indigo-500/20 data-[current]:!text-white data-[current]:border-l-2 data-[current]:border-indigo-400 font-medium tracking-wide">
+                    class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-white/10 data-[current]:!text-pastel-orange data-[current]:!border-pastel-orange data-[current]:border font-medium tracking-wide !rounded-xl">
                     ESTADÍSTICAS
                 </flux:sidebar.item>
                 <!-- Soporte -->
                 <flux:sidebar.item icon="lifebuoy" :href="route('restaurant.support')"
                     :current="request()->routeIs('restaurant.support')" wire:navigate
-                    class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-indigo-500/20 data-[current]:!text-white data-[current]:border-l-2 data-[current]:border-indigo-400 font-medium tracking-wide">
+                    class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-white/10 data-[current]:!text-pastel-orange data-[current]:!border-pastel-orange data-[current]:border font-medium tracking-wide !rounded-xl">
                     SOPORTE
                 </flux:sidebar.item>
                 <!-- Configuración -->
                 <flux:sidebar.item icon="adjustments-horizontal" href="{{ route('profile.edit') }}" wire:navigate
-                    class="max-lg:hidden !text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-indigo-500/20 data-[current]:!text-white data-[current]:border-l-2 data-[current]:border-indigo-400 font-medium tracking-wide">
+                    class="max-lg:hidden !text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-pastel-orange/20 data-[current]:!text-pastel-orange data-[current]:border-l-2 data-[current]:border-pastel-orange font-medium tracking-wide">
                     CONFIGURACIÓN
                 </flux:sidebar.item>
             </flux:sidebar.group>

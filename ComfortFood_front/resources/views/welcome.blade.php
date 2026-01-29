@@ -26,14 +26,13 @@
     </style>
 </head>
 
-<body class="font-sans antialiased text-[#2d365e] bg-[#f8f9fc] dark:bg-zinc-950 dark:text-zinc-100 overflow-x-hidden">
+<body class="font-sans antialiased text-[#2d365e] bg-app-bg dark:bg-zinc-950 dark:text-zinc-100 overflow-x-hidden">
     <!-- Background Stripes -->
     <div class="fixed inset-0 stripe-bg z-0 pointer-events-none"></div>
 
     <div class="relative z-10 min-h-screen flex flex-col">
         <!-- Header -->
-        <header
-            class="bg-white/60 backdrop-blur-xl sticky top-0 z-50 border-b border-zinc-200/50 dark:bg-zinc-900/60 dark:border-zinc-800/50">
+        <header class="!bg-navy-dark backdrop-blur-xl sticky top-0 z-50 border-b border-slate-700/30 !text-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
                 <div class="flex items-center gap-10">
                     <a href="{{ route('home') }}" class="flex items-center gap-2 transition-transform hover:scale-105">
@@ -41,10 +40,8 @@
                             class="size-12 rounded-2xl shadow-sm">
                         <span class="sr-only">ComfortFood</span>
                     </a>
-                    <nav
-                        class="hidden lg:flex gap-8 text-[13px] font-bold text-zinc-600 dark:text-zinc-400 tracking-tight">
-                        <a href="#"
-                            class="hover:text-[#3b4a81] dark:hover:text-blue-400  text-white transition-colors">¿Por
+                    <nav class="hidden lg:flex gap-8 text-[13px] font-bold text-white/70 tracking-tight">
+                        <a href="#" class="hover:text-pastel-orange transition-colors">¿Por
                             qué usar
                             ComfortFood?</a>
                         <a href="#" class="hover:text-[#3b4a81] dark:hover:text-white transition-colors">Funciones</a>
@@ -56,7 +53,7 @@
 
                 <div class="flex items-center gap-6">
                     <button
-                        class="text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-white transition-colors">
+                        class="text-white-500 hover:text-white-800 dark:text-white-400 dark:hover:text-white transition-colors">
                         <flux:icon.globe-alt class="size-5" />
                     </button>
 
@@ -65,10 +62,10 @@
                             class="text-sm font-bold text-[#3b4a81] hover:underline dark:text-blue-400">Dashboard</a>
                     @else
                         <a href="{{ route('login') }}"
-                            class="text-sm font-bold text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300 transition-colors">Iniciar
+                            class="text-sm font-bold text-pastel-orange hover:text-pastel-orange/80 transition-colors">Iniciar
                             sesión</a>
                         <a href="{{ route('login') }}"
-                            class="px-6 py-2.5 bg-[#3b4a81] text-white rounded-xl text-sm font-bold shadow-xl shadow-blue-900/10 hover:bg-[#2d365e] hover:shadow-2xl transition-all hover:-translate-y-0.5 active:translate-y-0">
+                            class="px-6 py-2.5 bg-blue-500 text-white rounded-xl text-sm font-bold shadow-xl shadow-blue-500/20 hover:bg-blue-600 hover:shadow-2xl transition-all hover:-translate-y-0.5 active:translate-y-0">
                             ¡Comienza gratis!
                         </a>
                     @endauth
