@@ -13,16 +13,29 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('favorito', function (Blueprint $table) {
-            $table->foreignId('id_menu')->nullable()->after('id_restaurante')->constrained('menu', 'id_menu')->onDelete('cascade');
-            $table->dropForeign(['id_restaurante']);
-        });
+        if (!Schema::hasColumn('favorito', 'id_menu')) {
+            try {
+                Schema::table('favorito', function (Blueprint $table) {
+                    $table->integer('id_menu')->unsigned()->nullable()->after('id_restaurante');
+                });
+            } catch (\Exception $e) {}
+        }
+        
+        try {
+            DB::statement('ALTER TABLE favorito MODIFY id_restaurante INT UNSIGNED NULL');
+        } catch (\Exception $e) {}
+        
+        try {
+            Schema::table('favorito', function (Blueprint $table) {
+                $table->dropUnique('favorito_id_cliente_id_restaurante_unique');
+            });
+        } catch (\Exception $e) {}
 
-        DB::statement('ALTER TABLE favorito MODIFY id_restaurante BIGINT UNSIGNED NULL');
-
-        Schema::table('favorito', function (Blueprint $table) {
-             $table->foreign('id_restaurante')->references('id_restaurante')->on('restaurante')->onDelete('cascade');
-        });
+        try {
+            Schema::table('favorito', function (Blueprint $table) {
+                $table->foreign('id_menu')->references('id_menu')->on('menu')->onDelete('cascade');
+            });
+        } catch (\Exception $e) {}
     }
 
     /**
@@ -30,16 +43,18 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('favorito', function (Blueprint $table) {
-            $table->dropForeign(['id_menu']);
-            $table->dropColumn('id_menu');
-            $table->dropForeign(['id_restaurante']);
-        });
-
-        DB::statement('ALTER TABLE favorito MODIFY id_restaurante BIGINT UNSIGNED NOT NULL');
-
-        Schema::table('favorito', function (Blueprint $table) {
-             $table->foreign('id_restaurante')->references('id_restaurante')->on('restaurante')->onDelete('cascade');
-        });
+        try {
+            Schema::table('favorito', function (Blueprint $table) {
+                $table->dropForeign(['id_menu']);
+                $table->dropColumn('id_menu');
+            });
+        } catch (\Exception $e) {}
+        
+        try {
+            DB::statement('ALTER TABLE favorito MODIFY id_restaurante INT UNSIGNED NOT NULL');
+            Schema::table('favorito', function (Blueprint $table) {
+                $table->unique(['id_cliente', 'id_restaurante'], 'favorito_id_cliente_id_restaurante_unique');
+            });
+        } catch (\Exception $e) {}
     }
 };

@@ -27,6 +27,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('menu', \App\Livewire\Menus\MenuManagement::class)->name('menu.index');
     Route::get('menu/show/{menu}', \App\Livewire\MenuShow::class)->name('menu.show');
     Route::get('menu/edit/{menu?}', \App\Livewire\Menus\MenuForm::class)->name('menu.edit');
+    Route::get('favorites', \App\Livewire\Favorites::class)->name('favorites');
     Route::get('restaurant/{restaurante}', \App\Livewire\RestaurantProfile::class)->name('restaurant.show');
     Route::view('customer/orders/details', 'customer.orders.details')->name('customer.orders.details');
 });

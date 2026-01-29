@@ -13,7 +13,7 @@
             <flux:navbar class="-mb-px max-lg:hidden ps-10">
                  <flux:sidebar.item icon="home" href="{{ route('dashboard') }}" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Inicio') }}</flux:sidebar.item>
                 <flux:sidebar.item icon="clipboard-document-list" href="{{ route('orders.history') }}" :current="request()->routeIs('orders.history')" wire:navigate>{{ __('Mis Pedidos') }}</flux:sidebar.item>
-                <flux:sidebar.item icon="heart" href="#" wire:navigate>{{ __('Favoritos') }}</flux:sidebar.item>
+                <flux:sidebar.item icon="heart" href="{{ route('favorites') }}" :current="request()->routeIs('favorites')" wire:navigate>{{ __('Favoritos') }}</flux:sidebar.item>
             </flux:navbar>
             <flux:spacer />
 
@@ -83,7 +83,8 @@
 
 <flux:sidebar.item
     icon="heart"
-    href="#"
+    href="{{ route('favorites') }}"
+    :current="request()->routeIs('favorites')"
     wire:navigate
     class="
         !text-white/80
