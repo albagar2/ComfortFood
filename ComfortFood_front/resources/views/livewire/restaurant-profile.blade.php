@@ -66,7 +66,7 @@
         <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm flex flex-col">
              <div class="flex justify-between items-start mb-4">
                  <div>
-                     <span class="text-xs uppercase font-bold text-zinc-900 dark:text-white">Plato</span>
+                     <span class="text-xs uppercase font-bold text-zinc-900 dark:text-white">Menú</span>
                      <span class="block text-xs text-zinc-400">{{ $menu->updated_at->format('d M Y, h:i A') }}</span>
                  </div>
              </div>
