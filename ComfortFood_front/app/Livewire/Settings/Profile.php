@@ -16,7 +16,8 @@ class Profile extends Component
 
     public string $nombre_completo = '';
     public string $email = '';
-    
+    public string $rol = '';
+
     // Client specific fields
     public $foto_perfil; // For the file upload
     public string $direccion = '';
@@ -38,6 +39,7 @@ class Profile extends Component
         $user = Auth::user();
         $this->nombre_completo = $user->nombre_completo;
         $this->email = $user->email;
+        $this->rol = $user->rol;
 
         if ($user->isCliente() && $user->cliente) {
             $this->direccion = $user->cliente->direccion ?? '';
@@ -66,8 +68,8 @@ class Profile extends Component
         if ($user->isCliente()) {
             $rules['direccion'] = ['nullable', 'string', 'max:255'];
             $rules['telefono'] = ['nullable', 'string', 'max:20'];
-            $rules['tarjeta_mock'] = ['nullable', 'string', 'max:19']; 
-            $rules['foto_perfil'] = ['nullable', 'image', 'max:1024']; 
+            $rules['tarjeta_mock'] = ['nullable', 'string', 'max:19'];
+            $rules['foto_perfil'] = ['nullable', 'image', 'max:1024'];
         } elseif ($user->isRestaurante()) {
             $rules['direccion'] = ['nullable', 'string', 'max:255'];
             $rules['telefono'] = ['nullable', 'string', 'max:20'];
@@ -154,13 +156,13 @@ class Profile extends Component
     #[Computed]
     public function hasUnverifiedEmail(): bool
     {
-        return Auth::user() instanceof MustVerifyEmail && ! Auth::user()->hasVerifiedEmail();
+        return Auth::user() instanceof MustVerifyEmail && !Auth::user()->hasVerifiedEmail();
     }
 
     #[Computed]
     public function showDeleteUser(): bool
     {
-        return ! Auth::user() instanceof MustVerifyEmail
+        return !Auth::user() instanceof MustVerifyEmail
             || (Auth::user() instanceof MustVerifyEmail && Auth::user()->hasVerifiedEmail());
     }
 }

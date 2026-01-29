@@ -18,11 +18,11 @@ trait ProfileValidationRules
             'nombre_completo' => ['required', 'string', 'max:150'],
             'email' => $this->emailRules($userId),
             'rol' => ['required', 'string', Rule::in(['cliente', 'restaurante'])],
-            
+
             // Campos de Cliente/Restaurante (opcionales dependiendo del contexto)
             'direccion' => ['nullable', 'string', 'max:255'],
             'telefono' => ['nullable', 'string', 'max:20'],
-            
+
             // Solo Restaurante
             'tipo_cocina' => ['required_if:rol,restaurante', 'nullable', 'string', 'max:100'],
             'NIF' => ['required_if:rol,restaurante', 'nullable', 'string', 'max:20', Rule::unique('restaurante', 'NIF')],
@@ -53,8 +53,8 @@ trait ProfileValidationRules
             'email',
             'max:255',
             $userId === null
-                ? Rule::unique(User::class)
-                : Rule::unique(User::class)->ignore($userId),
+            ? Rule::unique(User::class)
+            : Rule::unique(User::class)->ignore($userId, 'id_usuario'),
         ];
     }
 }

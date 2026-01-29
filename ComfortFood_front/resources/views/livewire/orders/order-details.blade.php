@@ -11,17 +11,18 @@
             </a>
             
             @php
-                $statusClasses = match ($order->estado->nombre_estado) {
-                    'En espera', 'Pendiente' => 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800',
-                    'En preparación' => 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800',
-                    'Enviado' => 'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400 dark:border-indigo-800',
-                    'Completado' => 'bg-emerald-500 text-white border-emerald-600 dark:bg-emerald-600 dark:border-emerald-500',
-                    'Cancelado' => 'bg-rose-500 text-white border-rose-600 dark:bg-rose-600 dark:border-rose-500',
-                    default => 'bg-zinc-100 text-zinc-700 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700'
+                $status = $order->estado->nombre_estado;
+                $statusClasses = match ($status) {
+                    'En espera', 'Pendiente' => 'bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-700',
+                    'En preparación' => 'bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-700',
+                    'Enviado' => 'bg-indigo-100 text-indigo-700 border-indigo-300 dark:bg-indigo-900/40 dark:text-indigo-300 dark:border-indigo-700',
+                    'Completado' => 'bg-emerald-500 text-white border-emerald-600 shadow-emerald-200/50 dark:border-emerald-400',
+                    'Cancelado' => 'bg-rose-500 text-white border-rose-600 shadow-rose-200/50 dark:border-rose-400',
+                    default => 'bg-zinc-100 text-zinc-600 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700'
                 };
             @endphp
-            <div class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border shadow-sm {{ $statusClasses }}">
-                {{ $order->estado->nombre_estado }}
+            <div class="px-5 py-2 rounded-full text-[11px] font-black uppercase tracking-[0.2em] border shadow-sm transition-all duration-300 {{ $statusClasses }}">
+                {{ $status }}
             </div>
         </div>
 
