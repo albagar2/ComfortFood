@@ -36,7 +36,8 @@
             <x-appearance-dropdown />
             <a href="{{ route('profile.edit') }}" wire:navigate
                 class="p-2 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
-                <flux:avatar :name="auth()->user()->nombre_completo" :initials="auth()->user()->initials()" size="xs" />
+                <flux:avatar :src="auth()->user()->profile_photo_url" :name="auth()->user()->nombre_completo"
+                    :initials="auth()->user()->initials()" size="xs" />
             </a>
             <flux:button variant="ghost" icon="cog" :href="route('profile.edit')" wire:navigate
                 class="!text-white/80 hover:!text-white" />
@@ -130,7 +131,8 @@
         </flux:sidebar.nav>
 
         <div class="flex items-center gap-2 px-4 py-4 border-t border-zinc-200 dark:border-zinc-700">
-            <flux:avatar :name="auth()->user()->nombre_completo" :initials="auth()->user()->initials()" />
+            <flux:avatar :src="auth()->user()->profile_photo_url" :name="auth()->user()->nombre_completo"
+                :initials="auth()->user()->initials()" />
             <div class="grid flex-1 text-start text-sm leading-tight">
                 <span class="truncate font-semibold text-white uppercase">
                     {{ auth()->user()->nombre_completo }}

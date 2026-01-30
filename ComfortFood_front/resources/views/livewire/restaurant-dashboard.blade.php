@@ -80,9 +80,7 @@
                         <a href="{{ route('orders.details', $order->id_pedido) }}" wire:navigate class="p-6 flex-1 space-y-6">
                             <!-- Customer Info -->
                             <div class="flex items-center gap-4">
-                                <div class="size-12 bg-zinc-100 dark:bg-zinc-800 rounded-2xl flex items-center justify-center text-zinc-400 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/30 group-hover:text-indigo-600 transition-colors">
-                                    <flux:icon.user class="size-6" />
-                                </div>
+                                <flux:avatar :src="$order->cliente->user->profile_photo_url" :name="$order->cliente->user->nombre_completo" size="sm" class="!rounded-xl" />
                                 <div>
                                     <h3 class="font-bold text-zinc-950 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                                         {{ $order->cliente->user->nombre_completo }}

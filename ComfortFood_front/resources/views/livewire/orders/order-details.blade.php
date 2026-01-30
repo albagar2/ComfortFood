@@ -37,9 +37,7 @@
                 
                 @if(auth()->user()->isRestaurante())
                     <div class="flex items-center gap-4 bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800">
-                        <div class="size-12 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600">
-                            <flux:icon.user class="size-6" />
-                        </div>
+                        <flux:avatar :src="$order->cliente->user->profile_photo_url" :name="$order->cliente->user->nombre_completo" size="lg" class="!rounded-xl" />
                         <div class="text-left">
                             <p class="text-xs font-bold text-zinc-400 uppercase tracking-widest">Cliente</p>
                             <p class="font-bold text-zinc-950 dark:text-white">{{ $order->cliente->user->nombre_completo }}</p>
@@ -47,9 +45,7 @@
                     </div>
                 @else
                     <div class="flex items-center gap-4 bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800">
-                        <div class="size-12 rounded-xl bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center text-teal-600">
-                            <flux:icon.building-storefront class="size-6" />
-                        </div>
+                        <flux:avatar :src="$order->restaurante->user->profile_photo_url" :name="$order->restaurante->user->nombre_completo" size="lg" class="!rounded-xl" />
                         <div class="text-left">
                             <p class="text-xs font-bold text-zinc-400 uppercase tracking-widest">Restaurante</p>
                             <p class="font-bold text-zinc-950 dark:text-white">{{ $order->restaurante->user->nombre_completo }}</p>

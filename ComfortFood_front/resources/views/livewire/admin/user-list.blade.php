@@ -35,7 +35,7 @@
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <flux:avatar size="xs" :name="$user->nombre_completo" />
+                                    <flux:avatar size="xs" :src="$user->profile_photo_url" :name="$user->nombre_completo" />
                                     <div class="font-medium text-zinc-900 dark:text-zinc-100">{{ $user->nombre_completo }}</div>
                                 </div>
                             </td>

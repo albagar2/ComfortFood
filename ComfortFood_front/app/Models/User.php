@@ -79,7 +79,7 @@ class User extends Authenticatable
         return Str::of($this->nombre_completo)
             ->explode(' ')
             ->take(2)
-            ->map(fn ($word) => Str::substr($word, 0, 1))
+            ->map(fn($word) => Str::substr($word, 0, 1))
             ->implode('');
     }
 
@@ -105,5 +105,21 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->rol && $this->rol->nombre_rol === 'Administrador';
+    }
+
+    /**
+     * Get the user's profile photo URL
+     */
+    public function getProfilePhotoUrlAttribute(): ?string
+    {
+        if ($this->isCliente() && $this->cliente && $this->cliente->url_imagen_perfil) {
+            return asset($this->cliente->url_imagen_perfil);
+        }
+
+        if ($this->isRestaurante() && $this->restaurante && $this->restaurante->url_imagen_perfil) {
+            return asset($this->restaurante->url_imagen_perfil);
+        }
+
+        return null;
     }
 }

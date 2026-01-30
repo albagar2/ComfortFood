@@ -41,9 +41,7 @@
                     SOPORTE
                 </flux:sidebar.item>
                 <!-- Configuración -->
-                <flux:sidebar.item icon="adjustments-horizontal"
-                    :href="route('restaurant.show', auth()->user()->restaurante)"
-                    :current="request()->routeIs('restaurant.show')" wire:navigate
+                <flux:sidebar.item icon="adjustments-horizontal" href="{{ route('profile.edit') }}" wire:navigate
                     class="max-lg:hidden !text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-pastel-orange/20 data-[current]:!text-pastel-orange data-[current]:border-l-2 data-[current]:border-pastel-orange font-medium tracking-wide">
                     CONFIGURACIÓN
                 </flux:sidebar.item>
@@ -69,8 +67,8 @@
                 <div class="flex items-center gap-3 px-3 py-4 border-t border-slate-700/30 mt-2">
                     <a href="{{ route('restaurant.show', auth()->user()->restaurante) }}" wire:navigate
                         class="flex items-center gap-3 flex-1 hover:opacity-80 transition-opacity">
-                        <flux:avatar :name="auth()->user()->nombre_completo" :initials="auth()->user()->initials()"
-                            size="sm" />
+                        <flux:avatar :src="auth()->user()->profile_photo_url" :name="auth()->user()->nombre_completo"
+                            :initials="auth()->user()->initials()" size="sm" />
                         <div class="grid flex-1 text-start text-sm leading-tight">
                             <span
                                 class="truncate font-semibold text-white uppercase">{{ auth()->user()->nombre_completo }}</span>

@@ -5,10 +5,12 @@
 
     <x-settings.layout :heading="__('Perfil')" :subheading="__('Actualiza tu nombre y dirección de correo electrónico')">
         <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
-            <flux:input wire:model="nombre_completo" :label="__('Nombre completo')" type="text" required autofocus autocomplete="name" />
+            <flux:input wire:model="nombre_completo" :label="__('Nombre completo')" type="text" required autofocus
+                autocomplete="name" />
 
             <div>
-                <flux:input wire:model="email" :label="__('Correo electrónico')" type="email" required autocomplete="email" />
+                <flux:input wire:model="email" :label="__('Correo electrónico')" type="email" required
+                    autocomplete="email" />
 
                 @if ($this->hasUnverifiedEmail)
                     <div>
@@ -30,92 +32,103 @@
             </div>
 
             @if(auth()->user()->isCliente())
-            <div class="space-y-6 pt-6 border-t border-zinc-200 dark:border-zinc-700">
-                <flux:heading size="lg">{{ __('Información del Cliente') }}</flux:heading>
-                
-                <!-- Profile Photo -->
-                <div class="flex items-center gap-6">
-                    <div class="shrink-0">
-                        @if ($foto_perfil)
-                            <img src="{{ $foto_perfil->temporaryUrl() }}" class="size-20 rounded-full object-cover">
-                        @elseif (auth()->user()->cliente && auth()->user()->cliente->url_imagen_perfil)
-                            <img src="{{ auth()->user()->cliente->url_imagen_perfil }}" class="size-20 rounded-full object-cover">
-                        @else
-                            <div class="size-20 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-400">
-                                <flux:icon.photo class="size-8" />
-                            </div>
-                        @endif
-                    </div>
-                    <div>
-                        <flux:label>{{ __('Foto de Perfil') }}</flux:label>
-                        <input type="file" wire:model="foto_perfil" class="block w-full text-sm text-zinc-500
-                            file:mr-4 file:py-2 file:px-4
-                            file:rounded-full file:border-0
-                            file:text-sm file:font-semibold
-                            file:bg-indigo-50 file:text-indigo-700
-                            hover:file:bg-indigo-100
-                            dark:file:bg-zinc-800 dark:file:text-zinc-300
-                        "/>
-                        <flux:error name="foto_perfil" />
-                    </div>
-                </div>
+                <div class="space-y-6 pt-6 border-t border-zinc-200 dark:border-zinc-700">
+                    <flux:heading size="lg">{{ __('Información del Cliente') }}</flux:heading>
 
-                <flux:input wire:model="direccion" :label="__('Dirección de entrega')" type="text" placeholder="Calle Ejemplo, 123" />
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <flux:input wire:model="telefono" :label="__('Teléfono')" type="tel" placeholder="+34 600 000 000" />
-                    <flux:input wire:model="tarjeta_mock" :label="__('Tarjeta (Mock)')" type="text" placeholder="**** **** **** 1234" icon="credit-card" />
+                    <!-- Profile Photo -->
+                    <div class="flex items-center gap-6">
+                        <div class="shrink-0">
+                            @if ($foto_perfil)
+                                <img src="{{ $foto_perfil->temporaryUrl() }}" class="size-20 rounded-full object-cover">
+                            @elseif (auth()->user()->profile_photo_url)
+                                <img src="{{ auth()->user()->profile_photo_url }}" class="size-20 rounded-full object-cover">
+                            @else
+                                <div
+                                    class="size-20 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-400">
+                                    <flux:icon.photo class="size-8" />
+                                </div>
+                            @endif
+                        </div>
+                        <div>
+                            <flux:label>{{ __('Foto de Perfil') }}</flux:label>
+                            <input type="file" wire:model="foto_perfil" class="block w-full text-sm text-zinc-500
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-indigo-50 file:text-indigo-700
+                                hover:file:bg-indigo-100
+                                dark:file:bg-zinc-800 dark:file:text-zinc-300
+                            " />
+                            <flux:error name="foto_perfil" />
+                        </div>
+                    </div>
+
+                    <flux:input wire:model="direccion" :label="__('Dirección de entrega')" type="text"
+                        placeholder="Calle Ejemplo, 123" />
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <flux:input wire:model="telefono" :label="__('Teléfono')" type="tel"
+                            placeholder="+34 600 000 000" />
+                        <flux:input wire:model="tarjeta_mock" :label="__('Tarjeta (Mock)')" type="text"
+                            placeholder="**** **** **** 1234" icon="credit-card" />
+                    </div>
                 </div>
-            </div>
             @endif
 
             @if(auth()->user()->isRestaurante())
-            <div class="space-y-6 pt-6 border-t border-zinc-200 dark:border-zinc-700">
-                <flux:heading size="lg">{{ __('Información del Restaurante') }}</flux:heading>
-                
-                <!-- Profile Photo -->
-                <div class="flex items-center gap-6">
-                    <div class="shrink-0">
-                        @if ($foto_perfil)
-                            <img src="{{ $foto_perfil->temporaryUrl() }}" class="size-20 rounded-full object-cover">
-                        @elseif (auth()->user()->restaurante && auth()->user()->restaurante->url_imagen_perfil)
-                            <img src="{{ auth()->user()->restaurante->url_imagen_perfil }}" class="size-20 rounded-full object-cover">
-                        @else
-                            <div class="size-20 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-400">
-                                <flux:icon.photo class="size-8" />
-                            </div>
-                        @endif
+                <div class="space-y-6 pt-6 border-t border-zinc-200 dark:border-zinc-700">
+                    <flux:heading size="lg">{{ __('Información del Restaurante') }}</flux:heading>
+
+                    <!-- Profile Photo -->
+                    <div class="flex items-center gap-6">
+                        <div class="shrink-0">
+                            @if ($foto_perfil)
+                                <img src="{{ $foto_perfil->temporaryUrl() }}" class="size-20 rounded-full object-cover">
+                            @elseif (auth()->user()->profile_photo_url)
+                                <img src="{{ auth()->user()->profile_photo_url }}" class="size-20 rounded-full object-cover">
+                            @else
+                                <div
+                                    class="size-20 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-400">
+                                    <flux:icon.photo class="size-8" />
+                                </div>
+                            @endif
+                        </div>
+                        <div>
+                            <flux:label>{{ __('Logo / Imagen de Perfil') }}</flux:label>
+                            <input type="file" wire:model="foto_perfil" class="block w-full text-sm text-zinc-500
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-indigo-50 file:text-indigo-700
+                                hover:file:bg-indigo-100
+                                dark:file:bg-zinc-800 dark:file:text-zinc-300
+                            " />
+                            <flux:error name="foto_perfil" />
+                        </div>
                     </div>
-                    <div>
-                        <flux:label>{{ __('Logo / Imagen de Perfil') }}</flux:label>
-                        <input type="file" wire:model="foto_perfil" class="block w-full text-sm text-zinc-500
-                            file:mr-4 file:py-2 file:px-4
-                            file:rounded-full file:border-0
-                            file:text-sm file:font-semibold
-                            file:bg-indigo-50 file:text-indigo-700
-                            hover:file:bg-indigo-100
-                            dark:file:bg-zinc-800 dark:file:text-zinc-300
-                        "/>
-                        <flux:error name="foto_perfil" />
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <flux:input wire:model="tipo_cocina" :label="__('Tipo de cocina')" type="text"
+                            placeholder="Ej: Italiana, Mexicana..." />
+                        <flux:input wire:model="telefono" :label="__('Teléfono de contacto')" type="tel"
+                            placeholder="+34 900 000 000" />
+                    </div>
+
+                    <flux:textarea wire:model="descripcion" :label="__('Descripción')"
+                        placeholder="Cuéntanos sobre tu restaurante..." rows="3" />
+
+                    <flux:input wire:model="direccion" :label="__('Dirección del local')" type="text"
+                        placeholder="Plaza Mayor, 1" />
+
+                    <flux:input wire:model="redes_sociales" :label="__('Redes Sociales')" type="text"
+                        placeholder="https://instagram.com/mi_restaurante" />
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <flux:input wire:model="NIF" :label="__('NIF')" type="text" placeholder="B12345678" />
+                        <flux:input wire:model="cuenta_bancaria_mock" :label="__('Cuenta Bancaria (Mock)')" type="text"
+                            placeholder="ES00 0000 0000 0000 0000 0000" icon="credit-card" />
                     </div>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                     <flux:input wire:model="tipo_cocina" :label="__('Tipo de cocina')" type="text" placeholder="Ej: Italiana, Mexicana..." />
-                     <flux:input wire:model="telefono" :label="__('Teléfono de contacto')" type="tel" placeholder="+34 900 000 000" />
-                </div>
-                
-                <flux:textarea wire:model="descripcion" :label="__('Descripción')" placeholder="Cuéntanos sobre tu restaurante..." rows="3" />
-
-                <flux:input wire:model="direccion" :label="__('Dirección del local')" type="text" placeholder="Plaza Mayor, 1" />
-
-                <flux:input wire:model="redes_sociales" :label="__('Redes Sociales')" type="text" placeholder="https://instagram.com/mi_restaurante" />
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <flux:input wire:model="NIF" :label="__('NIF')" type="text" placeholder="B12345678" />
-                    <flux:input wire:model="cuenta_bancaria_mock" :label="__('Cuenta Bancaria (Mock)')" type="text" placeholder="ES00 0000 0000 0000 0000 0000" icon="credit-card" />
-                </div>
-            </div>
             @endif
 
             <div class="flex items-center gap-4">

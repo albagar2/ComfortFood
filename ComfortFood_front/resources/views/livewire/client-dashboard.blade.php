@@ -17,22 +17,42 @@
     @else
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @foreach($menus as $menu)
+                @php
+                    $isDeactivated = in_array($menu->id_menu, $deactivatedIds);
+                @endphp
                 <div
-                    class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-sm flex flex-col gap-4 relative group hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors">
+                    class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-sm flex flex-col gap-4 relative group hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-500 {{ $isDeactivated ? 'opacity-40 scale-95 grayscale-[50%]' : '' }}">
                     <div class="flex justify-between items-start">
                         <div>
-                            <a href="{{ route('restaurant.show', $menu->restaurante->id_restaurante) }}" wire:navigate
-                                title="Ver restaurante"
-                                class="text-sm font-semibold text-zinc-800 dark:text-zinc-200 hover:underline hover:text-blue-600">
-                                {{ $menu->restaurante->user->nombre_completo ?? 'Restaurante' }}
-                            </a>
+                            <div class="flex items-center gap-2">
+                                <flux:avatar :src="$menu->restaurante->user->profile_photo_url"
+                                    :name="$menu->restaurante->user->nombre_completo" size="xs" />
+                                <a href="{{ route('restaurant.show', $menu->restaurante->id_restaurante) }}" wire:navigate
+                                    title="Ver restaurante"
+                                    class="text-sm font-semibold text-zinc-800 dark:text-zinc-200 hover:underline hover:text-blue-600">
+                                    {{ $menu->restaurante->user->nombre_completo ?? 'Restaurante' }}
+                                </a>
+                            </div>
                             <span class="text-xs text-zinc-400 block">{{ $menu->updated_at->format('d M Y, h:i A') }}</span>
                         </div>
-                        <button wire:click="toggleFavorite({{ $menu->id_menu }})"
-                            class="{{ $menu->favoritos->count() > 0 ? 'text-red-500' : 'text-zinc-400' }} hover:text-red-600 transition-colors">
-                            <flux:icon.heart variant="{{ $menu->favoritos->count() > 0 ? 'solid' : 'outline' }}"
-                                class="size-5" />
-                        </button>
+                        <div class="flex items-center gap-2">
+                            <button wire:click="toggleFavorite({{ $menu->id_menu }})"
+                                class="{{ $menu->favoritos->count() > 0 ? 'text-red-500' : 'text-zinc-400' }} hover:text-red-600 transition-colors">
+                                <flux:icon.heart variant="{{ $menu->favoritos->count() > 0 ? 'solid' : 'outline' }}"
+                                    class="size-5" />
+                            </button>
+                            @if(!$isDeactivated)
+                                <button wire:click="moveCardToBottom({{ $menu->id_menu }})" title="{{ __('Mover al final') }}"
+                                    class="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors">
+                                    <flux:icon.x-mark class="size-5" />
+                                </button>
+                            @else
+                                <button wire:click="enableCard({{ $menu->id_menu }})" title="{{ __('Rehabilitar') }}"
+                                    class="text-teal-500 hover:text-teal-700 transition-colors">
+                                    <flux:icon.arrow-up-circle class="size-5" />
+                                </button>
+                            @endif
+                        </div>
                     </div>
 
                     <!-- Image -->
@@ -57,11 +77,6 @@
                         <span class="font-bold text-zinc-900 dark:text-white">{{ number_format($menu->precio, 2) }}€</span>
 
                         <div class="flex gap-2">
-                            <!-- Example Add to Cart or View icons -->
-                            <button
-                                class="size-9 flex items-center justify-center rounded-lg border border-red-200 text-red-500 hover:bg-red-50 transition-colors">
-                                <flux:icon.x-mark class="size-4" />
-                            </button>
                             <button
                                 class="size-9 flex items-center justify-center rounded-lg border border-green-200 text-green-500 hover:bg-green-50 transition-colors">
                                 <flux:icon.check class="size-4" />

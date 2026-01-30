@@ -62,7 +62,7 @@
                                     @php
                                         $displayUser = $isRestaurant ? $pedido->cliente->user : $pedido->restaurante->user;
                                     @endphp
-                                    <flux:avatar size="sm" :name="$displayUser->nombre_completo" />
+                                    <flux:avatar size="sm" :src="$displayUser->profile_photo_url" :name="$displayUser->nombre_completo" />
                                     <span class="font-semibold text-zinc-950 dark:text-zinc-100">{{ $displayUser->nombre_completo }}</span>
                                 </div>
                             </td>

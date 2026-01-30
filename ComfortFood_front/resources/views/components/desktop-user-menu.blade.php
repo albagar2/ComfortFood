@@ -1,17 +1,11 @@
 <flux:dropdown position="bottom" align="start">
-    <flux:sidebar.profile
-        {{ $attributes->only('name') }}
-        :initials="auth()->user()->initials()"
-        icon:trailing="chevrons-up-down"
-        data-test="sidebar-menu-button"
-    />
+    <flux:sidebar.profile {{ $attributes->only('name') }} :initials="auth()->user()->initials()"
+        icon:trailing="chevrons-up-down" data-test="sidebar-menu-button" />
 
     <flux:menu>
         <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-            <flux:avatar
-                :name="auth()->user()->nombre_completo"
-                :initials="auth()->user()->initials()"
-            />
+            <flux:avatar :src="auth()->user()->profile_photo_url" :name="auth()->user()->nombre_completo"
+                :initials="auth()->user()->initials()" />
             <div class="grid flex-1 text-start text-sm leading-tight">
                 <flux:heading class="truncate">{{ auth()->user()->nombre_completo }}</flux:heading>
                 <flux:text class="truncate">{{ auth()->user()->email }}</flux:text>
@@ -24,13 +18,8 @@
             </flux:menu.item>
             <form method="POST" action="{{ route('logout') }}" class="w-full">
                 @csrf
-                <flux:menu.item
-                    as="button"
-                    type="submit"
-                    icon="arrow-right-start-on-rectangle"
-                    class="w-full cursor-pointer"
-                    data-test="logout-button"
-                >
+                <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle"
+                    class="w-full cursor-pointer" data-test="logout-button">
                     {{ __('Cerrar sesión') }}
                 </flux:menu.item>
             </form>

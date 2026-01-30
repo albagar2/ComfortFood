@@ -39,7 +39,7 @@ class Profile extends Component
         $user = Auth::user();
         $this->nombre_completo = $user->nombre_completo;
         $this->email = $user->email;
-        $this->rol = $user->rol;
+        $this->rol = $user->isCliente() ? 'cliente' : ($user->isRestaurante() ? 'restaurante' : 'admin');
 
         if ($user->isCliente() && $user->cliente) {
             $this->direccion = $user->cliente->direccion ?? '';
@@ -64,6 +64,9 @@ class Profile extends Component
         $user = Auth::user();
 
         $rules = $this->profileRules($user->id_usuario);
+
+        // Remove rol from validation if we are not changing it
+        unset($rules['rol']);
 
         if ($user->isCliente()) {
             $rules['direccion'] = ['nullable', 'string', 'max:255'];
@@ -103,7 +106,7 @@ class Profile extends Component
 
             if ($this->foto_perfil) {
                 $path = $this->foto_perfil->store('perfiles', 'public');
-                $clienteData['url_imagen_perfil'] = asset('storage/' . $path);
+                $clienteData['url_imagen_perfil'] = '/storage/' . $path;
             }
 
             $user->cliente()->updateOrCreate(
@@ -123,7 +126,7 @@ class Profile extends Component
 
             if ($this->foto_perfil) {
                 $path = $this->foto_perfil->store('restaurantes', 'public');
-                $restauranteData['url_imagen_perfil'] = asset('storage/' . $path);
+                $restauranteData['url_imagen_perfil'] = '/storage/' . $path;
             }
 
             $user->restaurante()->updateOrCreate(
