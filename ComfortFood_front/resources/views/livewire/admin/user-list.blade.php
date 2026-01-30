@@ -1,15 +1,62 @@
 <div class="flex flex-col gap-6">
+    <!-- Search and Selectors (Desktop) -->
+    <div class="flex items-center gap-4 max-lg:hidden">
+        <flux:input icon="magnifying-glass" placeholder="{{ __('Buscar por DNI, nombre, email o dirección...') }}"
+            class="w-80"
+            x-on:input.debounce.500ms="Livewire.dispatch('searchUpdated', { query: $event.target.value })" />
+
+        <flux:select class="w-44 !bg-navy-dark border-zinc-700/50 rounded-lg !text-white"
+            x-on:change="Livewire.dispatch('typeUpdated', { type: $event.target.value })">
+            <flux:select.option value="" icon="user-group">{{ __('Todos los tipos') }}</flux:select.option>
+            <flux:select.option value="cliente" icon="user">{{ __('Cliente') }}</flux:select.option>
+            <flux:select.option value="restaurante" icon="building-storefront">{{ __('Restaurante') }}
+            </flux:select.option>
+        </flux:select>
+
+        <flux:select class="w-44 !bg-navy-dark border-zinc-700/50 rounded-lg !text-white "
+            x-on:change="Livewire.dispatch('statusUpdated', { status: $event.target.value })">
+            <flux:select.option value="" icon="signal">{{ __('Todos los estados') }}</flux:select.option>
+            <flux:select.option value="activo" icon="check-circle">{{ __('Activo') }}</flux:select.option>
+            <flux:select.option value="inactivo" icon="x-circle">{{ __('Inactivo') }}</flux:select.option>
+        </flux:select>
+    </div>
+
+    <!-- Search and Selectors (Mobile) -->
+    <div class="flex flex-col gap-3 lg:hidden px-3 py-2">
+        <flux:input icon="magnifying-glass" placeholder="{{ __('Buscar por DNI, nombre, email o dirección...') }}"
+            class="w-full text-white placeholder-white/50 bg-white/5 border-zinc-700/50"
+            x-on:input.debounce.500ms="Livewire.dispatch('searchUpdated', { query: $event.target.value })" />
+
+        <flux:select class="w-full !bg-navy-dark border-zinc-700/50 rounded-lg !text-white"
+            x-on:change="Livewire.dispatch('typeUpdated', { type: $event.target.value })">
+            <flux:select.option value="" icon="user-group">{{ __('Todos los tipos') }}</flux:select.option>
+            <flux:select.option value="cliente" icon="user">{{ __('Cliente') }}</flux:select.option>
+            <flux:select.option value="restaurante" icon="building-storefront">
+                {{ __('Restaurante') }}
+            </flux:select.option>
+        </flux:select>
+
+        <flux:select class="w-full !bg-navy-dark border-zinc-700/50 rounded-lg !text-white"
+            x-on:change="Livewire.dispatch('statusUpdated', { status: $event.target.value })">
+            <flux:select.option value="" icon="signal">{{ __('Todos los estados') }}</flux:select.option>
+            <flux:select.option value="activo" icon="check-circle">{{ __('Activo') }}</flux:select.option>
+            <flux:select.option value="inactivo" icon="x-circle">{{ __('Inactivo') }}</flux:select.option>
+        </flux:select>
+    </div>
+
     <div class="flex items-center gap-4">
         <h1 class="text-xl font-bold dark:text-white">Lista de usuarios</h1>
         <div class="flex-1"></div>
     </div>
 
-    <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+    <div
+        class="bg-white dark:bg-zinc-900 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-700 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left text-zinc-500 dark:text-zinc-400">
-                <thead class="text-xs text-zinc-700 dark:text-zinc-300 uppercase bg-zinc-50 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
+                <thead
+                    class="text-xs text-zinc-700 dark:text-zinc-300 uppercase !text-white !bg-navy-dark border-b border-zinc-200 dark:border-zinc-700">
                     <tr>
-                         <th class="px-6 py-3">DNI/NIF</th>
+                        <th class="px-6 py-3">DNI/NIF</th>
                         <th class="px-6 py-3">Tipo</th>
                         <th class="px-6 py-3">Nombre</th>
                         <th class="px-6 py-3">Email</th>
@@ -29,22 +76,26 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4">
-                                <span class="px-2 py-1 rounded-md text-xs font-medium {{ $user->isRestaurante() ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400' : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' }}">
+                                <span
+                                    class="px-2 py-1 rounded-md text-xs font-medium {{ $user->isRestaurante() ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400' : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' }}">
                                     {{ $user->rol->nombre_rol }}
                                 </span>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
                                     <flux:avatar size="xs" :src="$user->profile_photo_url" :name="$user->nombre_completo" />
-                                    <div class="font-medium text-zinc-900 dark:text-zinc-100">{{ $user->nombre_completo }}</div>
+                                    <div class="font-medium text-zinc-900 dark:text-zinc-100">{{ $user->nombre_completo }}
+                                    </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4">{{ $user->email }}</td>
                             <td class="px-6 py-4">
                                 @if($user->es_activo)
-                                    <span class="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 text-xs font-medium px-2.5 py-0.5 rounded-md">activo</span>
+                                    <span
+                                        class="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 text-xs font-medium px-2.5 py-0.5 rounded-md">activo</span>
                                 @else
-                                    <span class="bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 text-xs font-medium px-2.5 py-0.5 rounded-md">inactivo</span>
+                                    <span
+                                        class="bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 text-xs font-medium px-2.5 py-0.5 rounded-md">inactivo</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4">
@@ -55,7 +106,8 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4">
-                                <a href="{{ route('admin.users.show', $user) }}" class="text-blue-500 hover:underline text-xs" wire:navigate>Ver</a>
+                                <a href="{{ route('admin.users.show', $user) }}"
+                                    class="text-blue-500 hover:underline text-xs" wire:navigate>Ver</a>
                             </td>
                         </tr>
                     @empty

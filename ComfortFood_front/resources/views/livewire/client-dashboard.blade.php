@@ -32,7 +32,7 @@
                     $isDeactivated = in_array($menu->id_menu, $deactivatedIds);
                 @endphp
                 <div
-                    class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 md:p-4 shadow-sm flex flex-col gap-3 md:gap-4 relative group hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-500 {{ $isDeactivated ? 'opacity-40 scale-95 grayscale-[50%]' : '' }}">
+                    class="dark:bg-zinc-900 border-2 border-zinc-200 dark:border-zinc-800 rounded-xl p-3 md:p-4 shadow-sm flex flex-col gap-3 md:gap-4 relative group hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-500 {{ $isDeactivated ? 'opacity-40 scale-95 grayscale-[50%]' : '' }}">
                     <div class="flex flex-col sm:flex-row justify-between items-start gap-2">
                         <div class="min-w-0">
                             <div class="flex items-center gap-2">

@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use Livewire\Attributes\On;
+
+class ConfirmationModal extends Component
+{
+    public $show = false;
+    public $title = '¿Estás seguro?';
+    public $message = '';
+    public $confirmText = 'Confirmar';
+    public $cancelText = 'Cancelar';
+    public $confirmAction = '';
+    public $confirmParams = [];
+
+    #[On('show-confirmation')]
+    public function showConfirmation($title, $message, $confirmAction, $confirmParams = [])
+    {
+        $this->title = $title;
+        $this->message = $message;
+        $this->confirmAction = $confirmAction;
+        $this->confirmParams = $confirmParams;
+        $this->show = true;
+    }
+
+    public function confirm()
+    {
+        $this->show = false;
+
+        // Dispatch the confirmed action
+        $this->dispatch($this->confirmAction, ...$this->confirmParams);
+    }
+
+    public function cancel()
+    {
+        $this->show = false;
+    }
+
+    public function render()
+    {
+        return view('livewire.confirmation-modal');
+    }
+}
