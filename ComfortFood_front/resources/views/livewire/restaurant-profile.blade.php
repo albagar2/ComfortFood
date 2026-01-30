@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-zinc-50 dark:bg-zinc-950 px-4 py-8 md:px-8">
+<div class="min-h-screen px-4 py-8 md:px-8">
     <div class="max-w-7xl mx-auto space-y-12">
         <!-- Header / Navigation -->
         <div class="flex items-center justify-between">
@@ -6,7 +6,7 @@
                 class="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-full transition-colors text-zinc-600 dark:text-zinc-400">
                 <flux:icon.arrow-left class="size-6" />
             </a>
-            <div class="flex gap-3">
+            <div class="flex gap-3" title="compartir restaurante">
                 <flux:dropdown align="end">
                     <flux:button variant="ghost" icon="share" class="!rounded-xl" />
 

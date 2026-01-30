@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-zinc-50 dark:bg-zinc-900 py-8">
+<div class="min-h-screen py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Flash Messages -->
         @if(session()->has('success'))
@@ -76,9 +76,11 @@
                                     <div class="flex items-start justify-between mb-3">
                                         <div class="flex-1">
                                             <h3 class="text-xl font-bold text-zinc-900 dark:text-white mb-2">
-                                                {{ $item['menu']['nombre_menu'] }}</h3>
+                                                {{ $item['menu']['nombre_menu'] }}
+                                            </h3>
                                             <p class="text-sm text-zinc-500 line-clamp-2">
-                                                {{ $item['menu']['descripcion_menu'] }}</p>
+                                                {{ $item['menu']['descripcion_menu'] }}
+                                            </p>
                                         </div>
                                         <button wire:click="removeItem({{ $item['id_carrito'] }})"
                                             class="ml-4 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors">
@@ -139,7 +141,8 @@
                                             <p class="text-sm text-zinc-500">{{ number_format($item['menu']['precio'], 2) }}€ /
                                                 unidad</p>
                                             <p class="text-2xl font-bold text-zinc-900 dark:text-white">
-                                                {{ number_format($item['cantidad'] * $item['menu']['precio'], 2) }}€</p>
+                                                {{ number_format($item['cantidad'] * $item['menu']['precio'], 2) }}€
+                                            </p>
                                         </div>
                                     </div>
                                 </div>

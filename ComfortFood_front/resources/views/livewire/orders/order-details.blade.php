@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-zinc-50 dark:bg-zinc-950 px-4 py-8 md:px-8">
+<div class="min-h-screen px-4 py-8 md:px-8">
     <div class="max-w-4xl mx-auto space-y-8">
         <!-- Navigation -->
         <div class="flex items-center justify-between">

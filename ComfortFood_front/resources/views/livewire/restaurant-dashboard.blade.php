@@ -1,7 +1,7 @@
-<div class="min-h-screen bg-zinc-50 dark:bg-zinc-950 px-4 py-8 md:px-8">
+<div class="min-h-screen  px-4 py-8 md:px-8">
     <div class="max-w-7xl mx-auto space-y-10">
         <!-- Header Section -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white dark:bg-zinc-900 p-8 rounded-3xl border-2 border-zinc-200 dark:border-zinc-800 shadow-sm">
             <div class="space-y-1">
                 <h1 class="text-3xl font-black text-zinc-950 dark:text-white tracking-tight">Panel de Gestión</h1>
                 <p class="text-zinc-500 font-medium">¡Hola, {{ auth()->user()->nombre_completo }}! Tienes <span class="text-indigo-600 dark:text-indigo-400 font-bold">{{ $orders->whereNotIn('estado.nombre_estado', ['Completado', 'Cancelado'])->count() }}</span> pedidos activos para hoy.</p>
@@ -14,7 +14,7 @@
                 <flux:button variant="primary" icon="plus" href="{{ route('menu.edit') }}" wire:navigate class="!rounded-xl">Añadir Menú</flux:button>
                 
                 <div class="flex gap-2">
-                    <a href="{{ route('menu.index') }}" wire:navigate title="Gestionar Carta" class="p-2.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-all">
+                    <a href="{{ route('menu.index') }}" wire:navigate title="Gestionar Carta" class="p-2.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-2 border-zinc-200 dark:border-zinc-700 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-all">
                         <flux:icon.document-text class="size-5" />
                     </a>
                     <a href="{{ route('restaurant.show', auth()->user()->restaurante->id_restaurante) }}" wire:navigate title="Ver Perfil Público" class="p-2.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-all">
@@ -43,7 +43,7 @@
                         };
                     @endphp
                     <a href="{{ route('orders.details', $topOrder->id_pedido) }}" wire:navigate 
-                       class="flex items-center gap-3 px-5 py-3 min-w-[160px] border rounded-2xl shadow-sm snap-start hover:scale-105 transition-all duration-300 {{ $statusStyles }}">
+                       class="flex items-center gap-3 px-5 py-3 min-w-[160px] border-3 rounded-2xl shadow-sm snap-start hover:scale-105 transition-all duration-300 {{ $statusStyles }}">
                         <div class="size-2 rounded-full {{ $isFinished ? 'bg-zinc-300' : 'bg-indigo-500 animate-pulse' }}"></div>
                         <div class="flex flex-col">
                             <span class="text-xs font-black text-zinc-950 dark:text-white">#{{ $topOrder->id_pedido }}</span>
@@ -62,7 +62,7 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach($orders as $order)
-                    <div class="group bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-zinc-200/50 dark:hover:shadow-none transition-all duration-500 flex flex-col h-full relative">
+                    <div class="group bg-white dark:bg-zinc-900 border-2 border-zinc-200 dark:border-zinc-800 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-zinc-200/50 dark:hover:shadow-none transition-all duration-500 flex flex-col h-full relative">
                         <!-- Card Status Badge -->
                         @php
                             $statusInfo = match ($order->estado->nombre_estado) {
@@ -93,7 +93,7 @@
                             <div class="space-y-4">
                                 @foreach($order->detalles->take(2) as $detalle)
                                     <div class="flex items-center gap-3">
-                                        <div class="size-10 rounded-xl bg-zinc-50 dark:bg-zinc-800 overflow-hidden border border-zinc-100 dark:border-zinc-700 shrink-0">
+                                        <div class="size-10 rounded-xl bg-zinc-50 dark:bg-zinc-800 overflow-hidden border-2 border-zinc-100 dark:border-zinc-700 shrink-0">
                                             @if($detalle->menu && $detalle->menu->url_foto)
                                                 <img src="{{ $detalle->menu->url_foto }}" class="w-full h-full object-cover">
                                             @else
@@ -128,7 +128,7 @@
                                         <flux:icon.x-mark class="size-5" />
                                     </button>
                                     <button wire:click="acceptOrder({{ $order->id_pedido }})" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2">
-                                        <flux:icon.check class="size-4" /> Completar
+                                        <flux:icon.check class="size-5" />
                                     </button>
                                 @else
                                     <a href="{{ route('orders.details', $order->id_pedido) }}" wire:navigate class="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all">
