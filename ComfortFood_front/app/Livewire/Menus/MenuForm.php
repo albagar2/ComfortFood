@@ -12,7 +12,7 @@ class MenuForm extends Component
     use WithFileUploads;
 
     public ?Menu $menu = null;
-    
+
     // Form fields
     public $nombre_menu;
     public $plato_principal;
@@ -25,7 +25,7 @@ class MenuForm extends Component
     public $foto;
     public $current_foto;
 
-    public function mount(Menu $menu = null)
+    public function mount(?Menu $menu = null)
     {
         if ($menu && $menu->exists) {
             $this->menu = $menu;
@@ -68,9 +68,9 @@ class MenuForm extends Component
         ];
 
         if ($this->foto) {
-             // Store image logic - simplified for storage link
-             $path = $this->foto->store('menus', 'public');
-             $data['url_foto'] = '/storage/' . $path;
+            // Store image logic
+            $path = $this->foto->store('menus', 'public');
+            $data['url_foto'] = asset('storage/' . $path);
         }
 
         if ($this->menu && $this->menu->exists) {
