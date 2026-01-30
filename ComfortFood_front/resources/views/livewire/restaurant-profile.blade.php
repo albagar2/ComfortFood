@@ -122,14 +122,31 @@
 
                 <!-- Menus Section -->
                 <section class="space-y-6">
-                    <div class="flex items-center justify-between">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <h2 class="text-2xl font-black text-zinc-900 dark:text-white uppercase tracking-tight">Nuestra
                             Carta</h2>
-                        <flux:button variant="subtle" size="sm">Filtros</flux:button>
+
+                        <div class="flex items-center gap-2">
+                            <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass"
+                                placeholder="Buscar plato..." size="sm" class="w-full sm:w-64" />
+
+                            <flux:dropdown>
+                                <flux:button variant="subtle" size="sm" icon="adjustments-horizontal">Filtros
+                                </flux:button>
+
+                                <flux:menu class="min-w-48">
+                                    <flux:menu.radio.group wire:model.live="sort">
+                                        <flux:menu.radio value="latest">Más recientes</flux:menu.radio>
+                                        <flux:menu.radio value="price_asc">Precio: Menor a mayor</flux:menu.radio>
+                                        <flux:menu.radio value="price_desc">Precio: Mayor a menor</flux:menu.radio>
+                                    </flux:menu.radio.group>
+                                </flux:menu>
+                            </flux:dropdown>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-                        @foreach($restaurante->menus as $menu)
+                        @forelse($this->menus as $menu)
                             <div
                                 class="group bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-5 hover:shadow-2xl hover:shadow-zinc-200/50 dark:hover:shadow-none transition-all duration-500 relative overflow-hidden flex flex-col h-full">
                                 <div class="flex gap-5 flex-1">
@@ -178,7 +195,14 @@
                                     Añadir al pedido
                                 </button>
                             </div>
-                        @endforeach
+                        @empty
+                            <div
+                                class="col-span-full py-12 text-center bg-white dark:bg-zinc-900 border border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl">
+                                <flux:icon.magnifying-glass class="size-12 text-zinc-300 mx-auto mb-4" />
+                                <h3 class="text-lg font-bold text-zinc-900 dark:text-white">No se encontraron platos</h3>
+                                <p class="text-zinc-500">Intenta buscar con otros términos.</p>
+                            </div>
+                        @endforelse
                     </div>
                 </section>
             </div>

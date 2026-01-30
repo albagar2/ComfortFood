@@ -34,6 +34,7 @@
         <!-- Desktop Icons -->
         <div class="flex items-center gap-2 max-lg:hidden">
             <x-appearance-dropdown />
+            <livewire:cart-icon />
             <a href="{{ route('profile.edit') }}" wire:navigate
                 class="p-2 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
                 <flux:avatar :src="auth()->user()->profile_photo_url" :name="auth()->user()->nombre_completo"
@@ -56,6 +57,7 @@
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" inset="left" />
             <div class="flex items-center gap-2">
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
+                <livewire:cart-icon />
                 <x-appearance-dropdown />
             </div>
         </flux:sidebar.header>
@@ -145,6 +147,8 @@
     </flux:sidebar>
 
     {{ $slot }}
+
+    <livewire:cart-modal />
 
     @fluxScripts
 </body>

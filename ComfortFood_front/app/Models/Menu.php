@@ -24,6 +24,7 @@ class Menu extends Model
         'bebida',
         'propiedades_nutricionales',
         'esta_activo',
+        'stock',
     ];
 
     protected $casts = [
@@ -44,5 +45,10 @@ class Menu extends Model
     public function favoritos()
     {
         return $this->hasMany(Favorito::class, 'id_menu', 'id_menu');
+    }
+
+    public function carrito()
+    {
+        return $this->hasMany(Carrito::class, 'id_menu', 'id_menu');
     }
 }

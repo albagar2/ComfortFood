@@ -9,9 +9,6 @@
 
         @if(auth()->check() && auth()->user()->isRestaurante() && auth()->user()->id_usuario == $menu->restaurante->id_usuario)
         <div class="flex gap-4">
-             <button class="px-6 py-2.5 text-sm font-bold text-zinc-600 bg-white border border-zinc-300 rounded-lg hover:bg-zinc-50 transition-colors">
-                Vista restaurante
-             </button>
              <a href="{{ route('menu.edit', $menu->id_menu) }}" wire:navigate class="px-6 py-2.5 text-sm font-bold text-white bg-orange-400 border border-orange-400 rounded-lg hover:bg-orange-500 transition-colors uppercase shadow-sm">
                 EDITAR MENÚ
              </a>

@@ -73,7 +73,7 @@
                                 default => ['class' => 'bg-zinc-100 text-zinc-600', 'icon' => 'hashtag']
                             };
                         @endphp
-                        <div class="absolute top-4 right-4 z-10 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest {{ $statusInfo['class'] }}">
+                        <div class="absolute top-1 right-2 z-10 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest {{ $statusInfo['class'] }}">
                             {{ $order->estado->nombre_estado }}
                         </div>
 

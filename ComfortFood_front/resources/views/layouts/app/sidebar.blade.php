@@ -22,6 +22,12 @@
                     class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-white/10 data-[current]:!text-pastel-orange data-[current]:!border-pastel-orange data-[current]:border font-medium tracking-wide !rounded-xl">
                     INICIO
                 </flux:sidebar.item>
+                <!-- Pedidos -->
+                <flux:sidebar.item icon="clipboard-document-list" :href="route('restaurant.orders')"
+                    :current="request()->routeIs('restaurant.orders')" wire:navigate
+                    class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-white/10 data-[current]:!text-pastel-orange data-[current]:!border-pastel-orange data-[current]:border font-medium tracking-wide !rounded-xl">
+                    PEDIDOS
+                </flux:sidebar.item>
                 <!-- Historial pedidos -->
                 <flux:sidebar.item icon="clock" :href="route('orders.history')"
                     :current="request()->routeIs('orders.history')" wire:navigate
