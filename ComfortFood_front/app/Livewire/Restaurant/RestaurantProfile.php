@@ -3,6 +3,7 @@
 namespace App\Livewire\Restaurant;
 
 use App\Models\Restaurante;
+use App\Services\ImageService;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -12,6 +13,7 @@ class RestaurantProfile extends Component
 {
     use WithFileUploads;
 
+    public $photo; // For restaurant profile photo upload
     public Restaurante $restaurante;
     public $search = '';
     public $sort = 'latest';
@@ -402,16 +404,16 @@ class RestaurantProfile extends Component
         return $query->get();
     }
 
-    public function updatedPhoto()
+    public function updatedPhoto(ImageService $imageService)
     {
         $this->validate([
-            'photo' => 'image|max:1024', // 1MB Max
+            'photo' => 'image|max:10240', // Increased to 10MB
         ]);
 
-        $path = $this->photo->store('restaurants', 'public');
+        $url = $imageService->processAndStore($this->photo, 'restaurants', 800);
 
         $this->restaurante->update([
-            'url_imagen_perfil' => '/storage/' . $path,
+            'url_imagen_perfil' => $url,
         ]);
 
         $this->dispatch('image-updated');

@@ -79,10 +79,35 @@
                 </div>
 
                 <!-- Right Column: Image Upload -->
-                <div class="w-full md:w-48 lg:w-56 flex flex-col items-center">
+                <div class="w-full md:w-48 lg:w-56 flex flex-col items-center" x-data="{
+                        async handleFileSelect(event) {
+                            const file = event.target.files[0];
+                            if (!file) return;
+
+                            const options = {
+                                maxSizeMB: 1,
+                                maxWidthOrHeight: 800,
+                                useWebWorker: true,
+                                initialQuality: 0.7
+                            };
+
+                            try {
+                                const compressedFile = await imageCompression(file, options);
+                                // Create a new File object with the same name but compressed data
+                                const finalFile = new File([compressedFile], file.name, { type: file.type });
+                                
+                                // Upload to Livewire
+                                @this.upload('foto', finalFile);
+                            } catch (error) {
+                                console.error('Error compressing image:', error);
+                                // Fallback: try to upload the original file if compression fails
+                                @this.upload('foto', file);
+                            }
+                        }
+                    }">
                     <label
                         class="w-28 h-28 bg-yellow-400 border-4 border-yellow-500/50 rounded-lg mb-2 flex items-center justify-center cursor-pointer overflow-hidden shadow-inner relative group">
-                        <input type="file" wire:model="foto" class="hidden" accept="image/*">
+                        <input type="file" x-on:change="handleFileSelect" class="hidden" accept="image/*">
 
                         <!-- Frame Effect -->
                         <div class="absolute inset-0 border-[6px] border-yellow-600/20 z-10 pointer-events-none"></div>
@@ -108,7 +133,7 @@
                         </div>
                     </label>
                     <span class="text-xs text-zinc-900 font-medium">Añadir Imagen</span>
-                    @error('foto') <span class="text-sm text-red-500 mt-1">{{ $message }}</span> @enderror
+                    @error('foto') <span class="text-sm text-red-500 mt-1 text-center">{{ $message }}</span> @enderror
                 </div>
             </div>
 

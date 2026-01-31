@@ -62,7 +62,29 @@
 
                 @if(auth()->check() && auth()->user()->id_usuario === $restaurante->id_usuario)
                     <!-- Edit Image Button -->
-                    <div class="absolute top-6 right-6 z-10">
+                    <div class="absolute top-6 right-6 z-10" 
+                        x-data="{
+                            async handleFileSelect(event) {
+                                const file = event.target.files[0];
+                                if (!file) return;
+
+                                const options = {
+                                    maxSizeMB: 1,
+                                    maxWidthOrHeight: 800,
+                                    useWebWorker: true,
+                                    initialQuality: 0.7
+                                };
+
+                                try {
+                                    const compressedFile = await imageCompression(file, options);
+                                    const finalFile = new File([compressedFile], file.name, { type: file.type });
+                                    @this.upload('photo', finalFile);
+                                } catch (error) {
+                                    console.error('Error compressing image:', error);
+                                    @this.upload('photo', file);
+                                }
+                            }
+                        }">
                         <label for="restaurant-photo" class="cursor-pointer group/upload">
                             <div
                                 class="flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 px-4 py-2 rounded-2xl text-white text-sm font-bold transition-all">
@@ -72,7 +94,7 @@
                                     <flux:icon.arrow-path class="size-4 animate-spin" />
                                 </div>
                             </div>
-                            <input type="file" id="restaurant-photo" wire:model="photo" class="hidden" accept="image/*">
+                            <input type="file" id="restaurant-photo" x-on:change="handleFileSelect" class="hidden" accept="image/*">
                         </label>
                     </div>
                 @endif

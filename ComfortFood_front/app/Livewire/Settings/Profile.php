@@ -3,6 +3,7 @@
 namespace App\Livewire\Settings;
 
 use App\Concerns\ProfileValidationRules;
+use App\Services\ImageService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -59,7 +60,7 @@ class Profile extends Component
     /**
      * Update the profile information for the currently authenticated user.
      */
-    public function updateProfileInformation(): void
+    public function updateProfileInformation(ImageService $imageService): void
     {
         $user = Auth::user();
 
@@ -72,7 +73,7 @@ class Profile extends Component
             $rules['direccion'] = ['nullable', 'string', 'max:255'];
             $rules['telefono'] = ['nullable', 'string', 'max:20'];
             $rules['tarjeta_mock'] = ['nullable', 'string', 'max:19'];
-            $rules['foto_perfil'] = ['nullable', 'image', 'max:1024'];
+            $rules['foto_perfil'] = ['nullable', 'image', 'max:10240']; // Increased to 10MB
         } elseif ($user->isRestaurante()) {
             $rules['direccion'] = ['nullable', 'string', 'max:255'];
             $rules['telefono'] = ['nullable', 'string', 'max:20'];
@@ -81,7 +82,7 @@ class Profile extends Component
             $rules['descripcion'] = ['nullable', 'string', 'max:1000'];
             $rules['cuenta_bancaria_mock'] = ['nullable', 'string', 'max:50'];
             $rules['NIF'] = ['nullable', 'string', 'max:20'];
-            $rules['foto_perfil'] = ['nullable', 'image', 'max:1024'];
+            $rules['foto_perfil'] = ['nullable', 'image', 'max:10240']; // Increased to 10MB
         }
 
         $validated = $this->validate($rules);
@@ -105,8 +106,8 @@ class Profile extends Component
             ];
 
             if ($this->foto_perfil) {
-                $path = $this->foto_perfil->store('perfiles', 'public');
-                $clienteData['url_imagen_perfil'] = '/storage/' . $path;
+                // Resize to 400x400 (centered cover) for profile photos
+                $clienteData['url_imagen_perfil'] = $imageService->processAndStore($this->foto_perfil, 'perfiles', 400, 400);
             }
 
             $user->cliente()->updateOrCreate(
@@ -125,8 +126,8 @@ class Profile extends Component
             ];
 
             if ($this->foto_perfil) {
-                $path = $this->foto_perfil->store('restaurantes', 'public');
-                $restauranteData['url_imagen_perfil'] = '/storage/' . $path;
+                // Resize to 400x400 (centered cover) for profile photos
+                $restauranteData['url_imagen_perfil'] = $imageService->processAndStore($this->foto_perfil, 'restaurantes', 400, 400);
             }
 
             $user->restaurante()->updateOrCreate(

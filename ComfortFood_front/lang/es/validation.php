@@ -37,6 +37,10 @@ return [
     'numeric' => 'El campo :attribute debe ser un número.',
     'required' => 'El campo :attribute es obligatorio.',
     'unique' => 'El campo :attribute ya ha sido registrado.',
+    'uploaded' => 'El archivo no se pudo subir. Es posible que el servidor no permita archivos tan grandes.',
     'url' => 'El campo :attribute no es una URL válida.',
+    'dimensions' => 'Las dimensiones de la imagen :attribute son inválidas.',
+    'mimes' => 'El campo :attribute debe ser un archivo de tipo: :values.',
+    'mimetypes' => 'El campo :attribute debe ser un archivo de tipo: :values.',
     // ... many more could be added, but these are the most common
 ];

@@ -3,6 +3,7 @@
 namespace App\Livewire\Menus;
 
 use App\Models\Menu;
+use App\Services\ImageService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -43,7 +44,7 @@ class MenuForm extends Component
         }
     }
 
-    public function save()
+    public function save(ImageService $imageService)
     {
         $this->validate([
             'nombre_menu' => 'required|string|max:255',
@@ -55,7 +56,7 @@ class MenuForm extends Component
             'propiedades_nutricionales' => 'nullable|string',
             'precio' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'foto' => 'nullable|image|max:1024', // 1MB Max
+            'foto' => 'nullable|image|max:10240', // Increased to 10MB to allow more, we will resize it anyway
         ]);
 
         $data = [
@@ -77,9 +78,9 @@ class MenuForm extends Component
         }
 
         if ($this->foto) {
-            // Store image logic
-            $path = $this->foto->store('menus', 'public');
-            $data['url_foto'] = asset('storage/' . $path);
+            // Process and store image using ImageService
+            // Resize to 800px width, auto height
+            $data['url_foto'] = $imageService->processAndStore($this->foto, 'menus', 800);
         }
 
         if ($this->menu && $this->menu->exists) {
