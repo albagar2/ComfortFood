@@ -250,7 +250,7 @@
                         </div>
                         <div class="flex items-center gap-3 text-sm">
                             <flux:icon.globe-alt class="size-4 text-zinc-400" />
-                            <a href="{{ $restaurante->redes_sociales }}" class="text-teal-600 hover:underline">Sitio web
+                            <a href="{{ $restaurante->redes_sociales }}" target="_blank" class="text-teal-600 hover:underline">Sitio web
                                 / Redes</a>
                         </div>
                     </div>

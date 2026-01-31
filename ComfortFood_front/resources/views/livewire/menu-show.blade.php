@@ -103,8 +103,10 @@
                 @if(auth()->check() && auth()->user()->isRestaurante() && auth()->user()->id_usuario == $menu->restaurante->id_usuario)
                     <span class="text-xs text-zinc-500 font-medium mt-2">Vista previa de imagen</span>
                 @else
-                    <button class="mt-6 w-full py-3 bg-zinc-900 hover:bg-zinc-800 text-white font-bold rounded-xl shadow-lg shadow-zinc-200 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
-                        Añadir al carrito
+                    <button wire:click="addToCart({{ $menu->id_menu }})" 
+                        @if($menu->stock <= 0) disabled @endif
+                        class="mt-6 w-full py-3 {{ $menu->stock > 0 ? 'bg-zinc-900 hover:bg-zinc-800' : 'bg-zinc-300 cursor-not-allowed' }} text-white font-bold rounded-xl shadow-lg shadow-zinc-200 transition-all active:scale-95 disabled:opacity-50">
+                        {{ $menu->stock > 0 ? 'Añadir al carrito' : 'Agotado' }}
                     </button>
                     <!-- Restaurant Name Link -->
                     <div class="mt-4 text-center">

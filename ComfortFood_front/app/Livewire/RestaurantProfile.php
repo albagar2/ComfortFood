@@ -64,7 +64,10 @@ class RestaurantProfile extends Component
 
         foreach ($orderedIds as $dayInfo) {
             $idDia = $dayInfo['id'];
-            $displayName = strtoupper($dayInfo['name']);
+            // Aquí usamos el nombre original (con tildes) para mostrar
+            $originalDay = $dbDays->first(fn($d) => $d->id_dia == $idDia)->nombre_dia;
+
+            $displayName = mb_strtoupper($originalDay); // mantiene tildes
 
             $horario = $existingHorarios->get($idDia);
 
@@ -202,7 +205,7 @@ class RestaurantProfile extends Component
             return [
                 'isOpen' => true,
                 'text' => 'Abierto hasta ' . date('H:i', strtotime($todaySchedule->hora_cierre)),
-                'class' => 'bg-emerald-100/50 text-emerald-700 border-emerald-200' // Green
+                'class' => 'bg-emerald-300/50 text-white border-emerald-200' // Green
             ];
         }
 
