@@ -55,15 +55,27 @@
                             class="w-full px-4 py-3 border border-zinc-300 rounded-2xl text-sm placeholder-zinc-300 resize-none focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300"></textarea>
                     </div>
 
-                    <div class="flex items-center justify-between pt-2">
-                        <span class="text-sm font-bold text-zinc-700">Añadir precio</span>
-                        <div class="flex items-center gap-1">
-                            <input type="text" wire:model="precio" placeholder="0.00"
-                                class="w-20 text-right font-medium text-zinc-700 border-none bg-transparent focus:ring-0 p-0" />
-                            <span class="text-zinc-700 font-bold">€</span>
+                    <div class="flex items-center justify-between pt-2 gap-4">
+                        <div
+                            class="flex-1 flex justify-between items-center bg-zinc-50 dark:bg-zinc-800 px-4 py-2 rounded-xl border border-zinc-200">
+                            <span class="text-sm font-bold text-zinc-700 dark:text-zinc-300">Stock</span>
+                            <input type="number" wire:model="stock" placeholder="0" min="0"
+                                class="w-20 text-right font-medium text-zinc-700 dark:text-white border-none bg-transparent focus:ring-0 p-0" />
+                        </div>
+
+                        <div
+                            class="flex-1 flex justify-between items-center bg-zinc-50 dark:bg-zinc-800 px-4 py-2 rounded-xl border border-zinc-200">
+                            <span class="text-sm font-bold text-zinc-700 dark:text-zinc-300">Precio</span>
+                            <div class="flex items-center gap-1">
+                                <input type="text" wire:model="precio" placeholder="0.00"
+                                    class="w-20 text-right font-medium text-zinc-700 dark:text-white border-none bg-transparent focus:ring-0 p-0" />
+                                <span class="text-zinc-700 dark:text-white font-bold">€</span>
+                            </div>
                         </div>
                     </div>
-                    @error('precio') <span class="text-sm text-red-500 mt-1 text-right">{{ $message }}</span> @enderror
+                    @error('stock') <span class="text-sm text-red-500 mt-1">{{ $message }}</span> @enderror
+                    @error('precio') <span class="text-sm text-red-500 mt-1 text-right block">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <!-- Right Column: Image Upload -->

@@ -123,10 +123,27 @@ class RestaurantProfile extends Component
     {
         $menu = \App\Models\Menu::find($menuId);
 
-        if ($menu && $menu->id_restaurante === $this->restaurante->id_restaurante) {
-            $menu->delete();
-            $this->dispatch('notify', 'Menú eliminado correctamente.');
+        if (!$menu || $menu->id_restaurante !== $this->restaurante->id_restaurante) {
+            return;
         }
+
+        // Check for active orders containing this menu
+        // We strictly block if the order is "Pendiente" or "En Preparación" or "En camino"
+        // User Request: "todos los menus que no esten completados y han sido puestos en preparacion no podrán ser eliminados... avisar con alert"
+
+        $hasActiveOrders = \App\Models\Pedido::whereHas('detalles', function ($q) use ($menuId) {
+            $q->where('id_menu', $menuId);
+        })->whereHas('estado', function ($q) {
+            $q->whereIn('nombre_estado', ['Pendiente', 'En Preparación', 'En camino', 'Entregado']);
+        })->exists();
+
+        if ($hasActiveOrders) {
+            $this->dispatch('notify', 'No se puede eliminar el menú: Está incluido en pedidos activos (pendiente o en preparación). Complete o cancele los pedidos primero.');
+            return;
+        }
+
+        $menu->delete();
+        $this->dispatch('notify', 'Menú eliminado correctamente.');
     }
 
     // Client Action

@@ -24,6 +24,7 @@ class MenuForm extends Component
     public $precio;
     public $foto;
     public $current_foto;
+    public $stock = 0; // Default stock
 
     public function mount(?Menu $menu = null)
     {
@@ -37,6 +38,7 @@ class MenuForm extends Component
             $this->descripcion_menu = $menu->descripcion_menu;
             $this->propiedades_nutricionales = $menu->propiedades_nutricionales;
             $this->precio = $menu->precio;
+            $this->stock = $menu->stock;
             $this->current_foto = $menu->url_foto;
         }
     }
@@ -52,6 +54,7 @@ class MenuForm extends Component
             'descripcion_menu' => 'nullable|string',
             'propiedades_nutricionales' => 'nullable|string',
             'precio' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
             'foto' => 'nullable|image|max:1024', // 1MB Max
         ]);
 
@@ -65,6 +68,7 @@ class MenuForm extends Component
             'descripcion_menu' => $this->descripcion_menu,
             'propiedades_nutricionales' => $this->propiedades_nutricionales,
             'precio' => $this->precio,
+            'stock' => $this->stock,
         ];
 
         if ($this->foto) {

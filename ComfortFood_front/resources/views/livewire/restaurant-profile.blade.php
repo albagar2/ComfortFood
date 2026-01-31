@@ -190,7 +190,12 @@
 
                                 @if(auth()->check() && auth()->user()->id_usuario === $restaurante->id_usuario)
                                     <!-- Owner Actions -->
+                                    <!-- Owner Actions -->
                                     <div class="mt-4 flex gap-2">
+                                        <a href="{{ route('menu.show', $menu->id_menu) }}" wire:navigate class="flex-1 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
+                                            <flux:icon.eye class="size-4" />
+                                            Ver
+                                        </a>
                                         <a href="{{ route('menu.edit', $menu->id_menu) }}" wire:navigate class="flex-1 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
                                             <flux:icon.pencil-square class="size-4" />
                                             Editar
