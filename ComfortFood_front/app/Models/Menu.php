@@ -53,4 +53,12 @@ class Menu extends Model
     {
         return $this->hasMany(Carrito::class, 'id_menu', 'id_menu');
     }
+
+    public function hasActiveOrders(): bool
+    {
+        return $this->detallesPedido()
+            ->whereHas('pedido.estado', function ($query) {
+                $query->whereNotIn('nombre_estado', ['Completado', 'Cancelado']);
+            })->exists();
+    }
 }

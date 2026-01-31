@@ -5,8 +5,23 @@
         </flux:button>
     </div>
 
+    @if (session()->has('success'))
+        <div class="mb-6 p-4 bg-green-100 border border-green-200 text-green-700 rounded-xl">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session()->has('error'))
+        <div class="mb-6 p-4 bg-red-100 border border-red-200 text-red-700 rounded-xl">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
         @foreach($menus as $menu)
+            @php
+                $hasActiveOrders = $menu->hasActiveOrders();
+            @endphp
             <div
                 class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-sm flex flex-col gap-4 relative">
                 <!-- Status Badge -->
@@ -58,11 +73,19 @@
                     </div>
 
                     <div class="flex gap-2">
-                        <button wire:click="deleteMenu({{ $menu->id_menu }})"
-                            wire:confirm="¿Estás seguro de que quieres eliminar este menú?" title="Eliminar menú"
-                            class="size-9 flex items-center justify-center rounded-lg border border-red-200 text-red-500 hover:bg-red-50 transition-colors">
-                            <flux:icon.trash class="size-4" />
-                        </button>
+                        @if($hasActiveOrders)
+                            <button disabled
+                                title="No puedes eliminar este menú mientras haya pedidos en curso. Espera a que todos los pedidos asociados estén completados o cancelados."
+                                class="size-9 flex items-center justify-center rounded-lg border border-zinc-200 text-zinc-300 cursor-not-allowed opacity-50 bg-zinc-50">
+                                <flux:icon.trash class="size-4" />
+                            </button>
+                        @else
+                            <button wire:click="deleteMenu({{ $menu->id_menu }})"
+                                wire:confirm="¿Estás seguro de que quieres eliminar este menú?" title="Eliminar menú"
+                                class="size-9 flex items-center justify-center rounded-lg border border-red-200 text-red-500 hover:bg-red-50 transition-colors">
+                                <flux:icon.trash class="size-4" />
+                            </button>
+                        @endif
 
                         <a href="{{ route('menu.edit', ['menu' => $menu->id_menu]) }}" wire:navigate title="Editar menú"
                             class="size-9 flex items-center justify-center rounded-lg border border-yellow-200 text-yellow-500 hover:bg-yellow-50 transition-colors">

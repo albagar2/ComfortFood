@@ -20,9 +20,20 @@ class MenuManagement extends Component
     public function deleteMenu($id)
     {
         $menu = Menu::where('id_menu', $id)->first();
+
         if ($menu && $menu->id_restaurante == Auth::user()->restaurante->id_restaurante) {
-            // Optional: Check for existing orders before delete or soft delete
+            $hasActiveOrders = \App\Models\DetallePedido::where('id_menu', $id)
+                ->whereHas('pedido.estado', function ($query) {
+                    $query->whereNotIn('nombre_estado', ['Completado', 'Cancelado']);
+                })->exists();
+
+            if ($hasActiveOrders) {
+                session()->flash('error', 'No puedes eliminar este menú mientras haya pedidos en curso. Espera a que todos los pedidos asociados estén completados o cancelados.');
+                return;
+            }
+
             $menu->delete();
+            session()->flash('success', 'Menú eliminado correctamente.');
         }
     }
 
