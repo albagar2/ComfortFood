@@ -17,6 +17,7 @@ class Carrito extends Model
         'id_menu',
         'id_restaurante',
         'cantidad',
+        'observaciones',
     ];
 
     protected $casts = [

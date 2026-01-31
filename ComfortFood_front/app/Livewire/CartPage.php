@@ -141,6 +141,7 @@ class CartPage extends Component
                     'id_menu' => $item['id_menu'],
                     'cantidad' => $item['cantidad'],
                     'precio_unitario' => $item['menu']['precio'],
+                    'observaciones' => $item['observaciones'] ?? null,
                 ]);
             }
 

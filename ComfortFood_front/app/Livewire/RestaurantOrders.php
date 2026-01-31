@@ -27,7 +27,13 @@ class RestaurantOrders extends Component
         }
 
         $query = Pedido::where('id_restaurante', $restaurante->id_restaurante)
-            ->with(['cliente.user', 'estado', 'detalles.menu'])
+            ->with([
+                'cliente.user',
+                'estado',
+                'detalles.menu' => function ($query) {
+                    $query->withTrashed();
+                }
+            ])
             ->latest();
 
         // Filter by tab

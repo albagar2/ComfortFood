@@ -63,12 +63,12 @@
                         </div>
                         <div class="flex flex-col items-end gap-2">
                             <span class="px-3 py-1 rounded-full text-sm font-semibold
-                                                @if($order['estado']['nombre_estado'] === 'Pendiente') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
-                                                @elseif($order['estado']['nombre_estado'] === 'Aceptado') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
-                                                @elseif($order['estado']['nombre_estado'] === 'En Preparación') bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200
-                                                @elseif($order['estado']['nombre_estado'] === 'Completado') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
-                                                @else bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
-                                                @endif">
+                                                        @if($order['estado']['nombre_estado'] === 'Pendiente') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                                                        @elseif($order['estado']['nombre_estado'] === 'Aceptado') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                                                        @elseif($order['estado']['nombre_estado'] === 'En Preparación') bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200
+                                                        @elseif($order['estado']['nombre_estado'] === 'Completado') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                                        @else bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                                                        @endif">
                                 {{ $order['estado']['nombre_estado'] }}
                             </span>
                             <span
@@ -82,7 +82,7 @@
                         @foreach($order['detalles'] as $detalle)
                             <div class="flex justify-between text-sm">
                                 <span class="text-zinc-600 dark:text-zinc-400">{{ $detalle['cantidad'] }}x
-                                    {{ $detalle['menu']['nombre_menu'] }}</span>
+                                    {{ $detalle['menu']['nombre_menu'] ?? 'Menú eliminado' }}</span>
                                 <span
                                     class="text-zinc-900 dark:text-white font-medium">{{ number_format($detalle['cantidad'] * $detalle['precio_unitario'], 2) }}€</span>
                             </div>

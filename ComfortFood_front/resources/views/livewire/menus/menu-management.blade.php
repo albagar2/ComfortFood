@@ -24,7 +24,6 @@
                         </span>
                     @endif
                 </div>
-
                 <!-- Header -->
                 <div class="mt-2">
                     <span class="text-xs font-bold text-zinc-500 uppercase tracking-wider">Menú</span>
@@ -50,7 +49,13 @@
 
                 <!-- Footer / Actions -->
                 <div class="flex items-center justify-between pt-4 border-t border-zinc-100 dark:border-zinc-800">
-                    <span class="font-bold text-zinc-900 dark:text-white">{{ number_format($menu->precio, 2) }}€</span>
+                    <div class="flex flex-col">
+                        <span
+                            class="font-bold text-xs md:text-base text-zinc-900 dark:text-white">{{ number_format($menu->precio, 2) }}€</span>
+                        <span class="text-[10px] md:text-xs text-zinc-500">
+                            Stock: {{ $menu->stock }}
+                        </span>
+                    </div>
 
                     <div class="flex gap-2">
                         <button wire:click="deleteMenu({{ $menu->id_menu }})"

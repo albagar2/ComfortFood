@@ -103,9 +103,18 @@
                 @if(auth()->check() && auth()->user()->isRestaurante() && auth()->user()->id_usuario == $menu->restaurante->id_usuario)
                     <span class="text-xs text-zinc-500 font-medium mt-2">Vista previa de imagen</span>
                 @else
+                    
+                    <!-- Observation Input -->
+                    <div class="w-full mt-4">
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-2">Observaciones (Opcional)</label>
+                        <textarea wire:model="observacion" 
+                            class="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-s text-zinc-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent placeholder-zinc-400 resize-none h-20" 
+                            placeholder="Ej: Sin cebolla, salsa aparte..."></textarea>
+                    </div>
+
                     <button wire:click="addToCart({{ $menu->id_menu }})" 
                         @if($menu->stock <= 0) disabled @endif
-                        class="mt-6 w-full py-3 {{ $menu->stock > 0 ? 'bg-zinc-900 hover:bg-zinc-800' : 'bg-zinc-300 cursor-not-allowed' }} text-white font-bold rounded-xl shadow-lg shadow-zinc-200 transition-all active:scale-95 disabled:opacity-50">
+                        class="mt-4 w-full py-3 {{ $menu->stock > 0 ? 'bg-zinc-900 hover:bg-zinc-800' : 'bg-zinc-300 cursor-not-allowed' }} text-white font-bold rounded-xl shadow-lg shadow-zinc-200 transition-all active:scale-95 disabled:opacity-50">
                         {{ $menu->stock > 0 ? 'Añadir al carrito' : 'Agotado' }}
                     </button>
                     <!-- Restaurant Name Link -->

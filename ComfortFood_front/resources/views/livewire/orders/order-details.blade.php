@@ -75,13 +75,37 @@
                             </div>
                         </div>
                     </section>
-
+                    
                     <section class="space-y-4">
-                        <h4 class="text-xs font-black text-zinc-400 uppercase tracking-[0.2em]">Observaciones</h4>
-                        <div class="p-4 bg-white dark:bg-zinc-800 rounded-2xl border border-zinc-100 dark:border-zinc-700 text-sm text-zinc-600 dark:text-zinc-400 italic">
-                            "Sin cebolla, extra salsa" <!-- Esto debería venir de la BD si existiera el campo -->
+                        <div class="flex items-center gap-2">
+                             <h4 class="text-xs font-black text-zinc-400 uppercase tracking-[0.2em]">Observaciones</h4>
+                             <span class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold text-zinc-500">{{ $order->detalles->filter(fn($d) => !empty($d->observaciones))->count() }}</span>
                         </div>
+                        
+                        @php
+                            $itemsWithOkbservations = $order->detalles->filter(fn($d) => !empty($d->observaciones));
+                        @endphp
+
+                        @if($itemsWithOkbservations->isNotEmpty())
+                            <div class="space-y-3">
+                                @foreach($itemsWithOkbservations as $detalle)
+                                    <div class="p-4 bg-white dark:bg-zinc-800 rounded-2xl border border-zinc-100 dark:border-zinc-700 text-sm">
+                                        <p class="font-bold text-zinc-900 dark:text-white mb-1">{{ $detalle->menu->nombre_menu }}</p>
+                                        <div class="flex gap-2 text-zinc-600 dark:text-zinc-400 italic bg-zinc-50 dark:bg-zinc-900/50 p-2 rounded-lg">
+                                            <flux:icon.pencil-square class="size-4 flex-shrink-0 mt-0.5 text-zinc-400" />
+                                            {{ $detalle->observaciones }}
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-700 text-sm text-zinc-400 text-center italic">
+                                No hay observaciones
+                            </div>
+                        @endif
                     </section>
+
+
 
                     <!-- Review Section (Dynamic) -->
                     @if($order->estado->nombre_estado === 'Completado')
@@ -147,6 +171,7 @@
                                         <span class="text-sm font-bold text-zinc-950 dark:text-white">{{ number_format($detalle->precio_unitario * $detalle->cantidad, 2) }}€</span>
                                     </div>
                                     <p class="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-1 pr-12">{{ $detalle->menu->descripcion_menu ?? '' }}</p>
+
                                     <div class="flex items-center gap-3 pt-2">
                                         <span class="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded text-[10px] font-black text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">x{{ $detalle->cantidad }}</span>
                                         <span class="text-[10px] text-zinc-400 font-bold uppercase">{{ number_format($detalle->precio_unitario, 2) }}€ / ud.</span>

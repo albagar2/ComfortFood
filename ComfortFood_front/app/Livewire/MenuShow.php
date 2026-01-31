@@ -8,6 +8,7 @@ use Livewire\Component;
 class MenuShow extends Component
 {
     public Menu $menu;
+    public $observacion = '';
 
     public function mount(Menu $menu)
     {
@@ -18,19 +19,19 @@ class MenuShow extends Component
     {
         $cliente = auth()->user()->cliente;
         if (!$cliente) {
-            session()->flash('error', 'Debes iniciar sesión para añadir al carrito');
+            $this->dispatch('notify', 'Debes iniciar sesión para añadir al carrito');
             return;
         }
 
         $menu = \App\Models\Menu::find($menuId);
         if (!$menu) {
-            session()->flash('error', 'Menú no encontrado');
+            $this->dispatch('notify', 'Menú no encontrado');
             return;
         }
 
         // Check stock
         if ($menu->stock <= 0) {
-            session()->flash('error', 'Este menú no tiene stock disponible');
+            $this->dispatch('notify', 'Este menú no tiene stock disponible');
             return;
         }
 
@@ -38,7 +39,7 @@ class MenuShow extends Component
         $existingCart = \App\Models\Carrito::where('id_cliente', $cliente->id_cliente)->first();
 
         if ($existingCart && $existingCart->id_restaurante != $menu->id_restaurante) {
-            session()->flash('error', 'Solo puedes añadir menús de un restaurante a la vez. Vacía tu carrito primero.');
+            $this->dispatch('notify', 'Solo puedes añadir menús de un restaurante a la vez. Vacía tu carrito primero.');
             return;
         }
 
@@ -50,10 +51,14 @@ class MenuShow extends Component
         if ($carritoItem) {
             // Check if we can add more
             if ($carritoItem->cantidad >= $menu->stock) {
-                session()->flash('error', 'No hay suficiente stock disponible');
+                $this->dispatch('notify', 'No hay suficiente stock disponible');
                 return;
             }
             $carritoItem->cantidad++;
+            // Optional: Update observation? Let's just update it.
+            if (!empty($this->observacion)) {
+                $carritoItem->observaciones = $this->observacion;
+            }
             $carritoItem->save();
         } else {
             \App\Models\Carrito::create([
@@ -61,11 +66,13 @@ class MenuShow extends Component
                 'id_menu' => $menuId,
                 'id_restaurante' => $menu->id_restaurante,
                 'cantidad' => 1,
+                'observaciones' => $this->observacion,
             ]);
         }
 
         $this->dispatch('cart-updated');
-        session()->flash('success', 'Menú añadido al carrito');
+        $this->observacion = ''; // Reset
+        $this->dispatch('notify', 'Menú añadido al carrito');
     }
 
     public function render()

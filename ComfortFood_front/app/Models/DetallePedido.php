@@ -16,7 +16,9 @@ class DetallePedido extends Model
         'id_pedido',
         'id_menu',
         'cantidad',
+        'cantidad',
         'precio_unitario',
+        'observaciones',
     ];
 
     protected $casts = [

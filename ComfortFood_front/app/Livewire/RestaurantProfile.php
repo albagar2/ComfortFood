@@ -146,8 +146,12 @@ class RestaurantProfile extends Component
         $this->dispatch('notify', 'Menú eliminado correctamente.');
     }
 
-    // Client Action
-    public function addToCart($menuId)
+    public $selectedMenu = null;
+    public $observation = '';
+    public $quantity = 1;
+
+    // Client Action - Step 1: Open Modal
+    public function openAddToCartModal($menuId)
     {
         $cliente = auth()->user()->cliente;
         if (!$cliente) {
@@ -161,42 +165,88 @@ class RestaurantProfile extends Component
             return;
         }
 
-        // Check stock
         if ($menu->stock <= 0) {
             session()->flash('error', 'Este menú no tiene stock disponible');
             return;
         }
 
-        // Check if cart has items from a different restaurant
+        // Check restaurant consistency
         $existingCart = \App\Models\Carrito::where('id_cliente', $cliente->id_cliente)->first();
-
         if ($existingCart && $existingCart->id_restaurante != $menu->id_restaurante) {
             session()->flash('error', 'Solo puedes añadir menús de un restaurante a la vez. Vacía tu carrito primero.');
             return;
         }
 
-        // Check if item already in cart
+        $this->selectedMenu = $menu;
+        $this->observation = '';
+        $this->quantity = 1;
+
+        $this->dispatch('open-add-to-cart-modal');
+    }
+
+    // Client Action - Step 2: Confirm Add
+    public function confirmAddToCart()
+    {
+        if (!$this->selectedMenu)
+            return;
+
+        $cliente = auth()->user()->cliente;
+        $menu = $this->selectedMenu;
+
+        // Check if item already in cart (same menu AND same observations? OR just same menu?)
+        // Usually, if observations differ, it should be a separate line item.
+        // But for simplicity/schema, usually 'carrito' is (id_cliente, id_menu). 
+        // If schema has unique(id_cliente, id_menu), we can't have duplicates.
+        // The migration didn't remove unique constraints if they existed. 
+        // Let's assume we update the existing item OR create new if unique is not enforced.
+        // Standard logic: If item exists, update quantity.
+        // BUT if user adds "No onions", then "Extra sauce", they should probably be separate?
+        // Current Schema check: `create_carrito_table` likely didn't enforce composite unique since it's a simple ID PK.
+        // Let's check `Carrito` model logic from before:
+        /*
+           $carritoItem = Where... ->first();
+           if ($carritoItem) -> quantity++
+        */
+        // If I update quantity, I overwrite observations? Or just append?
+        // User asked "should appear observations". 
+        // If I add 1x Burger "No Onion" and then 1x Burger "No Pickle". 
+        // If I merge them => 2x Burger "No Pickle" (last overwrite).
+        // For MVP, valid to overwrite or merge. 
+        // Better: treat as same item index. 
+        // I will stick to "Update existing" policy for now to match previous logic, 
+        // but I will APPEND the observation if it's new. 
+        // OR better: Just overwrite observation with latest generic note?
+        // Let's simpler: Create NEW row if observation is different? 
+        // `first()` calls might merge them.
+        // Let's stick to "Update existing, overwrite observation" for simplicity unless schema allows multiples.
+        // Given `carrito` usually prevents duplicates per user/product in basic designs (like mine), I will overwrite.
+
         $carritoItem = \App\Models\Carrito::where('id_cliente', $cliente->id_cliente)
-            ->where('id_menu', $menuId)
+            ->where('id_menu', $menu->id_menu)
             ->first();
 
         if ($carritoItem) {
-            // Check if we can add more
-            if ($carritoItem->cantidad >= $menu->stock) {
+            if (($carritoItem->cantidad + $this->quantity) > $menu->stock) {
                 session()->flash('error', 'No hay suficiente stock disponible');
                 return;
             }
-            $carritoItem->cantidad++;
+            $carritoItem->cantidad += $this->quantity;
+            if (!empty($this->observation)) {
+                $carritoItem->observaciones = $this->observation; // Overwrite/Update note
+            }
             $carritoItem->save();
         } else {
             \App\Models\Carrito::create([
                 'id_cliente' => $cliente->id_cliente,
-                'id_menu' => $menuId,
+                'id_menu' => $menu->id_menu,
                 'id_restaurante' => $menu->id_restaurante,
-                'cantidad' => 1,
+                'cantidad' => $this->quantity,
+                'observaciones' => $this->observation,
             ]);
         }
 
+        $this->selectedMenu = null;
+        $this->dispatch('close-add-to-cart-modal'); // Close modal
         $this->dispatch('cart-updated');
         session()->flash('success', 'Producto añadido al carrito.');
     }
