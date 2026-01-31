@@ -120,6 +120,50 @@
                                         @endif
                                     </div>
 
+                                    <!-- Observations (Inline Edit) -->
+                                    <div class="mb-4" x-data="{ 
+                                                isEditing: false, 
+                                                observation: '{{ addslashes($item['observaciones'] ?? '') }}' 
+                                            }">
+                                        <!-- Display Mode -->
+                                        <div x-show="!isEditing" class="flex flex-col gap-1">
+                                            @if(!empty($item['observaciones']))
+                                                <div
+                                                    class="flex items-start gap-2 text-sm text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-900/50 p-3 rounded-lg border border-zinc-100 dark:border-zinc-700/50">
+                                                    <flux:icon.pencil-square class="size-4 mt-0.5 text-zinc-400 flex-shrink-0" />
+                                                    <p class="italic flex-1">"{{ $item['observaciones'] }}"</p>
+                                                    <button @click="isEditing = true"
+                                                        class="text-xs font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 ml-2">Editar</button>
+                                                </div>
+                                            @else
+                                                <button @click="isEditing = true"
+                                                    class="flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 hover:underline w-fit">
+                                                    <flux:icon.plus-circle class="size-4" />
+                                                    Añadir observación
+                                                </button>
+                                            @endif
+                                        </div>
+
+                                        <!-- Edit Mode -->
+                                        <div x-show="isEditing" class="space-y-2" x-cloak>
+                                            <textarea x-model="observation"
+                                                class="w-full px-3 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 min-h-[80px]"
+                                                placeholder="Ej: Sin cebolla, salsa aparte..."></textarea>
+                                            <div class="flex gap-2 justify-end">
+                                                <button
+                                                    @click="isEditing = false; observation = '{{ addslashes($item['observaciones'] ?? '') }}'"
+                                                    class="px-3 py-1.5 text-xs font-bold text-zinc-500 hover:text-zinc-700">
+                                                    Cancelar
+                                                </button>
+                                                <button
+                                                    @click="$wire.updateObservation({{ $item['id_carrito'] }}, observation); isEditing = false"
+                                                    class="px-3 py-1.5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-xs font-bold hover:opacity-90">
+                                                    Guardar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <!-- Quantity and Price -->
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-3">

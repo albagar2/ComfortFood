@@ -2,7 +2,6 @@
     <!-- Header & Search/Filters -->
     <div class="flex flex-col gap-6">
         <div class="flex items-center gap-4">
-            <flux:button icon="arrow-left" variant="ghost" x-on:click="history.back()" />
             <h1 class="text-2xl font-bold text-zinc-900 dark:text-white">{{ __('Historial de pedidos') }}</h1>
         </div>
 

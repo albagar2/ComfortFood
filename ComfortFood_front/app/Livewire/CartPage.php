@@ -160,6 +160,20 @@ class CartPage extends Component
         }
     }
 
+    public function updateObservation($carritoId, $observation)
+    {
+        $carrito = Carrito::find($carritoId);
+        if (!$carrito)
+            return;
+
+        $carrito->observaciones = $observation;
+        $carrito->save();
+
+        $this->loadCart();
+        $this->dispatch('cart-updated');
+        $this->dispatch('notify', 'Observación actualizada');
+    }
+
     public function render()
     {
         return view('livewire.cart-page');

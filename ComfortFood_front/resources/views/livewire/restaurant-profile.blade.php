@@ -196,14 +196,6 @@
                                             <flux:icon.eye class="size-4" />
                                             Ver
                                         </a>
-                                        <a href="{{ route('menu.edit', $menu->id_menu) }}" wire:navigate class="flex-1 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
-                                            <flux:icon.pencil-square class="size-4" />
-                                            Editar
-                                        </a>
-                                        <button wire:click="confirmDeleteMenu({{ $menu->id_menu }})" class="flex-1 bg-rose-50 dark:bg-rose-900/20 hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-600 dark:text-rose-400 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
-                                            <flux:icon.trash class="size-4" />
-                                            Eliminar
-                                        </button>
                                     </div>
                                 @elseif(auth()->check() && auth()->user()->isCliente())
                                     <!-- Client Actions -->
