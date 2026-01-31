@@ -28,28 +28,50 @@ class RestaurantProfile extends Component
         $existingHorarios = $this->restaurante->horarios->keyBy('id_dia');
         $fullSchedule = [];
 
-        // Ensure we have entries for days 1 (Monday) through 7 (Sunday)
-        $days = \App\Models\DiaSemana::all()->pluck('nombre_dia', 'id_dia')->toArray();
-        // Fallback if DiaSemana table is empty or specific IDs are static
-        if (empty($days)) {
-            $days = [
-                1 => 'Lunes',
-                2 => 'Martes',
-                3 => 'Miércoles',
-                4 => 'Jueves',
-                5 => 'Viernes',
-                6 => 'Sábado',
-                7 => 'Domingo'
+        // Forced Spanish Order (Lunes -> Domingo)
+        $targetOrder = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+
+        // Fetch DB days. 
+        $dbDays = \App\Models\DiaSemana::all();
+
+        // Map target names to DB IDs
+        $orderedIds = [];
+        foreach ($targetOrder as $target) {
+            $found = $dbDays->first(function ($day) use ($target) {
+                // simple normalization
+                $dbName = strtolower($this->removeAccents($day->nombre_dia));
+                $targetName = strtolower($this->removeAccents($target));
+                return $dbName === $targetName;
+            });
+
+            if ($found) {
+                $orderedIds[] = ['id' => $found->id_dia, 'name' => $target];
+            }
+        }
+
+        // Fallback
+        if (empty($orderedIds)) {
+            $orderedIds = [
+                ['id' => 1, 'name' => 'Lunes'],
+                ['id' => 2, 'name' => 'Martes'],
+                ['id' => 3, 'name' => 'Miércoles'],
+                ['id' => 4, 'name' => 'Jueves'],
+                ['id' => 5, 'name' => 'Viernes'],
+                ['id' => 6, 'name' => 'Sábado'],
+                ['id' => 7, 'name' => 'Domingo']
             ];
         }
 
-        foreach ($days as $idDia => $nombreDia) {
+        foreach ($orderedIds as $dayInfo) {
+            $idDia = $dayInfo['id'];
+            $displayName = strtoupper($dayInfo['name']);
+
             $horario = $existingHorarios->get($idDia);
 
             $fullSchedule[] = [
-                'id_horario' => $horario ? $horario->id_horario : null, // Null implies new record needed
+                'id_horario' => $horario ? $horario->id_horario : null,
                 'id_dia' => $idDia,
-                'nombre_dia' => $nombreDia,
+                'nombre_dia' => $displayName,
                 'hora_apertura' => $horario && $horario->hora_apertura ? date('H:i', strtotime($horario->hora_apertura)) : null,
                 'hora_cierre' => $horario && $horario->hora_cierre ? date('H:i', strtotime($horario->hora_cierre)) : null,
                 'esta_abierto' => $horario ? (bool) $horario->esta_abierto : false,
@@ -57,6 +79,81 @@ class RestaurantProfile extends Component
         }
 
         $this->schedule = $fullSchedule;
+    }
+
+    private function removeAccents($string)
+    {
+        $map = [
+            'á' => 'a',
+            'é' => 'e',
+            'í' => 'i',
+            'ó' => 'o',
+            'ú' => 'u',
+            'Á' => 'A',
+            'É' => 'E',
+            'Í' => 'I',
+            'Ó' => 'O',
+            'Ú' => 'U',
+            'ñ' => 'n',
+            'Ñ' => 'N'
+        ];
+        return strtr($string, $map);
+    }
+
+    // Menu Actions
+    protected $listeners = ['deleteMenuConfirmed' => 'deleteMenu'];
+
+    public function confirmDeleteMenu($menuId)
+    {
+        $this->dispatch(
+            'show-confirmation',
+            title: '¿Eliminar Menú?',
+            message: '¿Estás seguro de que deseas eliminar este menú? Esta acción no se puede deshacer.',
+            confirmAction: 'deleteMenuConfirmed',
+            confirmParams: [$menuId],
+            confirmText: 'Sí, Eliminar',
+            cancelText: 'Cancelar'
+        );
+    }
+
+    public function deleteMenu($menuId)
+    {
+        $menu = \App\Models\Menu::find($menuId);
+
+        if ($menu && $menu->id_restaurante === $this->restaurante->id_restaurante) {
+            $menu->delete();
+            $this->dispatch('notify', 'Menú eliminado correctamente.');
+        }
+    }
+
+    // Client Action
+    public function addToCart($menuId)
+    {
+        $menu = \App\Models\Menu::find($menuId);
+        if (!$menu || $menu->stock <= 0) {
+            $this->dispatch('notify', 'Producto agotado o no disponible.');
+            return;
+        }
+
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$menuId])) {
+            $cart[$menuId]['quantity']++;
+        } else {
+            $cart[$menuId] = [
+                "name" => $menu->nombre_menu,
+                "quantity" => 1,
+                "price" => $menu->precio,
+                "image" => $menu->url_foto,
+                "restaurant_id" => $menu->id_restaurante
+            ];
+        }
+
+        session()->put('cart', $cart);
+
+        // Force refresh of any cart components
+        $this->dispatch('cart-updated');
+        $this->dispatch('notify', 'Producto añadido al carrito.');
     }
 
     public function updateSchedule()

@@ -188,11 +188,27 @@
                                     </div>
                                 </div>
 
-                                <button
-                                    class="mt-4 w-full bg-zinc-100 dark:bg-zinc-800 group-hover:bg-zinc-900 dark:group-hover:bg-white text-zinc-900 dark:text-white group-hover:text-white dark:group-hover:text-zinc-950 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
-                                    <flux:icon.plus class="size-4" />
-                                    Añadir al pedido
-                                </button>
+                                @if(auth()->check() && auth()->user()->id_usuario === $restaurante->id_usuario)
+                                    <!-- Owner Actions -->
+                                    <div class="mt-4 flex gap-2">
+                                        <a href="{{ route('menu.edit', $menu->id_menu) }}" wire:navigate class="flex-1 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
+                                            <flux:icon.pencil-square class="size-4" />
+                                            Editar
+                                        </a>
+                                        <button wire:click="confirmDeleteMenu({{ $menu->id_menu }})" class="flex-1 bg-rose-50 dark:bg-rose-900/20 hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-600 dark:text-rose-400 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
+                                            <flux:icon.trash class="size-4" />
+                                            Eliminar
+                                        </button>
+                                    </div>
+                                @elseif(auth()->check() && auth()->user()->isCliente())
+                                    <!-- Client Actions -->
+                                    <button wire:click="addToCart({{ $menu->id_menu }})"
+                                        @if($menu->stock <= 0) disabled @endif
+                                        class="mt-4 w-full {{ $menu->stock > 0 ? 'bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-900 dark:group-hover:bg-white text-zinc-900 dark:text-white group-hover:text-white dark:group-hover:text-zinc-950' : 'bg-zinc-200 text-zinc-400 cursor-not-allowed' }} py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
+                                        <flux:icon.shopping-cart class="size-4" />
+                                        {{ $menu->stock > 0 ? 'Añadir al carrito' : 'Agotado' }}
+                                    </button>
+                                @endif
                             </div>
                         @empty
                             <div
