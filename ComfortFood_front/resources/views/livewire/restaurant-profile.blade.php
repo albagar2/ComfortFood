@@ -200,10 +200,14 @@
                                 @elseif(auth()->check() && auth()->user()->isCliente())
                                     <!-- Client Actions -->
                                     <button wire:click="addToCart({{ $menu->id_menu }})"
-                                        @if($menu->stock <= 0) disabled @endif
-                                        class="mt-4 w-full {{ $menu->stock > 0 ? 'bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-900 dark:group-hover:bg-white text-zinc-900 dark:text-white group-hover:text-white dark:group-hover:text-zinc-950' : 'bg-zinc-200 text-zinc-400 cursor-not-allowed' }} py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
+                                        @if($menu->stock <= 0 || !$this->currentStatus['isOpen']) disabled @endif
+                                        class="mt-4 w-full {{ ($menu->stock > 0 && $this->currentStatus['isOpen']) ? 'bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-900 dark:group-hover:bg-white text-zinc-900 dark:text-white group-hover:text-white dark:group-hover:text-zinc-950' : 'bg-zinc-200 text-zinc-400 cursor-not-allowed' }} py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
                                         <flux:icon.shopping-cart class="size-4" />
-                                        {{ $menu->stock > 0 ? 'Añadir al carrito' : 'Agotado' }}
+                                        @if(!$this->currentStatus['isOpen'])
+                                            Cerrado
+                                        @else
+                                            {{ $menu->stock > 0 ? 'Añadir al carrito' : 'Agotado' }}
+                                        @endif
                                     </button>
                                 @endif
                             </div>

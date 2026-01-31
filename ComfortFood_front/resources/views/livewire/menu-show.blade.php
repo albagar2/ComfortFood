@@ -137,9 +137,19 @@
                             placeholder="Ej: Sin cebolla, salsa aparte..."></textarea>
                     </div>
 
-                    <button wire:click="addToCart({{ $menu->id_menu }})" @if($menu->stock <= 0) disabled @endif
-                        class="mt-4 w-full py-3 {{ $menu->stock > 0 ? 'bg-zinc-900 hover:bg-zinc-800' : 'bg-zinc-300 cursor-not-allowed' }} text-white font-bold rounded-xl shadow-lg shadow-zinc-200 transition-all active:scale-95 disabled:opacity-50">
-                        {{ $menu->stock > 0 ? 'Añadir al carrito' : 'Agotado' }}
+                    <button wire:click="addToCart({{ $menu->id_menu }})" @if($menu->stock <= 0 || !$this->isRestaurantOpen)
+                    disabled @endif
+                        class="mt-4 w-full py-3 {{ ($menu->stock > 0 && $this->isRestaurantOpen) ? 'bg-zinc-900 hover:bg-zinc-800' : 'bg-zinc-300 cursor-not-allowed' }} text-white font-bold rounded-xl shadow-lg shadow-zinc-200 transition-all active:scale-95 disabled:opacity-50">
+                        @if(!$this->isRestaurantOpen)
+                            Cerrado
+                            ({{ $menu->restaurante->horarios->where('id_dia', now()->format('N'))->first()?->hora_apertura ?? '' }}
+                            -
+                            {{ $menu->restaurante->horarios->where('id_dia', now()->format('N'))->first()?->hora_cierre ?? '' }})
+                        @elseif($menu->stock <= 0)
+                            Agotado
+                        @else
+                            Añadir al carrito
+                        @endif
                     </button>
                     <!-- Restaurant Name Link -->
                     <div class="mt-4 text-center">

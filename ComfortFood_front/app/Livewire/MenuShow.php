@@ -12,7 +12,23 @@ class MenuShow extends Component
 
     public function mount(Menu $menu)
     {
-        $this->menu = $menu->load('restaurante.user');
+        $this->menu = $menu->load(['restaurante.user', 'restaurante.horarios']);
+    }
+
+    #[Livewire\Attributes\Computed]
+    public function isRestaurantOpen()
+    {
+        $now = now();
+        $currentDayId = $now->format('N');
+        $currentTime = $now->format('H:i:s');
+
+        $schedule = $this->menu->restaurante->horarios->where('id_dia', $currentDayId)->first();
+
+        if (!$schedule || !$schedule->esta_abierto) {
+            return false;
+        }
+
+        return $currentTime >= $schedule->hora_apertura && $currentTime <= $schedule->hora_cierre;
     }
 
     public function addToCart($menuId)

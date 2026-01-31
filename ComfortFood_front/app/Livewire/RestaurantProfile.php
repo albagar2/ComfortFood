@@ -150,6 +150,58 @@ class RestaurantProfile extends Component
     public $observation = '';
     public $quantity = 1;
 
+    // Direct Add To Cart (simple version for profile list)
+    public function addToCart($menuId)
+    {
+        $cliente = auth()->user()->cliente;
+        if (!$cliente) {
+            $this->dispatch('notify', 'Debes iniciar sesión para añadir al carrito');
+            return;
+        }
+
+        $menu = \App\Models\Menu::find($menuId);
+        if (!$menu) {
+            $this->dispatch('notify', 'Menú no encontrado');
+            return;
+        }
+
+        if ($menu->stock <= 0) {
+            $this->dispatch('notify', 'Este menú no tiene stock disponible');
+            return;
+        }
+
+        // Check restaurant consistency
+        $existingCart = \App\Models\Carrito::where('id_cliente', $cliente->id_cliente)->first();
+        if ($existingCart && $existingCart->id_restaurante != $menu->id_restaurante) {
+            $this->dispatch('notify', 'Solo puedes añadir menús de un restaurante a la vez. Vacía tu carrito primero.');
+            return;
+        }
+
+        // Add logic (Direct 1 item)
+        $carritoItem = \App\Models\Carrito::where('id_cliente', $cliente->id_cliente)
+            ->where('id_menu', $menu->id_menu)
+            ->first();
+
+        if ($carritoItem) {
+            if (($carritoItem->cantidad + 1) > $menu->stock) {
+                $this->dispatch('notify', 'No hay suficiente stock disponible');
+                return;
+            }
+            $carritoItem->cantidad++;
+            $carritoItem->save();
+        } else {
+            \App\Models\Carrito::create([
+                'id_cliente' => $cliente->id_cliente,
+                'id_menu' => $menu->id_menu,
+                'id_restaurante' => $menu->id_restaurante,
+                'cantidad' => 1,
+            ]);
+        }
+
+        $this->dispatch('cart-updated');
+        $this->dispatch('notify', 'Menú añadido al carrito.');
+    }
+
     // Client Action - Step 1: Open Modal
     public function openAddToCartModal($menuId)
     {
