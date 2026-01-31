@@ -100,9 +100,8 @@
 
                     <!-- Quick Actions -->
                     <div class="md:flex gap-3">
-                        <div
-                            class="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-2xl text-white text-sm font-medium">
-                            Abierto hasta 23:00
+                        <div class="backdrop-blur-md border px-4 py-2 rounded-2xl text-sm font-medium {{ $this->currentStatus['class'] }}">
+                             {{ $this->currentStatus['text'] }}
                         </div>
                     </div>
                 </div>
@@ -240,6 +239,72 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Schedule Application Check -->
+                @if(auth()->check() && auth()->user()->id_usuario === $restaurante->id_usuario)
+                    <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 shadow-sm space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="size-12 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center text-indigo-600">
+                                <flux:icon.calendar class="size-6" />
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-zinc-900 dark:text-white">Gestionar Horario</h4>
+                                <p class="text-sm text-zinc-500">Define tus horas de apertura</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            @foreach($schedule as $index => $day)
+                                <div class="flex items-center gap-3 p-3 rounded-xl transition-colors {{ $day['esta_abierto'] ? 'bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-800' : 'bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700' }}">
+                                    <!-- Toggle -->
+                                    <div class="flex items-center h-5">
+                                        <input wire:model.live="schedule.{{ $index }}.esta_abierto" type="checkbox" class="w-4 h-4 text-emerald-600 bg-zinc-100 border-zinc-300 rounded focus:ring-emerald-500 dark:focus:ring-emerald-600 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600">
+                                    </div>
+                                    
+                                    <div class="flex-1 grid grid-cols-12 gap-2 items-center">
+                                        <span class="col-span-4 text-xs font-bold uppercase tracking-wider {{ $day['esta_abierto'] ? 'text-green-700 dark:text-green-400' : 'text-zinc-400' }}">
+                                            {{ $day['nombre_dia'] }}
+                                        </span>
+
+                                        @if($day['esta_abierto'])
+                                            <input type="time" wire:model="schedule.{{ $index }}.hora_apertura" class="col-span-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white text-xs rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5" required>
+                                            <input type="time" wire:model="schedule.{{ $index }}.hora_cierre" class="col-span-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white text-xs rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5" required>
+                                        @else
+                                            <span class="col-span-8 text-xs text-zinc-400 italic text-center">Cerrado</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+
+                            <flux:button wire:click="updateSchedule" variant="primary" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
+                                Guardar Horario
+                            </flux:button>
+                        </div>
+                    </div>
+                @else
+                    <!-- Public Schedule Display -->
+                    <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 shadow-sm space-y-4">
+                        <div class="flex items-center gap-4 mb-2">
+                            <div class="size-10 bg-zinc-100 dark:bg-zinc-800 rounded-xl flex items-center justify-center text-zinc-500">
+                                <flux:icon.clock class="size-5" />
+                            </div>
+                            <h4 class="font-bold text-zinc-900 dark:text-white">Horario</h4>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            @foreach($schedule as $day)
+                                <div class="flex justify-between text-sm">
+                                    <span class="{{ $day['esta_abierto'] ? 'text-zinc-700 dark:text-zinc-300' : 'text-zinc-400' }}">{{ $day['nombre_dia'] }}</span>
+                                    @if($day['esta_abierto'])
+                                        <span class="font-medium text-zinc-900 dark:text-white">{{ $day['hora_apertura'] }} - {{ $day['hora_cierre'] }}</span>
+                                    @else
+                                        <span class="text-zinc-400 italic">Cerrado</span>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
 
                 <!-- Delivery Stats -->
                 <div class="bg-zinc-900 dark:bg-white rounded-3xl p-6 text-white dark:text-zinc-900 space-y-4">
