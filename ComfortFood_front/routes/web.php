@@ -22,6 +22,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::view('users', 'admin.users.index')->name('admin.users.index');
     Route::get('users/{user}', [AdminUserController::class, 'show'])->name('admin.users.show');
     Route::get('users/{user}/edit', [AdminUserController::class, 'edit'])->name('admin.users.edit');
+    Route::patch('users/{user}', [AdminUserController::class, 'update'])->name('admin.users.update');
 });
 
 Route::middleware(['auth'])->group(function () {

@@ -59,7 +59,6 @@ class MenuForm extends Component
         ]);
 
         $data = [
-            'id_restaurante' => Auth::user()->restaurante->id_restaurante,
             'nombre_menu' => $this->nombre_menu,
             'plato_principal' => $this->plato_principal,
             'segundo_plato' => $this->segundo_plato,
@@ -71,6 +70,12 @@ class MenuForm extends Component
             'stock' => $this->stock,
         ];
 
+        // Only set id_restaurante for new creations OR ensure it matches the user
+        if (!$this->menu || !$this->menu->exists) {
+            $data['id_restaurante'] = Auth::user()->restaurante->id_restaurante;
+            $data['esta_activo'] = true;
+        }
+
         if ($this->foto) {
             // Store image logic
             $path = $this->foto->store('menus', 'public');
@@ -79,9 +84,10 @@ class MenuForm extends Component
 
         if ($this->menu && $this->menu->exists) {
             $this->menu->update($data);
+            session()->flash('success', 'Menú actualizado correctamente.');
         } else {
-            $data['esta_activo'] = true;
             Menu::create($data);
+            session()->flash('success', 'Menú creado correctamente.');
         }
 
         return redirect()->route('menu.index');

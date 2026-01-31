@@ -22,6 +22,11 @@ class RestaurantProfile extends Component
     public function mount(Restaurante $restaurante)
     {
         $this->restaurante = $restaurante->load(['user', 'resenas']);
+
+        if (!$this->restaurante->user->es_activo) {
+            abort(404);
+        }
+
         $this->loadSchedule();
         $this->loadRatingStats();
     }

@@ -100,6 +100,9 @@ class ClientDashboard extends Component
     public function render()
     {
         $query = Menu::where('esta_activo', true)
+            ->whereHas('restaurante.user', function ($q) {
+                $q->where('es_activo', true);
+            })
             ->with([
                 'restaurante.user',
                 'restaurante.horarios',
