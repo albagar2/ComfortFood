@@ -14,101 +14,156 @@
             </flux:button>
         </div>
 
-        <!-- Chart Section -->
-        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm">
-            <div class="flex justify-between items-center mb-8">
-                <div>
-                    <h3 class="font-bold text-zinc-900 dark:text-white">Evolución de ingresos</h3>
+        <!-- Actionable Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div
+                class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm">
+                <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">Pedidos (Hoy)</p>
+                <div class="flex items-end justify-between">
+                    <h3 class="text-3xl font-bold text-zinc-900 dark:text-white">
+                        {{ $dailyOrders[now()->format('Y-m-d')] ?? 0 }}
+                    </h3>
+                    <div class="flex items-center text-green-500 text-xs font-bold">
+                        <flux:icon.arrow-trending-up class="size-3 mr-1" />
+                        +12%
+                    </div>
                 </div>
-                <flux:select class="!w-40" placeholder="Último año">
-                    <flux:select.option>Último año</flux:select.option>
-                    <flux:select.option>2024</flux:select.option>
-                </flux:select>
             </div>
 
-            <div class="h-[400px] w-full" x-data="{
-                init() {
-                    const ctx = document.getElementById('earningsChart').getContext('2d');
-                    new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: @js(array_keys($monthlyEarnings)),
-                            datasets: [{
-                                label: 'Ingresos (€)',
-                                data: @js(array_values($monthlyEarnings)),
-                                backgroundColor: '#71717a',
-                                borderRadius: 8,
-                                borderSkipped: false,
-                                hoverBackgroundColor: '#3f3f46',
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: { display: false },
-                                tooltip: {
-                                    backgroundColor: '#18181b',
-                                    titleFont: { size: 13, weight: 'bold' },
-                                    bodyFont: { size: 12 },
-                                    padding: 12,
-                                    usePointStyle: true,
-                                    callbacks: {
-                                        label: (context) => ` ${context.parsed.y}€`
-                                    }
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    grid: { color: '#f4f4f5', drawBorder: false },
-                                    ticks: { color: '#a1a1aa', font: { size: 11 } }
-                                },
-                                x: {
-                                    grid: { display: false },
-                                    ticks: { color: '#a1a1aa', font: { size: 11 } }
-                                }
-                            }
-                        }
-                    });
-                }
-            }">
-                <canvas id="earningsChart"></canvas>
+            <div
+                class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm">
+                <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">Día de mayor demanda</p>
+                @php $topDay = array_key_first($peakDays); @endphp
+                <h3 class="text-xl font-bold text-zinc-900 dark:text-white">{{ $topDay ?: 'N/A' }}</h3>
+                <p class="text-xs text-zinc-500 mt-1">Promedio de {{ $peakDays[$topDay] ?? 0 }} pedidos</p>
+            </div>
+
+            <div
+                class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm">
+                <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">Valoración Media</p>
+                <div class="flex items-center gap-2">
+                    <h3 class="text-3xl font-bold text-zinc-900 dark:text-white">{{ $satisfactionStats['promedio'] }}
+                    </h3>
+                    <div class="flex text-yellow-400">
+                        @for($i = 1; $i <= 5; $i++)
+                            <flux:icon.star variant="{{ $satisfactionStats['promedio'] >= $i ? 'solid' : 'outline' }}"
+                                class="size-4" />
+                        @endfor
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm font-['Outfit']">
+                <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">Total Reseñas</p>
+                <h3 class="text-3xl font-bold text-zinc-900 dark:text-white">{{ $satisfactionStats['total'] }}</h3>
             </div>
         </div>
 
-        <!-- Satisfaction Section -->
-        <div class="space-y-6">
-            <h2 class="text-xl font-bold text-zinc-900 dark:text-white">Satisfacción del cliente</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Stats Card -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Best Rated Menus -->
+            <div class="lg:col-span-1 space-y-6">
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white">Menús mejor valorados</h2>
                 <div
-                    class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 shadow-sm text-center flex flex-col items-center justify-center space-y-4">
-                    <p class="text-sm font-medium text-zinc-600 dark:text-zinc-400">Reseñas en <span
-                            class="font-bold text-zinc-900 dark:text-white">{{ $satisfactionStats['year'] }}</span></p>
-
-                    <div class="space-y-1">
-                        <p class="text-lg font-medium text-zinc-900 dark:text-white">Promedio:
-                            {{ $satisfactionStats['promedio'] }} / 5 ⭐
-                        </p>
-                        <p class="text-sm text-zinc-500">{{ $satisfactionStats['diff'] }} respecto al año anterior</p>
+                    class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="divide-y divide-zinc-100 dark:divide-zinc-800">
+                        @forelse($topMenus as $menu)
+                            <div class="p-4 flex items-center justify-between">
+                                <div class="flex flex-col">
+                                    <span
+                                        class="font-bold text-sm text-zinc-900 dark:text-white">{{ $menu->nombre_menu }}</span>
+                                    <span class="text-[10px] text-zinc-500">{{ $menu->count }} valoraciones</span>
+                                </div>
+                                <div class="flex items-center gap-1 text-yellow-500 font-bold">
+                                    <flux:icon.star variant="solid" class="size-3" />
+                                    <span class="text-xs">{{ number_format($menu->avg_rating, 1) }}</span>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="p-8 text-center text-zinc-500 text-sm">No hay datos suficientes</div>
+                        @endforelse
                     </div>
+                </div>
 
-                    <div class="flex gap-6 mt-2">
-                        <div class="flex items-center gap-2">
-                            <span class="size-3 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]"></span>
-                            <span
-                                class="text-sm font-medium text-zinc-700 dark:text-zinc-300">{{ $satisfactionStats['positivas_pct'] }}%
-                                positivas</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="size-3 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]"></span>
-                            <span
-                                class="text-sm font-medium text-zinc-700 dark:text-zinc-300">{{ $satisfactionStats['negativas_pct'] }}%
-                                negativas</span>
-                        </div>
+                <!-- Chart Section (Simplified) -->
+                <div
+                    class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm">
+                    <h3
+                        class="font-bold text-sm text-zinc-900 dark:text-white mb-4 uppercase tracking-widest text-[10px]">
+                        Evolución de ingresos</h3>
+                    <div class="h-[200px] w-full">
+                        <canvas id="earningsChart"></canvas>
                     </div>
+                </div>
+            </div>
+
+            <!-- Reviews List -->
+            <div class="lg:col-span-2 space-y-6" id="reviews-section">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <h2 class="text-xl font-bold text-zinc-900 dark:text-white">Listado de Reseñas</h2>
+
+                    <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                        <flux:input wire:model.live.debounce.500ms="search" placeholder="Buscar..."
+                            icon="magnifying-glass" class="!w-full md:!w-40" />
+                        <flux:select wire:model.live="filterRating" class="!w-24">
+                            <flux:select.option value="">⭐ Todas</flux:select.option>
+                            <flux:select.option value="5">5 ⭐</flux:select.option>
+                            <flux:select.option value="4">4 ⭐</flux:select.option>
+                            <flux:select.option value="3">3 ⭐</flux:select.option>
+                            <flux:select.option value="2">2 ⭐</flux:select.option>
+                            <flux:select.option value="1">1 ⭐</flux:select.option>
+                        </flux:select>
+                        <flux:input type="date" wire:model.live="filterDate" class="!w-32" />
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    @forelse($this->reviews as $review)
+                        <div
+                            class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm hover:border-pastel-orange/30 transition-colors">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="flex items-center gap-3">
+                                    <flux:avatar size="sm" :src="$review->cliente->user->profile_photo_url"
+                                        :name="$review->cliente->user->nombre_completo" />
+                                    <div class="flex flex-col">
+                                        <span
+                                            class="font-bold text-zinc-900 dark:text-white">{{ $review->cliente->user->nombre_completo }}</span>
+                                        <span class="text-[10px] text-zinc-500">{{ $review->created_at->diffForHumans() }} •
+                                            Pedido #{{ $review->id_pedido }}</span>
+                                    </div>
+                                </div>
+                                <div class="flex gap-0.5">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        <flux:icon.star variant="{{ $review->puntuacion >= $i ? 'solid' : 'outline' }}"
+                                            class="size-4 {{ $review->puntuacion >= $i ? 'text-yellow-400' : 'text-zinc-200' }}" />
+                                    @endfor
+                                </div>
+                            </div>
+
+                            @if($review->comentario)
+                                <p class="text-sm text-zinc-700 dark:text-zinc-300 italic">"{{ $review->comentario }}"</p>
+                            @else
+                                <p class="text-xs text-zinc-400 italic">Sin comentario.</p>
+                            @endif
+
+                            <div
+                                class="mt-4 pt-4 border-t border-zinc-50 dark:border-zinc-800 flex justify-between items-center">
+                                <span class="text-[10px] uppercase font-bold text-zinc-400 tracking-tighter">
+                                    Fecha: {{ $review->created_at->format('d/m/Y H:i') }}
+                                </span>
+                                @if(!$review->visto)
+                                    <span
+                                        class="px-2 py-0.5 bg-pastel-orange text-white text-[9px] font-bold rounded-full uppercase">Nueva</span>
+                                @endif
+                            </div>
+                        </div>
+                    @empty
+                        <div
+                            class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-12 text-center shadow-sm">
+                            <flux:icon.star class="size-12 mx-auto text-zinc-200 mb-4" />
+                            <p class="text-zinc-500">No se encontraron reseñas con los filtros seleccionados.</p>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>
@@ -117,5 +172,34 @@
     <!-- Script Chart.js -->
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            document.addEventListener('livewire:initialized', () => {
+                const ctx = document.getElementById('earningsChart').getContext('2d');
+                let chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: @js(array_keys($monthlyEarnings)),
+                        datasets: [{
+                            label: 'Ingresos (€)',
+                            data: @js(array_values($monthlyEarnings)),
+                            borderColor: '#FF8A5B',
+                            backgroundColor: 'rgba(255, 138, 91, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { display: false },
+                            x: { display: false }
+                        }
+                    }
+                });
+            });
+        </script>
     @endpush
 </div>

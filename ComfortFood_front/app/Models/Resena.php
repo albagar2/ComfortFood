@@ -15,8 +15,11 @@ class Resena extends Model
     protected $fillable = [
         'id_pedido',
         'id_cliente',
+        'id_restaurante',
+        'id_menu',
         'puntuacion',
         'comentario',
+        'visto',
     ];
 
     public function pedido()
@@ -27,5 +30,15 @@ class Resena extends Model
     public function cliente()
     {
         return $this->belongsTo(Cliente::class, 'id_cliente', 'id_cliente');
+    }
+
+    public function restaurante()
+    {
+        return $this->belongsTo(Restaurante::class, 'id_restaurante', 'id_restaurante');
+    }
+
+    public function menu()
+    {
+        return $this->belongsTo(Menu::class, 'id_menu', 'id_menu');
     }
 }

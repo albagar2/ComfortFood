@@ -18,6 +18,7 @@ class Pedido extends Model
         'precio_total',
         'id_estado_pedido',
         'direccion_entrega',
+        'visto_completado',
     ];
 
     protected $casts = [

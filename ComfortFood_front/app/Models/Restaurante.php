@@ -49,6 +49,11 @@ class Restaurante extends Model
         return $this->hasMany(Favorito::class, 'id_restaurante', 'id_restaurante');
     }
 
+    public function resenas()
+    {
+        return $this->hasMany(Resena::class, 'id_restaurante', 'id_restaurante');
+    }
+
     public function isOpen()
     {
         $now = now();

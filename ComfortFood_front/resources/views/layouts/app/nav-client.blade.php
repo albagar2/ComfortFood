@@ -20,7 +20,8 @@
             </flux:sidebar.item>
             <flux:sidebar.item icon="clipboard-document-list" href="{{ route('orders.history') }}"
                 :current="request()->routeIs('orders.history')" wire:navigate
-                class="!text-white/80 hover:!text-white data-[current]:!text-pastel-orange data-[current]:!border-pastel-orange data-[current]:border !rounded-xl !bg-transparent data-[current]:!bg-white/10">
+                class="!text-white/80 hover:!text-white data-[current]:!text-pastel-orange data-[current]:!border-pastel-orange data-[current]:border !rounded-xl !bg-transparent data-[current]:!bg-white/10 relative">
+                <livewire:new-completed-orders-badge />
                 {{ __('Mis Pedidos') }}
             </flux:sidebar.item>
             <flux:sidebar.item icon="heart" href="{{ route('favorites') }}" :current="request()->routeIs('favorites')"

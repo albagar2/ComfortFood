@@ -15,6 +15,12 @@ class OrderHistory extends Component
     public $status = '';
     public $date = '';
 
+    // Review properties
+    public $showReviewModal = false;
+    public $selectedOrderId = null;
+    public $rating = 5;
+    public $comment = '';
+
     protected $queryString = [
         'search' => ['except' => ''],
         'status' => ['except' => ''],
@@ -36,10 +42,59 @@ class OrderHistory extends Component
         $this->resetPage();
     }
 
+    public function openReviewModal($orderId)
+    {
+        $this->selectedOrderId = $orderId;
+        $this->rating = 5;
+        $this->comment = '';
+        $this->showReviewModal = true;
+    }
+
+    public function saveReview()
+    {
+        $this->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string|max:500',
+        ]);
+
+        $order = Pedido::find($this->selectedOrderId);
+        if (!$order || $order->id_cliente != auth()->user()->cliente->id_cliente) {
+            return;
+        }
+
+        // Create review
+        \App\Models\Resena::create([
+            'id_pedido' => $order->id_pedido,
+            'id_cliente' => $order->id_cliente,
+            'id_restaurante' => $order->id_restaurante,
+            // We could optionally link to a menu here, but order-level is fine for now
+            'puntuacion' => $this->rating,
+            'comentario' => $this->comment,
+            'visto' => false, // New review for the restaurant
+        ]);
+
+        $this->showReviewModal = false;
+        session()->flash('success', '¡Gracias por tu valoración!');
+    }
+
     public function render()
     {
         $user = Auth::user();
-        $query = Pedido::with(['cliente.user', 'restaurante.user', 'estado']);
+
+        // Mark as seen for client if viewing history
+        if ($user->isCliente()) {
+            Pedido::where('id_cliente', $user->cliente->id_cliente)
+                ->whereHas('estado', function ($q) {
+                    $q->where('nombre_estado', 'Completado');
+                })
+                ->where('visto_completado', false)
+                ->update(['visto_completado' => true]);
+
+            // Dispatch event to refresh badge
+            $this->dispatch('refresh-badges');
+        }
+
+        $query = Pedido::with(['cliente.user', 'restaurante.user', 'estado', 'resena']);
 
         // Role-based filtering
         if ($user->isCliente()) {

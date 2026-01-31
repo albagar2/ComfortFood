@@ -38,7 +38,8 @@
                 <!-- Estadísticas -->
                 <flux:sidebar.item icon="presentation-chart-bar" :href="route('restaurant.statistics')"
                     :current="request()->routeIs('restaurant.statistics')" wire:navigate
-                    class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-white/10 data-[current]:!text-pastel-orange data-[current]:!border-pastel-orange data-[current]:border font-medium tracking-wide !rounded-xl">
+                    class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-white/10 data-[current]:!text-pastel-orange data-[current]:!border-pastel-orange data-[current]:border font-medium tracking-wide !rounded-xl relative">
+                    <livewire:new-reviews-badge />
                     ESTADÍSTICAS
                 </flux:sidebar.item>
                 <!-- Soporte -->
