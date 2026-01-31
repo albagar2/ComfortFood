@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Client;
 
 use App\Models\Menu;
 use App\Models\Favorito;
@@ -41,7 +41,7 @@ class Favorites extends Component
                 ->filter();
         }
 
-        return view('livewire.favorites', [
+        return view('livewire.client.favorites', [
             'menus' => $favorites
         ]);
     }

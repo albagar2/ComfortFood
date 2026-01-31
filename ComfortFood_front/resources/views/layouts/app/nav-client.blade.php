@@ -21,7 +21,7 @@
             <flux:sidebar.item icon="clipboard-document-list" href="{{ route('orders.history') }}"
                 :current="request()->routeIs('orders.history')" wire:navigate
                 class="!text-white/80 hover:!text-white data-[current]:!text-pastel-orange data-[current]:!border-pastel-orange data-[current]:border !rounded-xl !bg-transparent data-[current]:!bg-white/10 relative">
-                <livewire:new-completed-orders-badge />
+                <livewire:shared.badges.new-completed-orders-badge />
                 {{ __('Mis Pedidos') }}
             </flux:sidebar.item>
             <flux:sidebar.item icon="heart" href="{{ route('favorites') }}" :current="request()->routeIs('favorites')"
@@ -35,7 +35,7 @@
         <!-- Desktop Icons -->
         <div class="flex items-center gap-2 max-lg:hidden">
             <div class="flex items-center gap-3 scale-110">
-                <livewire:cart-icon />
+                <livewire:shared.cart-icon />
                 <x-appearance-dropdown />
                 <a href="{{ route('profile.edit') }}" wire:navigate
                     class="p-2 rounded-md !text-white/80 hover:!text-white" title="mi perfil">
@@ -58,7 +58,7 @@
             <div class="flex items-center gap-2">
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
                 <x-appearance-dropdown />
-                <livewire:cart-icon />
+                <livewire:shared.cart-icon />
             </div>
         </flux:sidebar.header>
 
@@ -148,8 +148,8 @@
 
     {{ $slot }}
 
-    <livewire:confirmation-modal />
-    <livewire:cart-modal />
+    <livewire:shared.modals.confirmation-modal />
+    <livewire:shared.modals.cart-modal />
 
     @fluxScripts
 </body>

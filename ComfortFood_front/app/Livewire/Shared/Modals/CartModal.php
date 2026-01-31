@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Shared\Modals;
 
 use App\Models\Carrito;
 use App\Models\Pedido;
@@ -192,6 +192,6 @@ class CartModal extends Component
 
     public function render()
     {
-        return view('livewire.cart-modal');
+        return view('livewire.shared.modals.cart-modal');
     }
 }

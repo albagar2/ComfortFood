@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Client;
 
 use App\Models\Menu;
 use Livewire\Component;
@@ -124,7 +124,7 @@ class ClientDashboard extends Component
             });
         }
 
-        return view('livewire.client-dashboard', [
+        return view('livewire.client.client-dashboard', [
             'menus' => $query->get()->sort(function ($a, $b) {
                 $aDeactivated = in_array($a->id_menu, $this->deactivatedIds);
                 $bDeactivated = in_array($b->id_menu, $this->deactivatedIds);

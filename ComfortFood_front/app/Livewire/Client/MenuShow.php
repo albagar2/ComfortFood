@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Client;
 
 use App\Models\Menu;
 use Livewire\Component;
@@ -93,6 +93,6 @@ class MenuShow extends Component
 
     public function render()
     {
-        return view('livewire.menu-show');
+        return view('livewire.client.menu-show');
     }
 }

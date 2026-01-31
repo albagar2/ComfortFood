@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Restaurant;
 
 use App\Models\EstadoPedido;
 use App\Models\Pedido;
@@ -144,7 +144,7 @@ class RestaurantDashboard extends Component
             });
         }
 
-        return view('livewire.restaurant-dashboard', [
+        return view('livewire.restaurant.restaurant-dashboard', [
             'orders' => $orders
         ]);
     }

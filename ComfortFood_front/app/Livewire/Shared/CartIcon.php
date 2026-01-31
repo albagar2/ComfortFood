@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Shared;
 
 use App\Models\Carrito;
 use Livewire\Component;
@@ -38,6 +38,6 @@ class CartIcon extends Component
 
     public function render()
     {
-        return view('livewire.cart-icon');
+        return view('livewire.shared.cart-icon');
     }
 }

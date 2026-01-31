@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Shared\Badges;
 
 use App\Models\Pedido;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class NewCompletedOrdersBadge extends Component
 {
-    #[Livewire\Attributes\On('refresh-badges')]
+    #[On('refresh-badges')]
     public function refresh()
     {
     }
@@ -24,6 +25,6 @@ class NewCompletedOrdersBadge extends Component
                 ->count();
         }
 
-        return view('livewire.new-completed-orders-badge', ['count' => $count]);
+        return view('livewire.shared.badges.new-completed-orders-badge', ['count' => $count]);
     }
 }

@@ -1,12 +1,18 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Shared\Badges;
 
 use App\Models\Pedido;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class PendingOrdersBadge extends Component
 {
+    #[On('refresh-badges')]
+    public function refresh()
+    {
+    }
+
     public function render()
     {
         $count = 0;
@@ -18,6 +24,6 @@ class PendingOrdersBadge extends Component
                 ->count();
         }
 
-        return view('livewire.pending-orders-badge', ['count' => $count]);
+        return view('livewire.shared.badges.pending-orders-badge', ['count' => $count]);
     }
 }

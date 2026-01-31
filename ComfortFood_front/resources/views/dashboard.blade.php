@@ -4,8 +4,8 @@
             <livewire:admin.user-list />
         </div>
     @elseif(auth()->user()->isRestaurante())
-        <livewire:restaurant-dashboard />
+        <livewire:restaurant.restaurant-dashboard />
     @else
-        <livewire:client-dashboard />
+        <livewire:client.client-dashboard />
     @endif
 </x-layouts::app>

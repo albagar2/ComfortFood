@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Restaurant;
 
 use App\Models\Restaurante;
 use Livewire\Attributes\Computed;
@@ -419,6 +419,6 @@ class RestaurantProfile extends Component
 
     public function render()
     {
-        return view('livewire.restaurant-profile');
+        return view('livewire.restaurant.restaurant-profile');
     }
 }

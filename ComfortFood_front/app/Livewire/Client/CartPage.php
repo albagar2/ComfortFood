@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Client;
 
 use App\Models\Carrito;
 use App\Models\Menu;
@@ -176,6 +176,6 @@ class CartPage extends Component
 
     public function render()
     {
-        return view('livewire.cart-page');
+        return view('livewire.client.cart-page');
     }
 }

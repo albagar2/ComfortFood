@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Shared\Badges;
 
 use App\Models\Resena;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class NewReviewsBadge extends Component
 {
-    #[Livewire\Attributes\On('refresh-badges')]
+    #[On('refresh-badges')]
     public function refresh()
     {
     }
@@ -21,6 +22,6 @@ class NewReviewsBadge extends Component
                 ->count();
         }
 
-        return view('livewire.new-reviews-badge', ['count' => $count]);
+        return view('livewire.shared.badges.new-reviews-badge', ['count' => $count]);
     }
 }
