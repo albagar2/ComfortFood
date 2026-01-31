@@ -74,6 +74,13 @@ class RestaurantDashboard extends Component
         }
     }
 
+    public $filterStatus = 'all';
+
+    public function setFilter($status)
+    {
+        $this->filterStatus = $status;
+    }
+
     public function render()
     {
         $user = Auth::user();
@@ -85,7 +92,23 @@ class RestaurantDashboard extends Component
 
         $query = Pedido::where('id_restaurante', $user->restaurante->id_restaurante)
             ->with(['detalles.menu', 'estado', 'cliente.user'])
-            ->latest();
+            ->whereDate('created_at', now()->today()); // Only today's orders
+
+        // Filter by specific status text via relationship
+        if ($this->filterStatus !== 'all') {
+            $query->whereHas('estado', function ($q) {
+                $q->where('nombre_estado', $this->filterStatus);
+            });
+            // If specific status, just sort by time (oldest first)
+            $query->orderBy('created_at', 'asc');
+        } else {
+            // "All": Sort by Priority then Time
+            // Join with estados to sort by name mapped to priority
+            // We use a raw select/order for performance or simple collection sort.
+            // Given small daily volume, collection sort is cleaner and safer than complex raw SQL with joins here.
+
+            // Fetch first then sort
+        }
 
         if ($this->search) {
             $query->where(function ($q) {
@@ -96,8 +119,33 @@ class RestaurantDashboard extends Component
             });
         }
 
+        $orders = $query->get();
+
+        if ($this->filterStatus === 'all') {
+            $priorityMap = [
+                'Pendiente' => 1,
+                'En Preparación' => 2,
+                'Entregado' => 3,
+                'Completado' => 4,
+                'Cancelado' => 5
+            ];
+
+            $orders = $orders->sort(function ($a, $b) use ($priorityMap) {
+                $statusA = $a->estado->nombre_estado;
+                $statusB = $b->estado->nombre_estado;
+
+                $prioA = $priorityMap[$statusA] ?? 99;
+                $prioB = $priorityMap[$statusB] ?? 99;
+
+                if ($prioA === $prioB) {
+                    return $a->created_at <=> $b->created_at; // Oldest first
+                }
+                return $prioA <=> $prioB;
+            });
+        }
+
         return view('livewire.restaurant-dashboard', [
-            'orders' => $query->get()
+            'orders' => $orders
         ]);
     }
 }

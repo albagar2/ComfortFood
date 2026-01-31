@@ -58,7 +58,33 @@
 
         <!-- Main Orders Grid -->
         <section class="space-y-6">
-            <h2 class="text-2xl font-black text-zinc-950 dark:text-white uppercase tracking-tight">Gestión de Comandas</h2>
+            <div class="flex flex-col md:flex-row justify-between md:items-end gap-4">
+                <div>
+                    <h2 class="text-2xl font-black text-zinc-950 dark:text-white uppercase tracking-tight">Gestión de Comandas</h2>
+                    <p class="text-sm font-bold text-zinc-400 uppercase tracking-widest mt-1">Pedidos de Hoy • {{ now()->translatedFormat('d F') }}</p>
+                </div>
+
+                <!-- Status Filters -->
+                <div class="flex p-1 bg-zinc-100 dark:bg-zinc-800 rounded-xl overflow-x-auto scrollbar-hide">
+                    @php
+                        $filters = [
+                            'all' => 'Todos',
+                            'Pendiente' => 'Pendientes',
+                            'En Preparación' => 'Cocina',
+                            'Entregado' => 'Entregados', 
+                            'Completado' => 'Completados',
+                            'Cancelado' => 'Cancelados'
+                        ];
+                    @endphp
+
+                    @foreach($filters as $key => $label)
+                        <button wire:click="setFilter('{{ $key }}')" 
+                            class="px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all whitespace-nowrap {{ $filterStatus === $key ? 'bg-white dark:bg-zinc-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300' }}">
+                            {{ $label }}
+                        </button>
+                    @endforeach
+                </div>
+            </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach($orders as $order)
@@ -132,17 +158,17 @@
 
                                     @php
                                         $actionConfig = match($order->estado->nombre_estado) {
-                                            'Pendiente' => ['text' => 'Aceptar', 'icon' => 'check', 'color' => 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20'],
-                                            'En Preparación' => ['text' => 'Entregar', 'icon' => 'truck', 'color' => 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/20'],
-                                            'Entregado' => ['text' => 'Completar', 'icon' => 'check-circle', 'color' => 'bg-zinc-600 hover:bg-zinc-700 shadow-zinc-500/20'],
-                                            default => ['text' => 'Avanzar', 'icon' => 'arrow-right', 'color' => 'bg-emerald-600']
+                                            'Pendiente' => ['title' => 'Aceptar', 'icon' => 'check', 'color' => 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20'],
+                                            'En Preparación' => ['title' => 'Entregar', 'icon' => 'truck', 'color' => 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/20'],
+                                            'Entregado' => ['title' => 'Completar', 'icon' => 'check-circle', 'color' => 'bg-zinc-600 hover:bg-zinc-700 shadow-zinc-500/20'],
+                                            default => ['title' => 'Avanzar', 'icon' => 'arrow-right', 'color' => 'bg-emerald-600']
                                         };
                                     @endphp
-                                    <button wire:click="advanceStatus({{ $order->id_pedido }})" class="px-4 py-2 {{ $actionConfig['color'] }} text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg transition-all flex items-center gap-2">
+                                    <button wire:click="advanceStatus({{ $order->id_pedido }})"  title="{{ $actionConfig['title'] }}" class="px-4 py-2 {{ $actionConfig['color'] }} text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg transition-all flex items-center gap-2">
                                         @if($actionConfig['icon'] === 'check') <flux:icon.check class="size-5" /> @endif
                                         @if($actionConfig['icon'] === 'truck') <flux:icon.truck class="size-5" /> @endif
                                         @if($actionConfig['icon'] === 'check-circle') <flux:icon.check-circle class="size-5" /> @endif
-                                        {{ $actionConfig['text'] }}
+                                       
                                     </button>
                                 @elseif(!in_array($order->estado->nombre_estado, ['Completado', 'Cancelado']))
                                      {{-- Fallback for unmatched states --}}
