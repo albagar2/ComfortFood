@@ -35,7 +35,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('cart', \App\Livewire\CartPage::class)->name('cart.index');
     Route::get('restaurant/statistics', \App\Livewire\Restaurant\Statistics::class)->name('restaurant.statistics');
     Route::get('restaurant/support', \App\Livewire\Restaurant\Support::class)->name('restaurant.support');
-    Route::get('restaurant/orders', \App\Livewire\RestaurantOrders::class)->name('restaurant.orders');
+
     Route::get('restaurant/{restaurante}', \App\Livewire\RestaurantProfile::class)->name('restaurant.show');
     Route::view('customer/orders/details', 'customer.orders.details')->name('customer.orders.details');
 });
