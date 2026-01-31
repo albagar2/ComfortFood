@@ -52,8 +52,8 @@
                             </td>
                             <td class="px-6 py-5">
                                 <div class="flex flex-col">
-                                    <span class="font-semibold text-zinc-950 dark:text-zinc-100">{{ $pedido->created_at->format('M d, Y') }}</span>
-                                    <span class="text-[11px] text-zinc-600">{{ $pedido->created_at->format('h:i A') }}</span>
+                                    <span class="font-semibold text-zinc-950 dark:text-zinc-100">{{ $pedido->created_at->format('d/m/Y') }}</span>
+                                    <span class="text-[11px] text-zinc-600">{{ $pedido->created_at->format('H:i') }}</span>
                                 </div>
                             </td>
                             <td class="px-6 py-5">

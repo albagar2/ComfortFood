@@ -91,8 +91,8 @@
                                     class="bg-teal-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">{{ $restaurante->tipo_cocina }}</span>
                                 <div class="flex items-center gap-1 text-yellow-400">
                                     <flux:icon.star class="size-4 fill-current" />
-                                    <span class="text-sm font-bold text-white">4.8</span>
-                                    <span class="text-xs text-white/70 font-medium">(120+)</span>
+                                    <span class="text-sm font-bold text-white">{{ $avgRating }}</span>
+                                    <span class="text-xs text-white/70 font-medium">({{ $reviewsCount }}+)</span>
                                 </div>
                             </div>
                         </div>
@@ -180,7 +180,7 @@
 
                                         <div class="flex items-center gap-2 mt-auto">
                                             <span
-                                                class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{{ $menu->updated_at->format('d M') }}</span>
+                                                class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{{ $menu->updated_at->translatedFormat('d M') }}</span>
                                             <span class="size-1 rounded-full bg-zinc-300 dark:bg-zinc-700"></span>
                                             <span
                                                 class="text-xs text-zinc-500 dark:text-zinc-400 truncate">{{ Str::limit($menu->propiedades_nutricionales, 20) }}</span>

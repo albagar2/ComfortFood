@@ -101,15 +101,29 @@ class Statistics extends Component
             ->toArray();
 
         // Peak Days (Names of days with more orders)
-        $this->peakDays = Pedido::where('id_restaurante', $restauranteId)
+        $dayMapping = [
+            1 => 'Domingo',
+            2 => 'Lunes',
+            3 => 'Martes',
+            4 => 'Miércoles',
+            5 => 'Jueves',
+            6 => 'Viernes',
+            7 => 'Sábado',
+        ];
+
+        $peakDaysRaw = Pedido::where('id_restaurante', $restauranteId)
             ->where('created_at', '>=', Carbon::now()->subDays(90))
-            ->select(DB::raw('DAYNAME(created_at) as day'), DB::raw('COUNT(*) as count'))
-            ->groupBy('day')
+            ->select(DB::raw('DAYOFWEEK(created_at) as day_index'), DB::raw('COUNT(*) as count'))
+            ->groupBy('day_index')
             ->orderByDesc('count')
             ->limit(3)
-            ->get()
-            ->pluck('count', 'day')
-            ->toArray();
+            ->get();
+
+        $this->peakDays = [];
+        foreach ($peakDaysRaw as $row) {
+            $dayName = $dayMapping[$row->day_index] ?? 'Desconocido';
+            $this->peakDays[$dayName] = $row->count;
+        }
 
         // Top Rated Menus (Subquery to get avg rating per menu)
         $this->topMenus = DB::table('resena')

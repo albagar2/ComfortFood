@@ -16,11 +16,24 @@ class RestaurantProfile extends Component
     public $search = '';
     public $sort = 'latest';
     public $schedule = [];
+    public $avgRating = 0;
+    public $reviewsCount = 0;
 
     public function mount(Restaurante $restaurante)
     {
-        $this->restaurante = $restaurante->load('user');
+        $this->restaurante = $restaurante->load(['user', 'resenas']);
         $this->loadSchedule();
+        $this->loadRatingStats();
+    }
+
+    public function loadRatingStats()
+    {
+        $stats = $this->restaurante->resenas()
+            ->selectRaw('AVG(puntuacion) as average, COUNT(*) as count')
+            ->first();
+
+        $this->avgRating = number_format($stats->average ?? 0, 1);
+        $this->reviewsCount = $stats->count ?? 0;
     }
 
     public function loadSchedule()

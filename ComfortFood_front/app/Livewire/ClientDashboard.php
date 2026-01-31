@@ -103,6 +103,9 @@ class ClientDashboard extends Component
             ->with([
                 'restaurante.user',
                 'restaurante.horarios',
+                'restaurante' => function ($q) {
+                    $q->withAvg('resenas', 'puntuacion');
+                },
                 'favoritos' => function ($q) {
                     $q->where('id_cliente', auth()->user()->cliente?->id_cliente);
                 }

@@ -53,6 +53,13 @@
                                     class="text-[10px] md:text-sm font-semibold text-zinc-800 dark:text-zinc-200 hover:underline hover:text-blue-600 truncate block max-w-[80px] sm:max-w-none">
                                     {{ $menu->restaurante->user->nombre_completo ?? 'Restaurante' }}
                                 </a>
+                                @if($menu->restaurante->resenas_avg_puntuacion)
+                                    <div class="flex items-center gap-0.5 text-yellow-400 ml-1">
+                                        <flux:icon.star variant="solid" class="size-3" />
+                                        <span
+                                            class="text-[10px] font-bold">{{ number_format($menu->restaurante->resenas_avg_puntuacion, 1) }}</span>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                         <div class="flex items-center gap-1 md:gap-2 absolute top-3 right-3 sm:static">

@@ -32,7 +32,7 @@
             <div class="p-8 md:p-12 border-b border-zinc-100 dark:border-zinc-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div class="space-y-1">
                     <h1 class="text-4xl font-black text-zinc-950 dark:text-white tracking-tight">Pedido #{{ $order->id_pedido }}</h1>
-                    <p class="text-zinc-500 font-medium">{{ $order->created_at->format('d M Y, h:i A') }}</p>
+                    <p class="text-zinc-500 font-medium">{{ $order->created_at->format('d/m/Y H:i') }}</p>
                 </div>
                 
                 @if(auth()->user()->isRestaurante())
@@ -120,7 +120,7 @@
                                         @endfor
                                     </div>
                                     <p class="text-sm text-zinc-700 dark:text-zinc-300 font-medium">"{{ $order->resena->comentario }}"</p>
-                                    <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">{{ $order->resena->created_at->format('d M Y') }}</p>
+                                    <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">{{ $order->resena->created_at->format('d/m/Y') }}</p>
                                 </div>
                             @elseif(auth()->user()->isCliente())
                                 <div class="space-y-4 bg-white dark:bg-zinc-800 p-6 rounded-3xl border border-dashed border-indigo-200 dark:border-indigo-800">

@@ -107,7 +107,7 @@
                         class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-sm space-y-3">
                         @forelse($peakDays as $day => $count)
                             <div class="flex items-center justify-between text-sm">
-                                <span class="capitalize text-zinc-600 dark:text-zinc-400 font-medium">{{ __($day) }}</span>
+                                <span class="capitalize text-zinc-600 dark:text-zinc-400 font-medium">{{ $day }}</span>
                                 <div class="flex items-center gap-3 flex-1 px-4">
                                     <div class="h-1.5 flex-1 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
                                         <div class="h-full bg-pastel-orange rounded-full"
