@@ -22,7 +22,25 @@ class DeleteUserForm extends Component
             'password' => $this->currentPasswordRules(),
         ]);
 
-        tap(Auth::user(), $logout(...))->delete();
+        $user = Auth::user();
+
+        // Check for active orders
+        $activeOrdersQuery = \App\Models\Pedido::where(function ($query) use ($user) {
+            if ($user->isCliente()) {
+                $query->where('id_cliente', $user->cliente->id_cliente);
+            } elseif ($user->isRestaurante()) {
+                $query->where('id_restaurante', $user->restaurante->id_restaurante);
+            }
+        })->whereHas('estado', function ($query) {
+            $query->whereNotIn('nombre_estado', ['Completado', 'Cancelado']);
+        });
+
+        if ($activeOrdersQuery->exists()) {
+            $this->addError('password', 'No puedes eliminar tu cuenta mientras tengas pedidos en curso. Finaliza o cancela los pedidos activos antes de continuar.');
+            return;
+        }
+
+        tap($user, $logout(...))->delete();
 
         $this->redirect('/', navigate: true);
     }
