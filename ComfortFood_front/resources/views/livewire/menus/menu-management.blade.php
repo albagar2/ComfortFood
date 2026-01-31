@@ -1,8 +1,10 @@
 <div class="p-6">
     <div class="flex items-center justify-between mb-8">
         <h1 class="text-2xl font-bold text-zinc-900 dark:text-white">Gestión de Menús</h1>
-        <flux:button variant="primary" icon="plus" href="{{ route('menu.edit') }}" wire:navigate>Añadir Menú
-        </flux:button>
+        @if($menus->isNotEmpty())
+            <flux:button variant="primary" icon="plus" href="{{ route('menu.edit') }}" wire:navigate>Añadir Menú
+            </flux:button>
+        @endif
     </div>
 
     @if (session()->has('success'))
@@ -18,7 +20,7 @@
     @endif
 
     <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
-        @foreach($menus as $menu)
+        @forelse($menus as $menu)
             @php
                 $hasActiveOrders = $menu->hasActiveOrders();
             @endphp
@@ -100,6 +102,25 @@
                     </div>
                 </div>
             </div>
-        @endforeach
+        @empty
+            <div
+                class="col-span-full py-20 flex flex-col items-center justify-center text-center bg-white dark:bg-zinc-900 border border-dashed border-zinc-300 dark:border-zinc-700 rounded-2xl">
+                <div
+                    class="size-20 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mb-6 text-blue-600 dark:text-blue-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-10">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H22m-12.939-9.21a.502.502 0 0 1 0-.74l4.94-4.94a.502.502 0 0 1 .74 0l4.94 4.94a.502.502 0 0 1 0 .74l-4.94 4.94a.502.502 0 0 1-.74 0l-4.94-4.94ZM2.36 21a2.36 2.36 0 0 1-2.36-2.36V7.48C0 6.132 1.1 5.03 2.44 5.03h1.16a2.44 2.44 0 0 1 2.44 2.44v11.171c0 1.303-1.057 2.36-2.36 2.36Zm19.28 0a2.36 2.36 0 0 0 2.36-2.36V7.48c0-1.348-1.1-2.45-2.44-2.45h-1.16a2.44 2.44 0 0 0-2.44 2.44v11.171c0 1.303 1.057 2.36 2.36 2.36Z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-zinc-900 dark:text-white mb-2">No tienes menús registrados todavía</h3>
+                <p class="text-zinc-500 dark:text-zinc-400 max-w-sm mb-8">
+                    Crea tu primer menú para que los clientes puedan empezar a descubrir tus platos y realizar pedidos.
+                </p>
+                <flux:button variant="primary" icon="plus" href="{{ route('menu.edit') }}" wire:navigate>
+                    Añadir mi primer menú
+                </flux:button>
+            </div>
+        @endforelse
     </div>
 </div>
