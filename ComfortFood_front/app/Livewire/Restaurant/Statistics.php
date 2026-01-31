@@ -10,8 +10,8 @@ use Livewire\Component;
 
 class Statistics extends Component
 {
-    public $monthlyEarnings = [];
     public $satisfactionStats = [];
+    public $stats = [];
 
     // New metrics
     public $dailyOrders = [];
@@ -25,9 +25,9 @@ class Statistics extends Component
 
     public function mount()
     {
-        $this->loadEarnings();
         $this->loadSatisfaction();
         $this->loadAdvancedMetrics();
+        $this->loadQuickStats();
         $this->markReviewsAsSeen();
     }
 
@@ -39,37 +39,6 @@ class Statistics extends Component
             ->update(['visto' => true]);
 
         $this->dispatch('refresh-badges');
-    }
-
-    public function loadEarnings()
-    {
-        $restauranteId = auth()->user()->restaurante->id_restaurante;
-
-        // Obtener ingresos de los últimos 12 meses
-        $earnings = Pedido::where('id_restaurante', $restauranteId)
-            ->whereHas('estado', function ($q) {
-                $q->where('nombre_estado', 'Completado');
-            })
-            ->where('created_at', '>=', Carbon::now()->subMonths(11)->startOfMonth())
-            ->select(
-                DB::raw('SUM(precio_total) as total'),
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month")
-            )
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get()
-            ->pluck('total', 'month')
-            ->toArray();
-
-        // Rellenar meses sin datos
-        $months = [];
-        for ($i = 11; $i >= 0; $i--) {
-            $monthKey = Carbon::now()->subMonths($i)->format('Y-m');
-            $monthName = Carbon::now()->subMonths($i)->translatedFormat('M');
-            $months[$monthName] = $earnings[$monthKey] ?? 0;
-        }
-
-        $this->monthlyEarnings = $months;
     }
 
     public function loadSatisfaction()
@@ -91,6 +60,29 @@ class Statistics extends Component
             'positivas_pct' => $totalResenas > 0 ? round(($positivas / $totalResenas) * 100) : 0,
             'negativas_pct' => $totalResenas > 0 ? round(($negativas / $totalResenas) * 100) : 0,
             'diff' => '+0.3', // Mockup de diferencia respecto al año anterior
+        ];
+    }
+
+    public function loadQuickStats()
+    {
+        $restauranteId = auth()->user()->restaurante->id_restaurante;
+
+        $ordersToday = Pedido::where('id_restaurante', $restauranteId)
+            ->whereDate('created_at', Carbon::today())
+            ->count();
+
+        $ordersWeek = Pedido::where('id_restaurante', $restauranteId)
+            ->where('created_at', '>=', Carbon::now()->startOfWeek())
+            ->count();
+
+        $ratingLast7Days = Resena::where('id_restaurante', $restauranteId)
+            ->where('created_at', '>=', Carbon::now()->subDays(7))
+            ->avg('puntuacion') ?? 0;
+
+        $this->stats = [
+            'orders_today' => $ordersToday,
+            'orders_week' => $ordersWeek,
+            'rating_last_7_days' => number_format($ratingLast7Days, 1),
         ];
     }
 
