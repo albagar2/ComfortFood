@@ -88,7 +88,10 @@
                                     {{ $pedido->direccion_entrega }}
                                 </span>
                             </td>
-                            <td class="px-6 py-5 text-center">
+                            <td class="px-6 py-5 text-center flex items-center justify-center gap-2">
+                                @if($pedido->estado->nombre_estado === 'Pendiente')
+                                    <flux:button variant="ghost" size="sm" icon="x-mark" wire:click="confirmCancel({{ $pedido->id_pedido }})" class="text-rose-400 hover:text-rose-600" />
+                                @endif
                                 <flux:button variant="ghost" size="sm" icon="eye" href="{{ route('orders.details', $pedido->id_pedido) }}" wire:navigate class="text-zinc-400 hover:text-blue-600" />
                             </td>
                         </tr>

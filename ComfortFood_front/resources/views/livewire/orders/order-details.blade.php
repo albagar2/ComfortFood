@@ -171,9 +171,11 @@
                     <!-- Actions for Restaurant -->
                     @if(auth()->user()->isRestaurante() && !in_array($order->estado->nombre_estado, ['Completado', 'Cancelado']))
                         <div class="pt-12 flex gap-4">
-                            <button wire:click="cancelOrder" class="flex-1 py-4 bg-zinc-50 hover:bg-rose-50 dark:bg-zinc-800 dark:hover:bg-rose-900/30 text-rose-600 font-black rounded-2xl border border-rose-100 dark:border-rose-900/50 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2">
-                                <flux:icon.x-mark class="size-5" /> Cancelar
-                            </button>
+                            @if($order->estado->nombre_estado === 'Pendiente')
+                                <button wire:click="confirmCancel" class="flex-1 py-4 bg-zinc-50 hover:bg-rose-50 dark:bg-zinc-800 dark:hover:bg-rose-900/30 text-rose-600 font-black rounded-2xl border border-rose-100 dark:border-rose-900/50 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2">
+                                    <flux:icon.x-mark class="size-5" /> Cancelar
+                                </button>
+                            @endif
                             
                             @php
                                 $actionConfig = match($order->estado->nombre_estado) {

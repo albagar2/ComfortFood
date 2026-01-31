@@ -16,12 +16,14 @@ class ConfirmationModal extends Component
     public $confirmParams = [];
 
     #[On('show-confirmation')]
-    public function showConfirmation($title, $message, $confirmAction, $confirmParams = [])
+    public function showConfirmation($title, $message, $confirmAction, $confirmParams = [], $confirmText = 'Confirmar', $cancelText = 'Cancelar')
     {
         $this->title = $title;
         $this->message = $message;
         $this->confirmAction = $confirmAction;
         $this->confirmParams = $confirmParams;
+        $this->confirmText = $confirmText;
+        $this->cancelText = $cancelText;
         $this->show = true;
     }
 

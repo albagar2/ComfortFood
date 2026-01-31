@@ -52,12 +52,12 @@ class OrderHistory extends Component
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('id_pedido', 'like', '%' . $this->search . '%')
-                  ->orWhereHas('cliente.user', function ($sq) {
-                      $sq->where('nombre_completo', 'like', '%' . $this->search . '%');
-                  })
-                  ->orWhereHas('restaurante.user', function ($sq) {
-                      $sq->where('nombre_completo', 'like', '%' . $this->search . '%');
-                  });
+                    ->orWhereHas('cliente.user', function ($sq) {
+                        $sq->where('nombre_completo', 'like', '%' . $this->search . '%');
+                    })
+                    ->orWhereHas('restaurante.user', function ($sq) {
+                        $sq->where('nombre_completo', 'like', '%' . $this->search . '%');
+                    });
             });
         }
 
@@ -79,5 +79,41 @@ class OrderHistory extends Component
             'orders' => $orders,
             'isRestaurant' => $user->isRestaurante(),
         ]);
+    }
+    protected $listeners = ['cancelOrderConfirmed' => 'cancelOrder'];
+
+    public function confirmCancel($orderId)
+    {
+        $this->dispatch(
+            'show-confirmation',
+            title: '¿Cancelar Pedido?',
+            message: '¿Estás seguro de que deseas cancelar este pedido? Esta acción no se puede deshacer.',
+            confirmAction: 'cancelOrderConfirmed',
+            confirmParams: [$orderId],
+            confirmText: 'Sí, Cancelar',
+            cancelText: 'No, Mantener'
+        );
+    }
+
+    public function cancelOrder($orderId)
+    {
+        $order = Pedido::find($orderId);
+
+        if (!$order) {
+            return;
+        }
+
+        // Strict validation: Only 'Pendiente' can be cancelled
+        if ($order->estado->nombre_estado !== 'Pendiente') {
+            session()->flash('error', 'No se puede cancelar el pedido porque ya está en preparación o completado.');
+            return;
+        }
+
+        $canceledStatus = \App\Models\EstadoPedido::where('nombre_estado', 'Cancelado')->first();
+
+        if ($canceledStatus) {
+            $order->update(['id_estado_pedido' => $canceledStatus->id_estado_pedido]);
+            session()->flash('success', 'Pedido cancelado correctamente.');
+        }
     }
 }

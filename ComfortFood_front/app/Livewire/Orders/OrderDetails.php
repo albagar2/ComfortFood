@@ -57,11 +57,31 @@ class OrderDetails extends Component
         }
     }
 
+    protected $listeners = ['cancelOrderConfirmed' => 'cancelOrder'];
+
+    public function confirmCancel()
+    {
+        $this->dispatch(
+            'show-confirmation',
+            title: '¿Cancelar Pedido?',
+            message: '¿Estás seguro de que deseas cancelar este pedido? Esta acción no se puede deshacer.',
+            confirmAction: 'cancelOrderConfirmed',
+            confirmParams: []
+        );
+    }
+
     public function cancelOrder()
     {
         $status = EstadoPedido::where('nombre_estado', 'Cancelado')->first();
+
         if ($status) {
+            // Strict validation: Only 'Pendiente' can be cancelled
+            if ($this->order->estado->nombre_estado !== 'Pendiente') {
+                return;
+            }
+
             $this->order->update(['id_estado_pedido' => $status->id_estado_pedido]);
+            $this->order->refresh();
         }
     }
 

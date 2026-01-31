@@ -43,6 +43,19 @@ class RestaurantDashboard extends Component
         }
     }
 
+    protected $listeners = ['cancelOrderConfirmed' => 'cancelOrder'];
+
+    public function confirmCancel($orderId)
+    {
+        $this->dispatch(
+            'show-confirmation',
+            title: '¿Cancelar Pedido?',
+            message: '¿Estás seguro de que deseas cancelar este pedido? Esta acción no se puede deshacer.',
+            confirmAction: 'cancelOrderConfirmed',
+            confirmParams: [$orderId]
+        );
+    }
+
     public function cancelOrder($orderId)
     {
         $order = Pedido::where('id_pedido', $orderId)->first();
@@ -51,6 +64,12 @@ class RestaurantDashboard extends Component
         $status = EstadoPedido::where('nombre_estado', 'Cancelado')->first();
 
         if ($order && $status) {
+            // Strict validation: Only 'Pendiente' can be cancelled
+            if ($order->estado->nombre_estado !== 'Pendiente') {
+                $this->dispatch('notify', 'No se puede cancelar el pedido en este estado.'); // Optional: if you have a notification system
+                return;
+            }
+
             $order->update(['id_estado_pedido' => $status->id_estado_pedido]);
         }
     }
