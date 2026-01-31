@@ -102,6 +102,7 @@ class ClientDashboard extends Component
         $query = Menu::where('esta_activo', true)
             ->with([
                 'restaurante.user',
+                'restaurante.horarios',
                 'favoritos' => function ($q) {
                     $q->where('id_cliente', auth()->user()->cliente?->id_cliente);
                 }
