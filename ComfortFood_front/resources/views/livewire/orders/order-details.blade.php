@@ -174,8 +174,21 @@
                             <button wire:click="cancelOrder" class="flex-1 py-4 bg-zinc-50 hover:bg-rose-50 dark:bg-zinc-800 dark:hover:bg-rose-900/30 text-rose-600 font-black rounded-2xl border border-rose-100 dark:border-rose-900/50 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2">
                                 <flux:icon.x-mark class="size-5" /> Cancelar
                             </button>
-                            <button wire:click="acceptOrder" class="flex-[2] py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl shadow-lg shadow-emerald-500/30 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2">
-                                <flux:icon.check class="size-5" /> Completar Pedido
+                            
+                            @php
+                                $actionConfig = match($order->estado->nombre_estado) {
+                                    'Pendiente' => ['text' => 'Aceptar Pedido', 'icon' => 'check', 'color' => 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/30'],
+                                    'En Preparación' => ['text' => 'Marcar Enviado/Entregado', 'icon' => 'truck', 'color' => 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/30'],
+                                    'Entregado' => ['text' => 'Completar Pedido', 'icon' => 'check-circle', 'color' => 'bg-zinc-600 hover:bg-zinc-700 shadow-zinc-500/30'],
+                                    default => ['text' => 'Avanzar Estado', 'icon' => 'arrow-right', 'color' => 'bg-emerald-600']
+                                };
+                            @endphp
+
+                            <button wire:click="advanceStatus" class="flex-[2] py-4 {{ $actionConfig['color'] }} text-white font-bold rounded-2xl shadow-lg transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2">
+                                @if($actionConfig['icon'] === 'check') <flux:icon.check class="size-5" /> @endif
+                                @if($actionConfig['icon'] === 'truck') <flux:icon.truck class="size-5" /> @endif
+                                @if($actionConfig['icon'] === 'check-circle') <flux:icon.check-circle class="size-5" /> @endif
+                                {{ $actionConfig['text'] }}
                             </button>
                         </div>
                     @endif

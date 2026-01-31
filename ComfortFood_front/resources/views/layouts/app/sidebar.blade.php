@@ -25,8 +25,9 @@
                 <!-- Pedidos -->
                 <flux:sidebar.item icon="clipboard-document-list" :href="route('restaurant.orders')"
                     :current="request()->routeIs('restaurant.orders')" wire:navigate
-                    class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-white/10 data-[current]:!text-pastel-orange data-[current]:!border-pastel-orange data-[current]:border font-medium tracking-wide !rounded-xl">
-                    PEDIDOS
+                    class="!text-white/80 hover:!text-white hover:!bg-white/10 data-[current]:!bg-white/10 data-[current]:!text-pastel-orange data-[current]:!border-pastel-orange data-[current]:border font-medium tracking-wide !rounded-xl relative flex items-center justify-between">
+                    <livewire:pending-orders-badge />
+                    <span>PEDIDOS</span>
                 </flux:sidebar.item>
                 <!-- Historial pedidos -->
                 <flux:sidebar.item icon="clock" :href="route('orders.history')"

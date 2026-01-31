@@ -47,43 +47,58 @@ class RestaurantOrders extends Component
         $this->loadOrders();
     }
 
-    public function acceptOrder($pedidoId)
+    public function advanceStatus($pedidoId)
     {
         try {
             DB::beginTransaction();
 
-            $pedido = Pedido::with('detalles.menu')->find($pedidoId);
+            $pedido = Pedido::find($pedidoId);
             if (!$pedido) {
                 throw new \Exception('Pedido no encontrado');
             }
 
-            // Validate stock for all items
-            foreach ($pedido->detalles as $detalle) {
-                if ($detalle->cantidad > $detalle->menu->stock) {
-                    throw new \Exception("No hay suficiente stock para {$detalle->menu->nombre_menu}");
+            $currentStatus = $pedido->estado->nombre_estado ?? '';
+            $nextStatusName = match ($currentStatus) {
+                'Pendiente' => 'En Preparación',
+                'En Preparación' => 'Entregado',
+                'Entregado' => 'Completado',
+                default => null
+            };
+
+            if (!$nextStatusName) {
+                throw new \Exception('No se puede avanzar el estado actual: ' . $currentStatus);
+            }
+
+            $status = EstadoPedido::where('nombre_estado', $nextStatusName)->first();
+            if (!$status) {
+                $status = EstadoPedido::where('nombre_estado', 'LIKE', $nextStatusName)->first();
+            }
+
+            if (!$status) {
+                throw new \Exception('Estado siguiente no encontrado: ' . $nextStatusName);
+            }
+
+            // Decrement Stock only when moving from Pendiente -> En Preparación
+            if ($currentStatus === 'Pendiente') {
+                foreach ($pedido->detalles as $detalle) {
+                    if ($detalle->cantidad > $detalle->menu->stock) {
+                        throw new \Exception("No hay suficiente stock para {$detalle->menu->nombre_menu}");
+                    }
+                }
+                foreach ($pedido->detalles as $detalle) {
+                    $menu = Menu::find($detalle->id_menu);
+                    $menu->stock -= $detalle->cantidad;
+                    $menu->save();
                 }
             }
 
-            // Deduct stock
-            foreach ($pedido->detalles as $detalle) {
-                $menu = Menu::find($detalle->id_menu);
-                $menu->stock -= $detalle->cantidad;
-                $menu->save();
-            }
-
-            // Update order status to "Aceptado"
-            $estadoAceptado = EstadoPedido::where('nombre_estado', 'Aceptado')->first();
-            if (!$estadoAceptado) {
-                throw new \Exception('Estado no encontrado');
-            }
-
-            $pedido->id_estado_pedido = $estadoAceptado->id_estado_pedido;
+            $pedido->id_estado_pedido = $status->id_estado_pedido;
             $pedido->save();
 
             DB::commit();
 
             $this->loadOrders();
-            session()->flash('success', 'Pedido aceptado exitosamente');
+            session()->flash('success', "Estado actualizado a {$nextStatusName}");
 
         } catch (\Exception $e) {
             DB::rollBack();

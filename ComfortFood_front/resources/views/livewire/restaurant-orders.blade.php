@@ -58,16 +58,17 @@
                             <h3 class="font-bold text-lg text-zinc-900 dark:text-white">Pedido #{{ $order['id_pedido'] }}</h3>
                             <p class="text-sm text-zinc-500">{{ $order['cliente']['user']['nombre_completo'] ?? 'Cliente' }}</p>
                             <p class="text-xs text-zinc-400">
-                                {{ \Carbon\Carbon::parse($order['created_at'])->format('d/m/Y H:i') }}</p>
+                                {{ \Carbon\Carbon::parse($order['created_at'])->format('d/m/Y H:i') }}
+                            </p>
                         </div>
                         <div class="flex flex-col items-end gap-2">
                             <span class="px-3 py-1 rounded-full text-sm font-semibold
-                                        @if($order['estado']['nombre_estado'] === 'Pendiente') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
-                                        @elseif($order['estado']['nombre_estado'] === 'Aceptado') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
-                                        @elseif($order['estado']['nombre_estado'] === 'En Preparación') bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200
-                                        @elseif($order['estado']['nombre_estado'] === 'Completado') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
-                                        @else bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
-                                        @endif">
+                                                @if($order['estado']['nombre_estado'] === 'Pendiente') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                                                @elseif($order['estado']['nombre_estado'] === 'Aceptado') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                                                @elseif($order['estado']['nombre_estado'] === 'En Preparación') bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200
+                                                @elseif($order['estado']['nombre_estado'] === 'Completado') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                                @else bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                                                @endif">
                                 {{ $order['estado']['nombre_estado'] }}
                             </span>
                             <span
@@ -98,22 +99,22 @@
                     <!-- Actions -->
                     <div class="flex gap-2 flex-wrap">
                         @if($order['estado']['nombre_estado'] === 'Pendiente')
-                            <button wire:click="acceptOrder({{ $order['id_pedido'] }})"
-                                class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-semibold">
+                            <button wire:click="advanceStatus({{ $order['id_pedido'] }})"
+                                class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-semibold shadow-emerald-500/20 shadow-lg">
                                 Aceptar Pedido
                             </button>
                             <button wire:click="rejectOrder({{ $order['id_pedido'] }})"
                                 class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-semibold">
                                 Rechazar
                             </button>
-                        @elseif($order['estado']['nombre_estado'] === 'Aceptado')
-                            <button wire:click="updateStatus({{ $order['id_pedido'] }}, 'En Preparación')"
-                                class="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-semibold">
-                                Marcar En Preparación
-                            </button>
                         @elseif($order['estado']['nombre_estado'] === 'En Preparación')
-                            <button wire:click="updateStatus({{ $order['id_pedido'] }}, 'Completado')"
-                                class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-semibold">
+                            <button wire:click="advanceStatus({{ $order['id_pedido'] }})"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold shadow-blue-500/20 shadow-lg">
+                                Marcar Entregado
+                            </button>
+                        @elseif($order['estado']['nombre_estado'] === 'Entregado')
+                            <button wire:click="advanceStatus({{ $order['id_pedido'] }})"
+                                class="px-4 py-2 bg-zinc-600 text-white rounded-lg hover:bg-zinc-700 transition-colors font-semibold shadow-zinc-500/20 shadow-lg">
                                 Marcar Completado
                             </button>
                         @endif

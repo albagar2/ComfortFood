@@ -33,11 +33,27 @@ class OrderDetails extends Component
         }
     }
 
-    public function acceptOrder()
+    public function advanceStatus()
     {
-        $status = EstadoPedido::where('nombre_estado', 'Completado')->first();
-        if ($status) {
-            $this->order->update(['id_estado_pedido' => $status->id_estado_pedido]);
+        $currentStatus = $this->order->estado->nombre_estado ?? '';
+        $nextStatusName = match ($currentStatus) {
+            'Pendiente' => 'En Preparación',
+            'En Preparación' => 'Entregado',
+            'Entregado' => 'Completado',
+            default => null
+        };
+
+        if ($nextStatusName) {
+            $status = EstadoPedido::where('nombre_estado', $nextStatusName)->first();
+
+            if (!$status) {
+                $status = EstadoPedido::where('nombre_estado', 'LIKE', $nextStatusName)->first();
+            }
+
+            if ($status) {
+                $this->order->update(['id_estado_pedido' => $status->id_estado_pedido]);
+                $this->order->refresh();
+            }
         }
     }
 

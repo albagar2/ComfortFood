@@ -123,12 +123,28 @@
                             </div>
 
                             <div class="flex gap-2">
-                                @if(!in_array($order->estado->nombre_estado, ['Completado', 'Cancelado']))
+                                @if(in_array($order->estado->nombre_estado, ['Pendiente', 'En Preparación', 'Entregado']))
                                     <button wire:click="cancelOrder({{ $order->id_pedido }})" class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-xl transition-all" title="Cancelar">
                                         <flux:icon.x-mark class="size-5" />
                                     </button>
-                                    <button wire:click="acceptOrder({{ $order->id_pedido }})" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2">
-                                        <flux:icon.check class="size-5" />
+
+                                    @php
+                                        $actionConfig = match($order->estado->nombre_estado) {
+                                            'Pendiente' => ['title' => 'Aceptar', 'icon' => 'check', 'color' => 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20'],
+                                            'En Preparación' => ['title' => 'Entregar', 'icon' => 'truck', 'color' => 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/20'],
+                                            'Entregado' => ['title' => 'Completar', 'icon' => 'check-circle', 'color' => 'bg-zinc-600 hover:bg-zinc-700 shadow-zinc-500/20'],
+                                            default => ['title' => 'Avanzar', 'icon' => 'arrow-right', 'color' => 'bg-emerald-600']
+                                        };
+                                    @endphp
+                                    <button wire:click="advanceStatus({{ $order->id_pedido }})" title="{{ $actionConfig['title'] }}" class="px-4 py-2 {{ $actionConfig['color'] }} text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg transition-all flex items-center gap-2">
+                                        @if($actionConfig['icon'] === 'check') <flux:icon.check class="size-5" /> @endif
+                                        @if($actionConfig['icon'] === 'truck') <flux:icon.truck class="size-5" /> @endif
+                                        @if($actionConfig['icon'] === 'check-circle') <flux:icon.check-circle class="size-5" /> @endif
+                                    </button>
+                                @elseif(!in_array($order->estado->nombre_estado, ['Completado', 'Cancelado']))
+                                     {{-- Fallback for unmatched states --}}
+                                     <button wire:click="advanceStatus({{ $order->id_pedido }})" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2">
+                                        <flux:icon.check class="size-5" /> Avanzar
                                     </button>
                                 @else
                                     <a href="{{ route('orders.details', $order->id_pedido) }}" wire:navigate class="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all">
