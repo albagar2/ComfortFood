@@ -142,9 +142,6 @@
                         class="mt-4 w-full py-3 {{ ($menu->stock > 0 && $this->isRestaurantOpen()) ? 'bg-zinc-900 hover:bg-zinc-800' : 'bg-zinc-300 cursor-not-allowed' }} text-white font-bold rounded-xl shadow-lg shadow-zinc-200 transition-all active:scale-95 disabled:opacity-50">
                         @if(!$this->isRestaurantOpen())
                             Cerrado
-                            ({{ $menu->restaurante->horarios->where('id_dia', now()->format('N'))->first()?->hora_apertura ?? '' }}
-                            -
-                            {{ $menu->restaurante->horarios->where('id_dia', now()->format('N'))->first()?->hora_cierre ?? '' }})
                         @elseif($menu->stock <= 0)
                             Agotado
                         @else
