@@ -123,4 +123,16 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Order Configuration
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the maximum number of minutes a restaurant has
+    | to respond to an order before it is automatically cancelled.
+    |
+    */
+
+    'order_expiration_minutes' => env('ORDER_EXPIRATION_MINUTES', 10),
+
 ];

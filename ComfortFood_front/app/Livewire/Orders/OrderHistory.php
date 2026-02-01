@@ -142,7 +142,7 @@ class OrderHistory extends Component
         $this->dispatch(
             'show-confirmation',
             title: '¿Cancelar Pedido?',
-            message: '¿Estás seguro de que deseas cancelar este pedido? Esta acción no se puede deshacer.',
+            message: '¿Estás seguro de cancelar este pedido?',
             confirmAction: 'cancelOrderConfirmed',
             confirmParams: [$orderId],
             confirmText: 'Sí, Cancelar',
@@ -158,16 +158,21 @@ class OrderHistory extends Component
             return;
         }
 
-        // Strict validation: Only 'Pendiente' can be cancelled
+        // Solo permitir cancelar si está Pendiente
         if ($order->estado->nombre_estado !== 'Pendiente') {
-            session()->flash('error', 'No se puede cancelar el pedido porque ya está en preparación o completado.');
+            session()->flash('error', 'No se puede cancelar el pedido en este estado.');
             return;
         }
 
         $canceledStatus = \App\Models\EstadoPedido::where('nombre_estado', 'Cancelado')->first();
 
         if ($canceledStatus) {
-            $order->update(['id_estado_pedido' => $canceledStatus->id_estado_pedido]);
+            $order->update([
+                'id_estado_pedido' => $canceledStatus->id_estado_pedido,
+                'visto_completado' => false // Reset to notify client
+            ]);
+
+            $this->dispatch('refresh-badges');
             session()->flash('success', 'Pedido cancelado correctamente.');
         }
     }

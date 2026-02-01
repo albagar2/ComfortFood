@@ -28,12 +28,9 @@ class RestaurantDashboard extends Component
         };
 
         if ($nextStatusName) {
-            // Find status case-insensitively or exactly as per DB
             $status = EstadoPedido::where('nombre_estado', $nextStatusName)->first();
 
-            // Fallback for case mismatch if needed, though exact match is safer
             if (!$status) {
-                // Try loose matching just in case
                 $status = EstadoPedido::where('nombre_estado', 'LIKE', $nextStatusName)->first();
             }
 
@@ -50,7 +47,7 @@ class RestaurantDashboard extends Component
         $this->dispatch(
             'show-confirmation',
             title: '¿Cancelar Pedido?',
-            message: '¿Estás seguro de que deseas cancelar este pedido? Esta acción no se puede deshacer.',
+            message: '¿Estás seguro de cancelar este pedido?',
             confirmAction: 'cancelOrderConfirmed',
             confirmParams: [$orderId]
         );
@@ -59,18 +56,20 @@ class RestaurantDashboard extends Component
     public function cancelOrder($orderId)
     {
         $order = Pedido::where('id_pedido', $orderId)->first();
-
-        // Find "Cancelado" status
         $status = EstadoPedido::where('nombre_estado', 'Cancelado')->first();
 
         if ($order && $status) {
-            // Strict validation: Only 'Pendiente' can be cancelled
+            // Solo permitir cancelar si está Pendiente
             if ($order->estado->nombre_estado !== 'Pendiente') {
-                $this->dispatch('notify', 'No se puede cancelar el pedido en este estado.'); // Optional: if you have a notification system
                 return;
             }
 
-            $order->update(['id_estado_pedido' => $status->id_estado_pedido]);
+            $order->update([
+                'id_estado_pedido' => $status->id_estado_pedido,
+                'visto_completado' => false // Reset to notify client
+            ]);
+
+            $this->dispatch('refresh-badges');
         }
     }
 
@@ -81,33 +80,67 @@ class RestaurantDashboard extends Component
         $this->filterStatus = $status;
     }
 
+    public function checkNewOrders()
+    {
+        $user = Auth::user();
+        if (!$user || !$user->isRestaurante())
+            return;
+
+        $pendingOrders = Pedido::where('id_restaurante', $user->restaurante->id_restaurante)
+            ->whereHas('estado', function ($q) {
+                $q->where('nombre_estado', 'Pendiente');
+            })
+            ->whereDate('created_at', now()->today())
+            ->get();
+
+        foreach ($pendingOrders as $order) {
+            $minutesPending = $order->created_at->diffInMinutes(now());
+            $expirationLimit = config('app.order_expiration_minutes', 10);
+
+            // Aviso urgente (2 minutos antes de expirar)
+            if ($minutesPending >= ($expirationLimit - 2)) {
+                $cacheKeyUrgent = "alert_urgent_dash_{$order->id_pedido}";
+                if (!session()->has($cacheKeyUrgent)) {
+                    $this->dispatch('show-toast', [
+                        'message' => "¡ATENCIÓN! El pedido #{$order->id_pedido} está a punto de expirar.",
+                        'type' => 'error',
+                        'icon' => 'exclamation-triangle'
+                    ]);
+                    session([$cacheKeyUrgent => true]);
+                }
+            }
+            // Aviso de nuevo pedido (en el primer minuto)
+            elseif ($minutesPending < 1) {
+                $cacheKeyNew = "alert_new_dash_{$order->id_pedido}";
+                if (!session()->has($cacheKeyNew)) {
+                    $this->dispatch('show-toast', [
+                        'message' => "Nuevo pedido recibido: #{$order->id_pedido}",
+                        'type' => 'info',
+                        'icon' => 'bell'
+                    ]);
+                    session([$cacheKeyNew => true]);
+                }
+            }
+        }
+    }
+
     public function render()
     {
         $user = Auth::user();
 
-        // Ensure user is authorized
         if (!$user || !$user->isRestaurante()) {
             abort(403, 'Unauthorized access');
         }
 
         $query = Pedido::where('id_restaurante', $user->restaurante->id_restaurante)
             ->with(['detalles.menu', 'estado', 'cliente.user'])
-            ->whereDate('created_at', now()->today()); // Only today's orders
+            ->whereDate('created_at', now()->today());
 
-        // Filter by specific status text via relationship
         if ($this->filterStatus !== 'all') {
             $query->whereHas('estado', function ($q) {
                 $q->where('nombre_estado', $this->filterStatus);
             });
-            // If specific status, just sort by time (oldest first)
             $query->orderBy('created_at', 'asc');
-        } else {
-            // "All": Sort by Priority then Time
-            // Join with estados to sort by name mapped to priority
-            // We use a raw select/order for performance or simple collection sort.
-            // Given small daily volume, collection sort is cleaner and safer than complex raw SQL with joins here.
-
-            // Fetch first then sort
         }
 
         if ($this->search) {
@@ -133,16 +166,17 @@ class RestaurantDashboard extends Component
             $orders = $orders->sort(function ($a, $b) use ($priorityMap) {
                 $statusA = $a->estado->nombre_estado;
                 $statusB = $b->estado->nombre_estado;
-
                 $prioA = $priorityMap[$statusA] ?? 99;
                 $prioB = $priorityMap[$statusB] ?? 99;
 
                 if ($prioA === $prioB) {
-                    return $a->created_at <=> $b->created_at; // Oldest first
+                    return $a->created_at <=> $b->created_at;
                 }
                 return $prioA <=> $prioB;
             });
         }
+
+        $this->checkNewOrders();
 
         return view('livewire.restaurant.restaurant-dashboard', [
             'orders' => $orders

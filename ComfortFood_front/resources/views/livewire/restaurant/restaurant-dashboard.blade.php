@@ -151,7 +151,7 @@
                             <div class="flex gap-2">
                                 @if(in_array($order->estado->nombre_estado, ['Pendiente', 'En Preparación', 'Entregado']))
                                     @if($order->estado->nombre_estado === 'Pendiente')
-                                        <button wire:click="confirmCancel({{ $order->id_pedido }})" class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-xl transition-all" title="Cancelar">
+                                        <button wire:click="confirmCancel({{ $order->id_pedido }})" class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-xl transition-all" title="Cancelar Pedido">
                                             <flux:icon.x-mark class="size-5" />
                                         </button>
                                     @endif

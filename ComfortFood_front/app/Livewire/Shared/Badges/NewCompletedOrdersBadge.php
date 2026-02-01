@@ -19,7 +19,7 @@ class NewCompletedOrdersBadge extends Component
         if (auth()->check() && auth()->user()->isCliente()) {
             $count = Pedido::where('id_cliente', auth()->user()->cliente->id_cliente)
                 ->whereHas('estado', function ($q) {
-                    $q->where('nombre_estado', 'Completado');
+                    $q->whereIn('nombre_estado', ['Completado', 'Cancelado']);
                 })
                 ->where('visto_completado', false)
                 ->count();

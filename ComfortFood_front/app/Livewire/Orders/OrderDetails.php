@@ -64,7 +64,7 @@ class OrderDetails extends Component
         $this->dispatch(
             'show-confirmation',
             title: '¿Cancelar Pedido?',
-            message: '¿Estás seguro de que deseas cancelar este pedido? Esta acción no se puede deshacer.',
+            message: '¿Estás seguro de cancelar este pedido?',
             confirmAction: 'cancelOrderConfirmed',
             confirmParams: []
         );
@@ -75,12 +75,17 @@ class OrderDetails extends Component
         $status = EstadoPedido::where('nombre_estado', 'Cancelado')->first();
 
         if ($status) {
-            // Strict validation: Only 'Pendiente' can be cancelled
+            // Solo permitir cancelar si está Pendiente
             if ($this->order->estado->nombre_estado !== 'Pendiente') {
                 return;
             }
 
-            $this->order->update(['id_estado_pedido' => $status->id_estado_pedido]);
+            $this->order->update([
+                'id_estado_pedido' => $status->id_estado_pedido,
+                'visto_completado' => false // Reset to notify client
+            ]);
+
+            $this->dispatch('refresh-badges');
             $this->order->refresh();
         }
     }

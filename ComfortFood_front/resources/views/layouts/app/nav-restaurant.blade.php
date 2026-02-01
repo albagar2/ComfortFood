@@ -96,6 +96,10 @@
 
     {{ $slot }}
 
+    <livewire:shared.modals.confirmation-modal />
+    <livewire:shared.notifications.toast-container />
+    <livewire:shared.notifications.notification-toast />
+
     @fluxScripts
 </body>
 

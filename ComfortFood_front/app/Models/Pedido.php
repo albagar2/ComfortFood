@@ -19,6 +19,7 @@ class Pedido extends Model
         'id_estado_pedido',
         'direccion_entrega',
         'visto_completado',
+        'created_at',
     ];
 
     protected $casts = [
@@ -48,5 +49,17 @@ class Pedido extends Model
     public function resena()
     {
         return $this->hasOne(Resena::class, 'id_pedido', 'id_pedido');
+    }
+
+    /**
+     * Scope a query to only include expired pending orders.
+     */
+    public function scopeExpired($query)
+    {
+        $minutes = config('app.order_expiration_minutes', 30);
+
+        return $query->whereHas('estado', function ($q) {
+            $q->where('nombre_estado', 'Pendiente');
+        })->where('created_at', '<=', now()->subMinutes($minutes));
     }
 }
