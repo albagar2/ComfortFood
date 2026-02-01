@@ -39,8 +39,8 @@ class CreateNewUser implements CreatesNewUsers
 
             if ($rol->nombre_rol === 'Cliente') {
                 $user->cliente()->create([
-                    'direccion' => $input['direccion'] ?? null,
-                    'telefono' => $input['telefono'] ?? null,
+                    'direccion' => $input['direccion_cliente'] ?? null,
+                    'telefono' => $input['telefono_cliente'] ?? null,
                 ]);
             } else {
                 $user->restaurante()->create([

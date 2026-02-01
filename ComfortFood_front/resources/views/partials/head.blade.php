@@ -12,7 +12,7 @@
 
 <script type="text/javascript"
     src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
-<script type="text/javascript" src="/resources/js/utils/image-optimizer.js"></script>
+
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 @fluxAppearance

@@ -19,14 +19,18 @@ trait ProfileValidationRules
             'email' => $this->emailRules($userId),
             'rol' => ['required', 'string', Rule::in(['cliente', 'restaurante'])],
 
-            // Campos de Cliente/Restaurante
-            'direccion' => ['required', 'string', 'max:255'],
-            'telefono' => ['required', 'string', 'max:20', 'regex:/^\+?[0-9\s\-]+$/'],
+            // Campos de Cliente
+            'direccion_cliente' => ['required_if:rol,cliente', 'nullable', 'string', 'max:255'],
+            'telefono_cliente' => ['required_if:rol,cliente', 'nullable', 'string', 'max:20', 'regex:/^\+?[0-9\s\-]+$/'],
+
+            // Campos de Restaurante (ahora usan los nombres genericos)
+            'direccion' => ['required_if:rol,restaurante', 'nullable', 'string', 'max:255'],
+            'telefono' => ['required_if:rol,restaurante', 'nullable', 'string', 'max:20', 'regex:/^\+?[0-9\s\-]+$/'],
 
             // Solo Restaurante
             'tipo_cocina' => ['required_if:rol,restaurante', 'string', 'min:3', 'max:100'],
-            'NIF' => ['nullable', 'string', 'max:20', Rule::unique('restaurante', 'NIF')],
-            'descripcion' => ['required', 'string', 'min:10', 'max:255'],
+            'NIF' => ['nullable', 'string', 'max:20', 'required_if:rol,restaurante', Rule::unique('restaurante', 'NIF')],
+            'descripcion' => ['required_if:rol,restaurante', 'nullable', 'string', 'min:10', 'max:255'],
         ];
     }
 

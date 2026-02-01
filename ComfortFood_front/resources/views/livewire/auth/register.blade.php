@@ -1,6 +1,19 @@
 <x-layouts::auth>
     <div class="flex w-full h-screen overflow-hidden bg-app-bg dark:bg-zinc-950"
-        x-data="{ rol: @js(request('rol') ?? 'cliente') }">
+        x-data="{ rol: @js(request('rol') ?? 'cliente'), loading: false }">
+
+        <!-- Loading Overlay -->
+        <div x-show="loading" x-transition.opacity
+            class="fixed inset-0 z-50 flex items-center justify-center bg-white/80 dark:bg-zinc-950/80 backdrop-blur-sm">
+            <div class="flex flex-col items-center gap-4">
+                <div
+                    class="size-12 rounded-full border-4 border-zinc-200 dark:border-zinc-700 border-t-pastel-orange animate-spin">
+                </div>
+                <p class="text-sm font-bold text-zinc-600 dark:text-zinc-400 animate-pulse">
+                    Preparando tu espacio...
+                </p>
+            </div>
+        </div>
 
         <!-- Form Column -->
         <div
@@ -28,7 +41,8 @@
                     <x-auth-session-status class="text-center" :status="session('status')" />
 
                     <!-- Form -->
-                    <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-8">
+                    <form x-on:submit="loading = true" method="POST" action="{{ route('register.store') }}"
+                        class="flex flex-col gap-8">
                         @csrf
                         <input type="hidden" name="rol" x-bind:value="rol">
 
@@ -47,17 +61,11 @@
                                     x-bind:placeholder="rol === 'restaurante' ? 'Ej. El Rincón del Sabor' : 'Ej. Juan Pérez'"
                                     class="!rounded-2xl" />
 
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div class="grid grid-cols-1 gap-5">
                                     <flux:input name="email" :label="__('Correo electrónico')" :value="old('email')"
                                         type="email" required autocomplete="email" placeholder="email@example.com"
                                         class="!rounded-2xl" />
-                                    <flux:input name="telefono" :label="__('Teléfono de contacto')"
-                                        :value="old('telefono')" type="tel" placeholder="+34 600 000 000"
-                                        class="!rounded-2xl" />
                                 </div>
-
-                                <flux:input name="direccion" :label="__('Dirección física')" :value="old('direccion')"
-                                    type="text" placeholder="Calle, Número, Ciudad..." class="!rounded-2xl" />
                             </div>
                         </section>
 
@@ -77,8 +85,38 @@
                             </div>
                         </section>
 
+                        <!-- Section: Client Only -->
+                        <section x-show="rol === 'cliente'" x-transition class="space-y-5">
+                            <div class="flex items-center gap-3">
+                                <div class="size-1 bg-pastel-orange rounded-full"></div>
+                                <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Datos
+                                    de contacto</h3>
+                            </div>
+                            <flux:input name="telefono_cliente" :label="__('Teléfono')" :value="old('telefono_cliente')"
+                                type="tel" placeholder="+34 600 000 000" class="!rounded-2xl" />
+                            <flux:error name="telefono_cliente" />
+
+                            <flux:input name="direccion_cliente" :label="__('Dirección física')"
+                                :value="old('direccion_cliente')" type="text" placeholder="Calle, Número, Ciudad..."
+                                class="!rounded-2xl" />
+                            <flux:error name="direccion_cliente" />
+                        </section>
+
                         <!-- Section: Restaurant Only -->
                         <section x-show="rol === 'restaurante'" x-transition class="space-y-5">
+                            <div class="flex items-center gap-3">
+                                <div class="size-1 bg-pastel-orange rounded-full"></div>
+                                <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Datos
+                                    de contacto</h3>
+                            </div>
+                            <flux:input name="telefono" :label="__('Teléfono')" :value="old('telefono')" type="tel"
+                                x-bind:required="rol === 'restaurante'" placeholder="+34 600 000 000"
+                                class="!rounded-2xl" />
+
+                            <flux:input name="direccion" :label="__('Dirección física')" :value="old('direccion')"
+                                type="text" x-bind:required="rol === 'restaurante'"
+                                placeholder="Calle, Número, Ciudad..." class="!rounded-2xl" />
+
                             <div class="flex items-center gap-3">
                                 <div class="size-1 bg-emerald-500 rounded-full"></div>
                                 <h3
