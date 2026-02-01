@@ -57,7 +57,10 @@ class OrderDetails extends Component
         }
     }
 
-    protected $listeners = ['cancelOrderConfirmed' => 'cancelOrder'];
+    protected $listeners = [
+        'cancelOrderConfirmed' => 'cancelOrder',
+        'refresh-badges' => '$refresh'
+    ];
 
     public function confirmCancel()
     {

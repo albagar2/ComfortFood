@@ -5,6 +5,7 @@ namespace App\Livewire\Shared\Notifications;
 use App\Models\Pedido;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Artisan;
 
 class NotificationToast extends Component
 {
@@ -22,6 +23,9 @@ class NotificationToast extends Component
         }
 
         $user = Auth::user();
+
+        // Poor man's scheduler: run cancellation logic on poll
+        Artisan::call('app:cancel-expired-orders');
 
         if ($user->isCliente()) {
             $this->checkClientNotifications($user);
