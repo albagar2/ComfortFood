@@ -37,27 +37,26 @@
 
                     <!-- Profile Photo -->
                     <div class="flex items-center gap-6" x-data="{
-                                async handleFileSelect(event) {
-                                    const file = event.target.files[0];
-                                    if (!file) return;
+                                    async handleFileSelect(event) {
+                                        const file = event.target.files[0];
+                                        if (!file) return;
 
-                                    const options = {
-                                        maxSizeMB: 1,
-                                        maxWidthOrHeight: 400,
-                                        useWebWorker: true,
-                                        initialQuality: 0.7
-                                    };
+                                        const options = {
+                                            maxSizeMB: 1,
+                                            maxWidthOrHeight: 400,
+                                            useWebWorker: true,
+                                            initialQuality: 0.7
+                                        };
 
-                                    try {
-                                        const compressedFile = await imageCompression(file, options);
-                                        const finalFile = new File([compressedFile], file.name, { type: file.type });
-                                        @this.upload('foto_perfil', finalFile);
-                                    } catch (error) {
-                                        console.error('Error compressing image:', error);
-                                        @this.upload('foto_perfil', file);
+                                        try {
+                                            const optimized = await ImageOptimizer.compress(file, 'AVATAR');
+                                            @this.upload('foto_perfil', optimized);
+                                        } catch (error) {
+                                            console.error('Error optimizing image:', error);
+                                            @this.upload('foto_perfil', file);
+                                        }
                                     }
-                                }
-                            }">
+                                }">
                         <div class="shrink-0">
                             @if ($foto_perfil)
                                 <img src="{{ $foto_perfil->temporaryUrl() }}" class="size-20 rounded-full object-cover">
@@ -73,13 +72,13 @@
                         <div>
                             <flux:label>{{ __('Foto de Perfil') }}</flux:label>
                             <input type="file" x-on:change="handleFileSelect" class="block w-full text-sm text-zinc-500
-                                    file:mr-4 file:py-2 file:px-4
-                                    file:rounded-full file:border-0
-                                    file:text-sm file:font-semibold
-                                    file:bg-indigo-50 file:text-indigo-700
-                                    hover:file:bg-indigo-100
-                                    dark:file:bg-zinc-800 dark:file:text-zinc-300
-                                " />
+                                        file:mr-4 file:py-2 file:px-4
+                                        file:rounded-full file:border-0
+                                        file:text-sm file:font-semibold
+                                        file:bg-indigo-50 file:text-indigo-700
+                                        hover:file:bg-indigo-100
+                                        dark:file:bg-zinc-800 dark:file:text-zinc-300
+                                    " />
                             <flux:error name="foto_perfil" />
                         </div>
                     </div>
@@ -102,27 +101,27 @@
 
                     <!-- Profile Photo -->
                     <div class="flex items-center gap-6" x-data="{
-                                async handleFileSelect(event) {
-                                    const file = event.target.files[0];
-                                    if (!file) return;
+                                    async handleFileSelect(event) {
+                                        const file = event.target.files[0];
+                                        if (!file) return;
 
-                                    const options = {
-                                        maxSizeMB: 1,
-                                        maxWidthOrHeight: 400,
-                                        useWebWorker: true,
-                                        initialQuality: 0.7
-                                    };
+                                        const options = {
+                                            maxSizeMB: 1,
+                                            maxWidthOrHeight: 400,
+                                            useWebWorker: true,
+                                            initialQuality: 0.7
+                                        };
 
-                                    try {
-                                        const compressedFile = await imageCompression(file, options);
-                                        const finalFile = new File([compressedFile], file.name, { type: file.type });
-                                        @this.upload('foto_perfil', finalFile);
-                                    } catch (error) {
-                                        console.error('Error compressing image:', error);
-                                        @this.upload('foto_perfil', file);
+                                        try {
+                                            const compressedFile = await imageCompression(file, options);
+                                            const finalFile = new File([compressedFile], file.name, { type: file.type });
+                                            @this.upload('foto_perfil', finalFile);
+                                        } catch (error) {
+                                            console.error('Error compressing image:', error);
+                                            @this.upload('foto_perfil', file);
+                                        }
                                     }
-                                }
-                            }">
+                                }">
                         <div class="shrink-0">
                             @if ($foto_perfil)
                                 <img src="{{ $foto_perfil->temporaryUrl() }}" class="size-20 rounded-full object-cover">
@@ -138,13 +137,13 @@
                         <div>
                             <flux:label>{{ __('Logo / Imagen de Perfil') }}</flux:label>
                             <input type="file" x-on:change="handleFileSelect" class="block w-full text-sm text-zinc-500
-                                    file:mr-4 file:py-2 file:px-4
-                                    file:rounded-full file:border-0
-                                    file:text-sm file:font-semibold
-                                    file:bg-indigo-50 file:text-indigo-700
-                                    hover:file:bg-indigo-100
-                                    dark:file:bg-zinc-800 dark:file:text-zinc-300
-                                " />
+                                        file:mr-4 file:py-2 file:px-4
+                                        file:rounded-full file:border-0
+                                        file:text-sm file:font-semibold
+                                        file:bg-indigo-50 file:text-indigo-700
+                                        hover:file:bg-indigo-100
+                                        dark:file:bg-zinc-800 dark:file:text-zinc-300
+                                    " />
                             <flux:error name="foto_perfil" />
                         </div>
                     </div>

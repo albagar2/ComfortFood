@@ -68,19 +68,11 @@
                                 const file = event.target.files[0];
                                 if (!file) return;
 
-                                const options = {
-                                    maxSizeMB: 1,
-                                    maxWidthOrHeight: 800,
-                                    useWebWorker: true,
-                                    initialQuality: 0.7
-                                };
-
                                 try {
-                                    const compressedFile = await imageCompression(file, options);
-                                    const finalFile = new File([compressedFile], file.name, { type: file.type });
-                                    @this.upload('photo', finalFile);
+                                    const optimized = await ImageOptimizer.compress(file, 'BANNER');
+                                    @this.upload('photo', optimized);
                                 } catch (error) {
-                                    console.error('Error compressing image:', error);
+                                    console.error('Error optimizing image:', error);
                                     @this.upload('photo', file);
                                 }
                             }
@@ -174,7 +166,10 @@
                                     <!-- Dish Image -->
                                     <a href="{{ route('menu.show', $menu->id_menu) }}" wire:navigate
                                         class="size-24 rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 flex-shrink-0 relative">
-                                        @if($menu->url_foto)
+                                        @if($menu->url_foto_card)
+                                            <img src="{{ $menu->url_foto_card }}" alt="{{ $menu->nombre_menu }}"
+                                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                        @elseif($menu->url_foto)
                                             <img src="{{ $menu->url_foto }}" alt="{{ $menu->nombre_menu }}"
                                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                         @else

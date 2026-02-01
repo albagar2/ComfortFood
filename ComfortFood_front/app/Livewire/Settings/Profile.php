@@ -106,8 +106,8 @@ class Profile extends Component
             ];
 
             if ($this->foto_perfil) {
-                // Resize to 400x400 (centered cover) for profile photos
-                $clienteData['url_imagen_perfil'] = $imageService->processAndStore($this->foto_perfil, 'perfiles', 400, 400);
+                // Optimized via client-side ImageOptimizer
+                $clienteData['url_imagen_perfil'] = $imageService->processAndStore($this->foto_perfil, 'perfiles');
             }
 
             $user->cliente()->updateOrCreate(
@@ -126,8 +126,8 @@ class Profile extends Component
             ];
 
             if ($this->foto_perfil) {
-                // Resize to 400x400 (centered cover) for profile photos
-                $restauranteData['url_imagen_perfil'] = $imageService->processAndStore($this->foto_perfil, 'restaurantes', 400, 400);
+                // Optimized via client-side ImageOptimizer
+                $restauranteData['url_imagen_perfil'] = $imageService->processAndStore($this->foto_perfil, 'restaurantes');
             }
 
             $user->restaurante()->updateOrCreate(

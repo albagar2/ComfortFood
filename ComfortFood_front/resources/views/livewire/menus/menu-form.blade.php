@@ -84,22 +84,14 @@
                             const file = event.target.files[0];
                             if (!file) return;
 
-                            const options = {
-                                maxSizeMB: 1,
-                                maxWidthOrHeight: 800,
-                                useWebWorker: true,
-                                initialQuality: 0.7
-                            };
-
                             try {
-                                const compressedFile = await imageCompression(file, options);
-                                // Create a new File object with the same name but compressed data
-                                const finalFile = new File([compressedFile], file.name, { type: file.type });
+                                const versions = await ImageOptimizer.processMenu(file);
                                 
-                                // Upload to Livewire
-                                @this.upload('foto', finalFile);
+                                // Upload both versions to Livewire
+                                @this.upload('foto', versions.original);
+                                @this.upload('foto_card', versions.card);
                             } catch (error) {
-                                console.error('Error compressing image:', error);
+                                console.error('Error processing image:', error);
                                 // Fallback: try to upload the original file if compression fails
                                 @this.upload('foto', file);
                             }

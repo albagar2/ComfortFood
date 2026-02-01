@@ -24,7 +24,9 @@ class MenuForm extends Component
     public $propiedades_nutricionales;
     public $precio;
     public $foto;
+    public $foto_card; // New property for thumbnail
     public $current_foto;
+    public $current_foto_card; // New property for current thumbnail
     public $stock = 0; // Default stock
 
     public function mount(?Menu $menu = null)
@@ -41,6 +43,7 @@ class MenuForm extends Component
             $this->precio = $menu->precio;
             $this->stock = $menu->stock;
             $this->current_foto = $menu->url_foto;
+            $this->current_foto_card = $menu->url_foto_card;
         }
     }
 
@@ -56,7 +59,8 @@ class MenuForm extends Component
             'propiedades_nutricionales' => 'nullable|string',
             'precio' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'foto' => 'nullable|image|max:10240', // Increased to 10MB to allow more, we will resize it anyway
+            'foto' => 'nullable|image',
+            'foto_card' => 'nullable|image',
         ]);
 
         $data = [
@@ -78,9 +82,13 @@ class MenuForm extends Component
         }
 
         if ($this->foto) {
-            // Process and store image using ImageService
-            // Resize to 800px width, auto height
-            $data['url_foto'] = $imageService->processAndStore($this->foto, 'menus', 800);
+            // High quality version
+            $data['url_foto'] = $imageService->processAndStore($this->foto, 'menus');
+        }
+
+        if ($this->foto_card) {
+            // Thumbnail version
+            $data['url_foto_card'] = $imageService->processAndStore($this->foto_card, 'menus');
         }
 
         if ($this->menu && $this->menu->exists) {

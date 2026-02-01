@@ -20,6 +20,7 @@ class Menu extends Model
         'descripcion_menu',
         'precio',
         'url_foto',
+        'url_foto_card',
         'plato_principal',
         'segundo_plato',
         'postre',
