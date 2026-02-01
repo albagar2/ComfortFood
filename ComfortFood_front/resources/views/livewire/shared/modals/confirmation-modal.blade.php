@@ -36,7 +36,7 @@
                                 </h3>
                                 <div class="mt-2">
                                     <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                                        {{ $message }}
+                                        {!! $message !!}
                                     </p>
                                 </div>
                             </div>

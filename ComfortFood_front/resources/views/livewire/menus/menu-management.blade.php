@@ -19,28 +19,33 @@
         </div>
     @endif
 
+
     <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
         @forelse($menus as $menu)
             @php
+                $isDisabled = !$menu->esta_activo;
                 $hasActiveOrders = $menu->hasActiveOrders();
             @endphp
-            <div
-                class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-sm flex flex-col gap-4 relative">
+            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-sm flex flex-col gap-4 relative
+                                                            transition-all duration-300
+                                                            {{ $isDisabled ? 'opacity-50 grayscale' : '' }}">
                 <!-- Status Badge -->
-                <div class="absolute top-4 right-4">
-                    @if($menu->esta_activo)
-                        <span
-                            class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium">
-                            Activo
-                            <flux:icon.check class="size-3" />
-                        </span>
-                    @else
-                        <span
-                            class="inline-flex items-center gap-1 bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-medium">
-                            No disponible <flux:icon.x-mark class="size-3" />
-                        </span>
-                    @endif
-                </div>
+                @if($isDisabled)
+                    <div class="absolute inset-0 bg-white/60 dark:bg-zinc-900/60 rounded-xl z-10">
+                        @if($menu->esta_activo)
+                            <span
+                                class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium">
+                                Activo
+                                <flux:icon.check class="size-3" />
+                            </span>
+                        @else
+                            <span
+                                class="inline-flex items-center gap-1 bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-medium">
+                                No disponible <flux:icon.x-mark class="size-3" />
+                            </span>
+                        @endif
+                    </div>
+                @endif
                 <!-- Header -->
                 <div class="mt-2">
                     <span class="text-xs font-bold text-zinc-500 uppercase tracking-wider">Menú</span>
@@ -75,30 +80,18 @@
                     </div>
 
                     <div class="flex gap-2">
-                        @if($hasActiveOrders)
-                            <button disabled
-                                title="No puedes eliminar este menú mientras haya pedidos en curso. Espera a que todos los pedidos asociados estén completados o cancelados."
-                                class="size-9 flex items-center justify-center rounded-lg border border-zinc-200 text-zinc-300 cursor-not-allowed opacity-50 bg-zinc-50">
-                                <flux:icon.trash class="size-4" />
-                            </button>
-                        @else
-                            <button wire:click="deleteMenu({{ $menu->id_menu }})"
-                                wire:confirm="¿Estás seguro de que quieres eliminar este menú?" title="Eliminar menú"
-                                class="size-9 flex items-center justify-center rounded-lg border border-red-200 text-red-500 hover:bg-red-50 transition-colors">
-                                <flux:icon.trash class="size-4" />
-                            </button>
-                        @endif
-
                         <a href="{{ route('menu.edit', ['menu' => $menu->id_menu]) }}" wire:navigate title="Editar menú"
                             class="size-9 flex items-center justify-center rounded-lg border border-yellow-200 text-yellow-500 hover:bg-yellow-50 transition-colors">
                             <flux:icon.pencil class="size-4" />
                         </a>
 
-                        <button wire:click="toggleStatus({{ $menu->id_menu }})" title="Cambiar estado"
-                            class="size-9 flex items-center justify-center rounded-lg border border-zinc-200 text-zinc-500 hover:bg-zinc-50 transition-colors">
-                            <flux:icon.arrow-path class="size-4" />
-                            <!-- Using arrow-path as toggle/switch icon alternative, or eye -->
-                        </button>
+                        @if(!$hasActiveOrders)
+                            <button wire:click="toggleStatus({{ $menu->id_menu }})" title="Cambiar estado"
+                                class="size-9 flex items-center justify-center rounded-lg border border-zinc-200 text-zinc-500 hover:bg-zinc-50 transition-colors relative z-20">
+                                <flux:icon.arrow-path class="size-4" />
+                            </button>
+                        @endif
+
                     </div>
                 </div>
             </div>

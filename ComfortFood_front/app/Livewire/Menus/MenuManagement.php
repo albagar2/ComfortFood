@@ -10,32 +10,40 @@ class MenuManagement extends Component
 {
     public function toggleStatus($id)
     {
-        $menu = Menu::where('id_menu', $id)->first();
-        if ($menu && $menu->id_restaurante == Auth::user()->restaurante->id_restaurante) {
-            $menu->esta_activo = !$menu->esta_activo;
-            $menu->save();
+        $menu = Menu::where('id_menu', $id)
+            ->where('id_restaurante', Auth::user()->restaurante->id_restaurante)
+            ->first();
+
+        if (!$menu) {
+            return;
         }
+
+        $hasActiveOrders = \App\Models\DetallePedido::where('id_menu', $id)
+            ->whereHas('pedido.estado', function ($query) {
+                $query->whereNotIn('nombre_estado', ['Completado', 'Cancelado']);
+            })
+            ->exists();
+
+        if ($hasActiveOrders) {
+            session()->flash(
+                'error',
+                'No puedes cambiar el estado del menú mientras haya pedidos en curso.'
+            );
+            return;
+        }
+
+        $menu->esta_activo = !$menu->esta_activo;
+        $menu->save();
+
+        session()->flash(
+            'success',
+            $menu->esta_activo
+            ? 'Menú activado correctamente.'
+            : 'Menú marcado como no disponible.'
+        );
     }
 
-    public function deleteMenu($id)
-    {
-        $menu = Menu::where('id_menu', $id)->first();
 
-        if ($menu && $menu->id_restaurante == Auth::user()->restaurante->id_restaurante) {
-            $hasActiveOrders = \App\Models\DetallePedido::where('id_menu', $id)
-                ->whereHas('pedido.estado', function ($query) {
-                    $query->whereNotIn('nombre_estado', ['Completado', 'Cancelado']);
-                })->exists();
-
-            if ($hasActiveOrders) {
-                session()->flash('error', 'No puedes eliminar este menú mientras haya pedidos en curso. Espera a que todos los pedidos asociados estén completados o cancelados.');
-                return;
-            }
-
-            $menu->delete();
-            session()->flash('success', 'Menú eliminado correctamente.');
-        }
-    }
 
     public function render()
     {
@@ -45,6 +53,7 @@ class MenuManagement extends Component
         }
 
         $menus = Menu::where('id_restaurante', $user->restaurante->id_restaurante)
+            ->orderByDesc('esta_activo')
             ->latest()
             ->get();
 

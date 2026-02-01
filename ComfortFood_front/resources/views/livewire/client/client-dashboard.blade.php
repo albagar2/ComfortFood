@@ -41,8 +41,12 @@
                         $cardClasses = 'opacity-60 grayscale bg-zinc-50 dark:bg-zinc-900/50';
                     }
                 @endphp
+
+                @if($menu->stock <= 0 || !$isOpen)
+                    @continue
+                @endif
                 <div
-                    class="dark:bg-zinc-900 border-2 border-zinc-200 dark:border-zinc-800 rounded-xl p-3 md:p-4 shadow-sm flex flex-col gap-3 md:gap-4 relative group hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-500 {{ $cardClasses }}">
+                    class="dark:bg-zinc-900 bg-white border-2 border-zinc-200 dark:border-zinc-800 rounded-xl p-3 md:p-4 shadow-sm flex flex-col gap-3 md:gap-4 relative group hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-500 {{ $cardClasses }}">
                     <div class="flex flex-col sm:flex-row justify-between items-start gap-2">
                         <div class="min-w-0">
                             <div class="flex items-center gap-2">

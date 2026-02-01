@@ -16,14 +16,14 @@ class ConfirmationModal extends Component
     public $confirmParams = [];
 
     #[On('show-confirmation')]
-    public function showConfirmation($title, $message, $confirmAction, $confirmParams = [], $confirmText = 'Confirmar', $cancelText = 'Cancelar')
+    public function showConfirmation($data = [])
     {
-        $this->title = $title;
-        $this->message = $message;
-        $this->confirmAction = $confirmAction;
-        $this->confirmParams = $confirmParams;
-        $this->confirmText = $confirmText;
-        $this->cancelText = $cancelText;
+        $this->title = $data['title'] ?? '¿Estás seguro?';
+        $this->message = $data['message'] ?? '';
+        $this->confirmAction = $data['event'] ?? '';
+        $this->confirmParams = $data['params'] ?? [];
+        $this->confirmText = $data['confirmText'] ?? 'Confirmar';
+        $this->cancelText = $data['cancelText'] ?? 'Cancelar';
         $this->show = true;
     }
 
@@ -31,7 +31,7 @@ class ConfirmationModal extends Component
     {
         $this->show = false;
 
-        // Dispatch the confirmed action
+        // Dispatch event that all components can listen to
         $this->dispatch($this->confirmAction, ...$this->confirmParams);
     }
 

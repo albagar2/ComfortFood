@@ -42,5 +42,6 @@ return [
     'dimensions' => 'Las dimensiones de la imagen :attribute son inválidas.',
     'mimes' => 'El campo :attribute debe ser un archivo de tipo: :values.',
     'mimetypes' => 'El campo :attribute debe ser un archivo de tipo: :values.',
+    'precio.between' => 'El precio del menú debe estar entre 1€ y 50€',
     // ... many more could be added, but these are the most common
 ];

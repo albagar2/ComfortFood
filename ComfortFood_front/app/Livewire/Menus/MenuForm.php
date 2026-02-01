@@ -49,19 +49,28 @@ class MenuForm extends Component
 
     public function save(ImageService $imageService)
     {
-        $this->validate([
-            'nombre_menu' => 'required|string|max:255',
-            'plato_principal' => 'nullable|string|max:255',
-            'segundo_plato' => 'nullable|string|max:255',
-            'postre' => 'nullable|string|max:255',
-            'bebida' => 'nullable|string|max:255',
-            'descripcion_menu' => 'nullable|string',
+        // Validaciones base
+        $rules = [
+            'nombre_menu' => 'required|string|min:4|max:100',
+            'plato_principal' => 'required|string|min:4|max:100',
+            'segundo_plato' => 'nullable|string|min:4|max:100',
+            'postre' => 'nullable|string|min:4|max:100',
+            'bebida' => 'nullable|string|min:4|max:100',
+            'descripcion_menu' => 'required|string|min:10',
             'propiedades_nutricionales' => 'nullable|string',
-            'precio' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'foto' => 'nullable|image',
-            'foto_card' => 'nullable|image',
-        ]);
+            'precio' => 'required|numeric|between:1,50',
+            'stock' => 'required|integer|min:1',
+            'foto_card' => 'nullable|image|max:10240',
+        ];
+
+        // Foto obligatoria solo en creación, opcional en edición
+        if (!$this->menu || !$this->menu->exists) {
+            $rules['foto'] = 'required|image|max:10240';
+        } else {
+            $rules['foto'] = 'nullable|image|max:10240';
+        }
+
+        $this->validate($rules);
 
         $data = [
             'nombre_menu' => $this->nombre_menu,
