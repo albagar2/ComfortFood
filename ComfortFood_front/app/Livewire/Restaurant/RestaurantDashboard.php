@@ -80,50 +80,6 @@ class RestaurantDashboard extends Component
         $this->filterStatus = $status;
     }
 
-    public function checkNewOrders()
-    {
-        $user = Auth::user();
-        if (!$user || !$user->isRestaurante())
-            return;
-
-        $pendingOrders = Pedido::where('id_restaurante', $user->restaurante->id_restaurante)
-            ->whereHas('estado', function ($q) {
-                $q->where('nombre_estado', 'Pendiente');
-            })
-            ->whereDate('created_at', now()->today())
-            ->get();
-
-        foreach ($pendingOrders as $order) {
-            $minutesPending = $order->created_at->diffInMinutes(now());
-            $expirationLimit = config('app.order_expiration_minutes', 10);
-
-            // Aviso urgente (2 minutos antes de expirar)
-            if ($minutesPending >= ($expirationLimit - 2)) {
-                $cacheKeyUrgent = "alert_urgent_dash_{$order->id_pedido}";
-                if (!session()->has($cacheKeyUrgent)) {
-                    $this->dispatch('show-toast', [
-                        'message' => "¡ATENCIÓN! El pedido #{$order->id_pedido} está a punto de expirar.",
-                        'type' => 'error',
-                        'icon' => 'exclamation-triangle'
-                    ]);
-                    session([$cacheKeyUrgent => true]);
-                }
-            }
-            // Aviso de nuevo pedido (en el primer minuto)
-            elseif ($minutesPending < 1) {
-                $cacheKeyNew = "alert_new_dash_{$order->id_pedido}";
-                if (!session()->has($cacheKeyNew)) {
-                    $this->dispatch('show-toast', [
-                        'message' => "Nuevo pedido recibido: #{$order->id_pedido}",
-                        'type' => 'info',
-                        'icon' => 'bell'
-                    ]);
-                    session([$cacheKeyNew => true]);
-                }
-            }
-        }
-    }
-
     public function render()
     {
         $user = Auth::user();
@@ -175,8 +131,6 @@ class RestaurantDashboard extends Component
                 return $prioA <=> $prioB;
             });
         }
-
-        $this->checkNewOrders();
 
         return view('livewire.restaurant.restaurant-dashboard', [
             'orders' => $orders

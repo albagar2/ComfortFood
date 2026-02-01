@@ -85,7 +85,7 @@ class OrderHistory extends Component
         if ($user->isCliente()) {
             Pedido::where('id_cliente', $user->cliente->id_cliente)
                 ->whereHas('estado', function ($q) {
-                    $q->where('nombre_estado', 'Completado');
+                    $q->whereIn('nombre_estado', ['Completado', 'Cancelado']);
                 })
                 ->where('visto_completado', false)
                 ->update(['visto_completado' => true]);

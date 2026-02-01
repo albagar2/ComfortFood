@@ -28,6 +28,8 @@ class NotificationToast extends Component
         } elseif ($user->isRestaurante()) {
             $this->checkRestaurantNotifications($user);
         }
+
+        $this->dispatch('refresh-badges');
     }
 
     private function checkClientNotifications($user)
@@ -68,11 +70,6 @@ class NotificationToast extends Component
                     'type' => $type,
                     'icon' => $icon
                 ]);
-
-                if (in_array($estado, ['Completado', 'Cancelado'])) {
-                    /** @var \App\Models\Pedido $order */
-                    $order->update(['visto_completado' => true]);
-                }
             }
         }
     }
@@ -123,13 +120,25 @@ class NotificationToast extends Component
                     session([$cacheKeyUrgent => true]);
                 }
             }
+            // Aviso de nuevo pedido (en el primer minuto)
+            elseif ($minutesPending < 1) {
+                $cacheKeyNew = "alert_new_{$order->id_pedido}";
+                if (!session()->has($cacheKeyNew)) {
+                    $this->dispatch('show-toast', [
+                        'message' => "¡Nuevo pedido recibido! #{$order->id_pedido}",
+                        'type' => 'info',
+                        'icon' => 'bell'
+                    ]);
+                    session([$cacheKeyNew => true]);
+                }
+            }
         }
     }
 
     public function render()
     {
         return <<<'HTML'
-            <div wire:poll.15s="checkNotifications"></div>
+            <div wire:poll.10s="checkNotifications"></div>
         HTML;
     }
 }
