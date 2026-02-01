@@ -124,48 +124,6 @@ class RestaurantProfile extends Component
     }
 
     // Menu Actions
-    protected $listeners = ['deleteMenuConfirmed' => 'deleteMenu'];
-
-    public function confirmDeleteMenu($menuId)
-    {
-        $this->dispatch(
-            'show-confirmation',
-            title: '¿Eliminar Menú?',
-            message: '¿Estás seguro de que deseas eliminar este menú? Esta acción no se puede deshacer.',
-            confirmAction: 'deleteMenuConfirmed',
-            confirmParams: [$menuId],
-            confirmText: 'Sí, Eliminar',
-            cancelText: 'Cancelar'
-        );
-    }
-
-    public function deleteMenu($menuId)
-    {
-        $menu = \App\Models\Menu::find($menuId);
-
-        if (!$menu || $menu->id_restaurante !== $this->restaurante->id_restaurante) {
-            return;
-        }
-
-        // Check for active orders containing this menu
-        // We strictly block if the order is "Pendiente" or "En Preparación" or "En camino"
-        // User Request: "todos los menus que no esten completados y han sido puestos en preparacion no podrán ser eliminados... avisar con alert"
-
-        $hasActiveOrders = \App\Models\Pedido::whereHas('detalles', function ($q) use ($menuId) {
-            $q->where('id_menu', $menuId);
-        })->whereHas('estado', function ($q) {
-            $q->whereIn('nombre_estado', ['Pendiente', 'En Preparación', 'En camino', 'Entregado']);
-        })->exists();
-
-        if ($hasActiveOrders) {
-            $this->dispatch('notify', 'No se puede eliminar el menú: Está incluido en pedidos activos (pendiente o en preparación). Complete o cancele los pedidos primero.');
-            return;
-        }
-
-        $menu->delete();
-        $this->dispatch('notify', 'Menú eliminado correctamente.');
-    }
-
     public $selectedMenu = null;
     public $observation = '';
     public $quantity = 1;

@@ -96,8 +96,10 @@
                                         class="!rounded-2xl" />
                                 </div>
                                 <flux:textarea name="descripcion" :label="__('Descripción')" :value="old('descripcion')"
+                                    x-bind:required="rol === 'restaurante'"
                                     placeholder="Cuéntanos un poco sobre tu pasión por la cocina..."
                                     class="!rounded-2xl" />
+
                             </div>
                         </section>
 

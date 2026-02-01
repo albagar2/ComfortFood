@@ -29,10 +29,14 @@
                     <div>
                         <input type="text" wire:model="plato_principal" placeholder="Añadir plato principal"
                             class="w-full px-4 py-2.5 border border-zinc-200 rounded-full text-sm placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300" />
+                        @error('plato_principal') <span class="text-sm text-red-500 mt-1 ml-2">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div>
                         <input type="text" wire:model="segundo_plato" placeholder="Añadir segundo plato"
                             class="w-full px-4 py-2.5 border border-zinc-200 rounded-full text-sm placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300" />
+                        @error('segundo_plato') <span class="text-sm text-red-500 mt-1 ml-2">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div>
                         <input type="text" wire:model="postre" placeholder="Añadir postre"
@@ -47,6 +51,9 @@
                         <label class="text-sm font-medium text-zinc-700 ml-1">Añadir Descripción:</label>
                         <textarea wire:model="descripcion_menu" rows="4"
                             class="w-full px-4 py-3 border border-zinc-300 rounded-2xl text-sm placeholder-zinc-300 resize-none focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300"></textarea>
+                        @error('descripcion_menu')
+                            <span class="text-sm text-red-500 mt-1 ml-2">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="space-y-1">

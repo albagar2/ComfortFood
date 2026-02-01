@@ -43,5 +43,15 @@ return [
     'mimes' => 'El campo :attribute debe ser un archivo de tipo: :values.',
     'mimetypes' => 'El campo :attribute debe ser un archivo de tipo: :values.',
     'precio.between' => 'El precio del menú debe estar entre 1€ y 50€',
+    'descripcion_menu.min' => 'La descripción del menú debe tener al menos 10 caracteres',
+    'tipo_cocina.required_if' => 'El tipo de cocina es obligatorio para restaurantes',
+    'telefono.regex' => 'El teléfono debe tener un formato válido',
+    'telefono.max' => 'El teléfono debe tener un máximo de 20 caracteres',
+    'telefono.min' => 'El teléfono debe tener un mínimo de 10 caracteres',
+    'direccion.max' => 'La dirección debe tener un máximo de 255 caracteres',
+    'direccion.min' => 'La dirección debe tener un mínimo de 10 caracteres',
+    'descripcion.max' => 'La descripción debe tener un máximo de 255 caracteres',
+    'descripcion.min' => 'La descripción debe tener un mínimo de 10 caracteres',
+
     // ... many more could be added, but these are the most common
 ];
