@@ -17,6 +17,7 @@ class ToastContainer extends Component
             'message' => $payload['message'],
             'type' => $payload['type'] ?? 'info',
             'icon' => $payload['icon'] ?? 'bell',
+            'sticky' => $payload['sticky'] ?? false,
         ];
     }
 

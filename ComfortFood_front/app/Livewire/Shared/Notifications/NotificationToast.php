@@ -65,11 +65,16 @@ class NotificationToast extends Component
             }
 
             if ($message) {
-                $this->dispatch('show-toast', [
-                    'message' => $message,
-                    'type' => $type,
-                    'icon' => $icon
-                ]);
+                $cacheKey = "client_alert_{$order->id_pedido}_{$estado}";
+                if (!session()->has($cacheKey)) {
+                    $this->dispatch('show-toast', [
+                        'message' => $message,
+                        'type' => $type,
+                        'icon' => $icon,
+                        'sticky' => true
+                    ]);
+                    session([$cacheKey => true]);
+                }
             }
         }
     }
