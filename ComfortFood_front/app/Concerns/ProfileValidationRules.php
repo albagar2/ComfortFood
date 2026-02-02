@@ -28,7 +28,7 @@ trait ProfileValidationRules
             'telefono' => ['required_if:rol,restaurante', 'nullable', 'string', 'max:20', 'regex:/^\+?[0-9\s\-]+$/'],
 
             // Solo Restaurante
-            'tipo_cocina' => ['required_if:rol,restaurante', 'string', 'min:3', 'max:100'],
+            'tipo_cocina' => ['required_if:rol,restaurante', 'nullable', 'string', 'min:3', 'max:100'],
             'NIF' => ['nullable', 'string', 'max:20', 'required_if:rol,restaurante', Rule::unique('restaurante', 'NIF')],
             'descripcion' => ['required_if:rol,restaurante', 'nullable', 'string', 'min:10', 'max:255'],
         ];

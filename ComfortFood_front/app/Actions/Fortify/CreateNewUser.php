@@ -7,6 +7,8 @@ use App\Concerns\ProfileValidationRules;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -25,10 +27,10 @@ class CreateNewUser implements CreatesNewUsers
         ])->validate();
 
         // Obtener el ID del rol
-        $rolNombre = strtolower($input['rol']) === 'restaurante' ? 'Restaurante' : 'Cliente';
+        $rolNombre = strtolower($input['rol'] ?? '') === 'restaurante' ? 'Restaurante' : 'Cliente';
         $rol = \App\Models\Rol::where('nombre_rol', $rolNombre)->firstOrFail();
 
-        return \DB::transaction(function () use ($input, $rol) {
+        return DB::transaction(function () use ($input, $rol) {
             $user = User::create([
                 'nombre_completo' => $input['nombre_completo'],
                 'email' => $input['email'],

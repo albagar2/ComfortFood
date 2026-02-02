@@ -41,7 +41,7 @@
                     <x-auth-session-status class="text-center" :status="session('status')" />
 
                     <!-- Form -->
-                    <form x-on:submit="loading = true" method="POST" action="{{ route('register.store') }}"
+                    <form x-on:submit="loading = true" method="POST" action="{{ route('register') }}"
                         class="flex flex-col gap-8">
                         @csrf
                         <input type="hidden" name="rol" x-bind:value="rol">
