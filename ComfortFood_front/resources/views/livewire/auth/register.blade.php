@@ -94,12 +94,10 @@
                             </div>
                             <flux:input name="telefono_cliente" :label="__('Teléfono')" :value="old('telefono_cliente')"
                                 type="tel" placeholder="+34 600 000 000" class="!rounded-2xl" />
-                            <flux:error name="telefono_cliente" />
 
                             <flux:input name="direccion_cliente" :label="__('Dirección física')"
                                 :value="old('direccion_cliente')" type="text" placeholder="Calle, Número, Ciudad..."
                                 class="!rounded-2xl" />
-                            <flux:error name="direccion_cliente" />
                         </section>
 
                         <!-- Section: Restaurant Only -->
@@ -137,7 +135,7 @@
                                     x-bind:required="rol === 'restaurante'"
                                     placeholder="Cuéntanos un poco sobre tu pasión por la cocina..."
                                     class="!rounded-2xl" />
-
+                                <flux:error name="descripcion" />
                             </div>
                         </section>
 

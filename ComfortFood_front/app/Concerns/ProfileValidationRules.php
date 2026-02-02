@@ -12,26 +12,38 @@ trait ProfileValidationRules
      *
      * @return array<string, array<int, \Illuminate\Contracts\Validation\Rule|array<mixed>|string>>
      */
-    protected function profileRules(?int $userId = null): array
+    protected function profileRules(?int $userId = null, ?string $rol = null, bool $isProfileComponent = false): array
     {
-        return [
+        $rol = strtolower($rol ?? '');
+
+        $rules = [
             'nombre_completo' => ['required', 'string', 'min:3', 'max:150'],
             'email' => $this->emailRules($userId),
             'rol' => ['required', 'string', Rule::in(['cliente', 'restaurante'])],
-
-            // Campos de Cliente
-            'direccion_cliente' => ['required_if:rol,cliente', 'nullable', 'string', 'max:255'],
-            'telefono_cliente' => ['required_if:rol,cliente', 'nullable', 'string', 'max:20', 'regex:/^\+?[0-9\s\-]+$/'],
-
-            // Campos de Restaurante (ahora usan los nombres genericos)
-            'direccion' => ['required_if:rol,restaurante', 'nullable', 'string', 'max:255'],
-            'telefono' => ['required_if:rol,restaurante', 'nullable', 'string', 'max:20', 'regex:/^\+?[0-9\s\-]+$/'],
-
-            // Solo Restaurante
-            'tipo_cocina' => ['required_if:rol,restaurante', 'nullable', 'string', 'min:3', 'max:100'],
-            'NIF' => ['nullable', 'string', 'max:20', 'required_if:rol,restaurante', Rule::unique('restaurante', 'NIF')],
-            'descripcion' => ['required_if:rol,restaurante', 'nullable', 'string', 'min:10', 'max:255'],
         ];
+
+        // Validación dinámica según el rol
+        if ($rol === 'restaurante') {
+            $rules['direccion'] = ['required', 'string', 'min:10', 'max:255'];
+            $rules['telefono'] = ['required', 'string', 'min:10', 'max:20', 'regex:/^\+?[0-9\s\-]+$/'];
+            $rules['tipo_cocina'] = ['required', 'string', 'min:3', 'max:100'];
+            $rules['descripcion'] = ['required', 'string', 'min:10', 'max:1000'];
+            $rules['NIF'] = [
+                'nullable',
+                'string',
+                'max:20',
+                $userId ? Rule::unique('restaurante', 'NIF')->ignore($userId, 'id_usuario') : Rule::unique('restaurante', 'NIF')
+            ];
+        } elseif ($rol === 'cliente') {
+            $direccionKey = $isProfileComponent ? 'direccion' : 'direccion_cliente';
+            $telefonoKey = $isProfileComponent ? 'telefono' : 'telefono_cliente';
+
+            $rules[$direccionKey] = ['required', 'string', 'min:10', 'max:255'];
+            $rules[$telefonoKey] = ['required', 'string', 'min:10', 'max:20', 'regex:/^\+?[0-9\s\-]+$/'];
+            $rules['tarjeta_mock'] = ['nullable', 'string', 'max:19'];
+        }
+
+        return $rules;
     }
 
     /**

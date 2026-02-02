@@ -45,13 +45,45 @@ return [
     'precio.between' => 'El precio del menú debe estar entre 1€ y 50€',
     'descripcion_menu.min' => 'La descripción del menú debe tener al menos 10 caracteres',
     'tipo_cocina.required_if' => 'El tipo de cocina es obligatorio para restaurantes',
-    'telefono.regex' => 'El teléfono debe tener un formato válido',
-    'telefono.max' => 'El teléfono debe tener un máximo de 20 caracteres',
-    'telefono.min' => 'El teléfono debe tener un mínimo de 10 caracteres',
-    'direccion.max' => 'La dirección debe tener un máximo de 255 caracteres',
-    'direccion.min' => 'La dirección debe tener un mínimo de 10 caracteres',
-    'descripcion.max' => 'La descripción debe tener un máximo de 255 caracteres',
-    'descripcion.min' => 'La descripción debe tener un mínimo de 10 caracteres',
+
+    'custom' => [
+        'telefono' => [
+            'required' => 'El teléfono es obligatorio para restaurantes.',
+            'regex' => 'El teléfono debe tener un formato válido.',
+            'min' => 'El teléfono debe tener al menos :min caracteres.',
+            'max' => 'El teléfono no puede superar :max caracteres.',
+        ],
+        'direccion' => [
+            'required' => 'La dirección es obligatoria para restaurantes.',
+            'min' => 'La dirección debe tener al menos :min caracteres.',
+            'max' => 'La dirección no puede superar :max caracteres.',
+        ],
+
+        'descripcion' => [
+            'required' => 'La descripción es obligatoria para restaurantes.',
+            'min' => 'La descripción debe tener al menos :min caracteres.',
+            'max' => 'La descripción no puede superar :max caracteres.',
+        ],
+        'tipo_cocina' => [
+            'required' => 'El tipo de cocina es obligatorio para restaurantes.',
+            'min' => 'El tipo de cocina debe tener al menos :min caracteres.',
+            'max' => 'El tipo de cocina no puede superar :max caracteres.',
+        ],
+
+        'telefono_cliente' => [
+            'required_if' => 'El teléfono es obligatorio para clientes.',
+            'min' => 'El teléfono debe tener al menos :min caracteres.',
+            'max' => 'El teléfono no puede superar :max caracteres.',
+            'regex' => 'El teléfono debe tener un formato válido.',
+
+        ],
+        'direccion_cliente' => [
+            'required_if' => 'La dirección es obligatoria para clientes.',
+            'min' => 'La dirección debe tener al menos :min caracteres.',
+            'max' => 'La dirección no puede superar :max caracteres.',
+        ],
+    ],
+
 
     // ... many more could be added, but these are the most common
 ];

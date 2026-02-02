@@ -64,29 +64,13 @@ class Profile extends Component
     {
         $user = Auth::user();
 
-        $rules = $this->profileRules($user->id_usuario);
+        // Obtén las reglas dinámicas según el rol
+        $rules = $this->profileRules($user->id_usuario, $this->rol, true);
 
-        // Remove rol from validation if we are not changing it
-        unset($rules['rol']);
-
-        if ($user->isCliente()) {
-            $rules['direccion'] = ['nullable', 'string', 'max:255'];
-            $rules['telefono'] = ['nullable', 'string', 'max:20'];
-            $rules['tarjeta_mock'] = ['nullable', 'string', 'max:19'];
-            $rules['foto_perfil'] = ['nullable', 'image', 'max:10240']; // Increased to 10MB
-        } elseif ($user->isRestaurante()) {
-            $rules['direccion'] = ['nullable', 'string', 'max:255'];
-            $rules['telefono'] = ['nullable', 'string', 'max:20'];
-            $rules['tipo_cocina'] = ['nullable', 'string', 'max:255'];
-            $rules['redes_sociales'] = ['nullable', 'string', 'max:255'];
-            $rules['descripcion'] = ['nullable', 'string', 'max:1000'];
-            $rules['cuenta_bancaria_mock'] = ['nullable', 'string', 'max:50'];
-            $rules['NIF'] = ['nullable', 'string', 'max:20'];
-            $rules['foto_perfil'] = ['nullable', 'image', 'max:10240']; // Increased to 10MB
-        }
-
+        // Valida los datos
         $validated = $this->validate($rules);
 
+        // Actualiza datos del usuario
         $user->fill([
             'nombre_completo' => $validated['nombre_completo'],
             'email' => $validated['email'],
@@ -98,6 +82,7 @@ class Profile extends Component
 
         $user->save();
 
+        // Actualiza datos del cliente o restaurante
         if ($user->isCliente()) {
             $clienteData = [
                 'direccion' => $this->direccion,
@@ -106,7 +91,6 @@ class Profile extends Component
             ];
 
             if ($this->foto_perfil) {
-                // Optimized via client-side ImageOptimizer
                 $clienteData['url_imagen_perfil'] = $imageService->processAndStore($this->foto_perfil, 'perfiles');
             }
 
@@ -126,7 +110,6 @@ class Profile extends Component
             ];
 
             if ($this->foto_perfil) {
-                // Optimized via client-side ImageOptimizer
                 $restauranteData['url_imagen_perfil'] = $imageService->processAndStore($this->foto_perfil, 'restaurantes');
             }
 
@@ -138,6 +121,7 @@ class Profile extends Component
 
         $this->dispatch('profile-updated', name: $user->nombre_completo);
     }
+
 
     /**
      * Send an email verification notification to the current user.

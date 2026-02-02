@@ -21,8 +21,10 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
+        $rol = strtolower($input['rol'] ?? '');
+
         Validator::make($input, [
-            ...$this->profileRules(),
+            ...$this->profileRules(null, $rol),
             'password' => $this->passwordRules(),
         ])->validate();
 
