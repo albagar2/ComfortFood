@@ -4,7 +4,7 @@
     @if($total > 0)
         <!-- Single Grey Badge -->
         <span
-            class="absolute -top-7 -right-23 flex h-5 w-5 items-center justify-center rounded-full bg-zinc-500 text-[10px] font-bold text-white ring-2 ring-navy-dark border border-white/10 z-20 cursor-help">
+            class="absolute -top-7.5 -right-23 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white ring-1 ring-navy-light border border-white/10 z-20 cursor-help">
             {{ $total > 9 ? '9+' : $total }}
         </span>
 
