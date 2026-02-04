@@ -70,6 +70,44 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
+@layer utilities {
+    .glass-navy {
+        @apply bg-navy-dark/70 backdrop-blur-xl backdrop-saturate-150 border-b border-white/10;
+    }
+
+    .glass-card {
+        @apply bg-white/30 dark:bg-zinc-900/40 backdrop-blur-lg backdrop-saturate-150 border border-white/20 dark:border-zinc-700/30;
+    }
+
+    .stripe-bg {
+        background: linear-gradient(
+            90deg,
+            #fbeee6 0%,
+            #fbeee6 10%,
+            #f9e7dc 10%,
+            #f9e7dc 20%,
+            #f4e7e6 20%,
+            #f4e7e6 30%,
+            #efe7f0 30%,
+            #efe7f0 40%,
+            #eae7f9 40%,
+            #eae7f9 50%,
+            #e5e7ff 50%,
+            #e5e7ff 60%,
+            #e0e7ff 60%,
+            #e0e7ff 70%,
+            #dbe7ff 70%,
+            #dbe7ff 80%,
+            #d6e7ff 80%,
+            #d6e7ff 90%,
+            #d1e7ff 90%,
+            #d1e7ff 100%
+        );
+        opacity: 0.3;
+        mask-image: linear-gradient(to bottom, black, transparent);
+    }
+}
+
 [x-cloak] {
     display: none !important;
 }

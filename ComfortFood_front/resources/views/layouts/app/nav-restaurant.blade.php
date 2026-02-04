@@ -5,9 +5,17 @@
     @include('partials.head')
 </head>
 
-<body class="min-h-screen bg-white dark:bg-zinc-800">
-    <flux:sidebar sticky collapsible="mobile" class="border-e border-slate-700/30 !bg-navy-dark !text-white">
-        <flux:sidebar.header class="border-b border-slate-700/30 py-6">
+<body class="min-h-screen bg-app-bg dark:bg-zinc-950 font-sans antialiased relative">
+    <!-- Fondos decorativos para resaltar el efecto cristal -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+        <div class="absolute top-0 left-0 w-full h-full stripe-bg"></div>
+        <div class="absolute top-[20%] -left-[10%] w-[45%] h-[45%] bg-navy-dark/5 blur-[120px] rounded-full"></div>
+        <div class="absolute -bottom-[5%] -right-[5%] w-[40%] h-[40%] bg-blue-500/5 blur-[100px] rounded-full"></div>
+    </div>
+
+    <flux:sidebar sticky collapsible="mobile"
+        class="border-e border-white/10 !bg-navy-dark/80 backdrop-blur-2xl !text-white z-50">
+        <flux:sidebar.header class="border-b border-white/10 py-6">
             <div class="flex mx-auto items-center gap-2">
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
             </div>

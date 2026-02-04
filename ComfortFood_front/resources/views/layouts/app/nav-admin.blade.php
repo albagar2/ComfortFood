@@ -5,8 +5,17 @@
     @include('partials.head')
 </head>
 
-<body class="min-h-screen bg-white dark:bg-zinc-800">
-    <flux:header sticky class="!bg-navy-dark backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/50 py-5">
+<body class="min-h-screen bg-app-bg dark:bg-zinc-950 font-sans antialiased relative">
+    <!-- Fondos decorativos para resaltar el efecto cristal -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+        <div class="absolute top-0 left-0 w-full h-full stripe-bg"></div>
+        <div
+            class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-500/10 blur-[120px] rounded-full animate-pulse">
+        </div>
+    </div>
+
+    <flux:header sticky
+        class="!bg-navy-dark/80 backdrop-blur-xl backdrop-saturate-150 border-b border-white/10 py-5 z-50">
         <!-- Logout on the left (Desktop) -->
         <form method="POST" action="{{ route('logout') }}">
             @csrf

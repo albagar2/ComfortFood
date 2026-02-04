@@ -50,6 +50,16 @@ class Menu extends Model
         return $this->hasMany(Favorito::class, 'id_menu', 'id_menu');
     }
 
+    /**
+     * N:M Relationship with Cliente via favorito pivot table.
+     */
+    public function clientesQueLoFavorecen()
+    {
+        return $this->belongsToMany(Cliente::class, 'favorito', 'id_menu', 'id_cliente')
+            ->withPivot('id_restaurante')
+            ->withTimestamps();
+    }
+
     public function carrito()
     {
         return $this->hasMany(Carrito::class, 'id_menu', 'id_menu');

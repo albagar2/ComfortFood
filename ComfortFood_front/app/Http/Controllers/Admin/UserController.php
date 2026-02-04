@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\UpdateUserRequest;
 
 class UserController extends Controller
 {
@@ -29,26 +29,9 @@ class UserController extends Controller
     /**
      * Update the specified user in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $rules = [
-            'nombre_completo' => 'required|string|max:255',
-            'email' => 'required|email|unique:usuario,email,' . $user->id_usuario . ',id_usuario',
-            'id_rol' => 'required|exists:rol,id_rol',
-            'es_activo' => 'required|boolean',
-            'direccion' => 'required|string|max:255',
-            'telefono' => 'required|string|max:20',
-        ];
-
-        if ($user->isRestaurante()) {
-            $rules['NIF'] = 'required|string|max:20';
-            $rules['tipo_cocina'] = 'required|string|max:255';
-            $rules['descripcion'] = 'nullable|string';
-        } else {
-            $rules['DNI'] = 'required|string|max:20';
-        }
-
-        $validated = $request->validate($rules);
+        $validated = $request->validated();
 
         // Update User
         $user->update([
