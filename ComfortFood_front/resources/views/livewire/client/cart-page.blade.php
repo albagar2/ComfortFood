@@ -1,18 +1,22 @@
 <div class="min-h-screen py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Flash Messages -->
-        @if(session()->has('success'))
-            <div
-                class="mb-6 p-4 bg-green-100 dark:bg-green-900 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 rounded-lg">
-                {{ session('success') }}
-            </div>
-        @endif
-        @if(session()->has('error'))
-            <div
-                class="mb-6 p-4 bg-red-100 dark:bg-red-900 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 rounded-lg">
-                {{ session('error') }}
-            </div>
-        @endif
+        <div wire:key="flash-container-cart">
+            @if(session()->has('success'))
+                <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 10000)" x-show="show"
+                    wire:key="flash-success"
+                    class="mb-6 p-4 bg-green-100 dark:bg-green-900 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 rounded-lg">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if(session()->has('error'))
+                <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 10000)" x-show="show"
+                    wire:key="flash-error"
+                    class="mb-6 p-4 bg-red-100 dark:bg-red-900 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 rounded-lg">
+                    {{ session('error') }}
+                </div>
+            @endif
+        </div>
 
         <!-- Header -->
         <div class="flex items-center justify-between mb-8">
@@ -122,9 +126,9 @@
 
                                     <!-- Observations (Inline Edit) -->
                                     <div class="mb-4" x-data="{ 
-                                                isEditing: false, 
-                                                observation: '{{ addslashes($item['observaciones'] ?? '') }}' 
-                                            }">
+                                                                isEditing: false, 
+                                                                observation: '{{ addslashes($item['observaciones'] ?? '') }}' 
+                                                            }">
                                         <!-- Display Mode -->
                                         <div x-show="!isEditing" class="flex flex-col gap-1">
                                             @if(!empty($item['observaciones']))

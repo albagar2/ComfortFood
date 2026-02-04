@@ -42,11 +42,14 @@
         </flux:navbar>
         <flux:spacer />
 
+        <div class="flex items-center gap-3 mr-4">
+            <livewire:shared.cart-icon />
+            <x-appearance-dropdown />
+        </div>
+
         <!-- Desktop Icons -->
         <div class="flex items-center gap-2 max-lg:hidden">
             <div class="flex items-center gap-3 scale-110">
-                <livewire:shared.cart-icon />
-                <x-appearance-dropdown />
                 <a href="{{ route('profile.edit') }}" wire:navigate
                     class="p-2 rounded-md !text-white/80 hover:!text-white" title="mi perfil">
                     <flux:avatar :src="auth()->user()->profile_photo_url" :name="auth()->user()->nombre_completo"

@@ -14,12 +14,14 @@ class ClientDashboard extends Component
     {
         if (!in_array($menuId, $this->deactivatedIds)) {
             $this->deactivatedIds[] = $menuId;
+            session()->flash('success', 'Menú ocultado temporalmente (movido al final)');
         }
     }
 
     public function enableCard($menuId)
     {
         $this->deactivatedIds = array_values(array_filter($this->deactivatedIds, fn($id) => $id != $menuId));
+        session()->flash('success', 'Menú restaurado correctamente');
     }
 
     public function toggleFavorite($menuId)
@@ -123,21 +125,30 @@ class ClientDashboard extends Component
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('nombre_menu', 'like', '%' . $this->search . '%')
-                    ->orWhereHas('restaurante.user', function ($sq) {
-                        $sq->where('nombre_completo', 'like', '%' . $this->search . '%');
+                    ->orWhereHas('restaurante', function ($rq) {
+                        $rq->whereHas('user', function ($uq) {
+                            $uq->where('nombre_completo', 'like', '%' . $this->search . '%');
+                        });
                     });
             });
         }
 
-        return view('livewire.client.client-dashboard', [
-            'menus' => $query->get()->sort(function ($a, $b) {
-                $aDeactivated = in_array($a->id_menu, $this->deactivatedIds);
-                $bDeactivated = in_array($b->id_menu, $this->deactivatedIds);
+        $menus = $query->get()->filter(function ($menu) {
+            // Filter out items that ARE closed or out of stock (unless we want to show closed ones)
+            // But per user request before, they should be hidden if closed.
+            // Let's keep them if OPEN and HAVE STOCK.
+            return $menu->stock > 0 && $menu->restaurante->isOpen();
+        })->sort(function ($a, $b) {
+            $aDeactivated = in_array($a->id_menu, $this->deactivatedIds);
+            $bDeactivated = in_array($b->id_menu, $this->deactivatedIds);
 
-                if ($aDeactivated === $bDeactivated)
-                    return 0;
-                return $aDeactivated ? 1 : -1;
-            })
+            if ($aDeactivated === $bDeactivated)
+                return 0;
+            return $aDeactivated ? 1 : -1;
+        });
+
+        return view('livewire.client.client-dashboard', [
+            'menus' => $menus
         ]);
     }
 }

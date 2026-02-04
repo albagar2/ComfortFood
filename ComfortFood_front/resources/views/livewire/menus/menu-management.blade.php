@@ -7,28 +7,32 @@
         @endif
     </div>
 
-    @if (session()->has('success'))
-        <div class="mb-6 p-4 bg-green-100 border border-green-200 text-green-700 rounded-xl">
-            {{ session('success') }}
-        </div>
-    @endif
+    <div wire:key="flash-container-manage">
+        @if (session()->has('success'))
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 10000)" x-show="show"
+                wire:key="flash-success" class="mb-6 p-4 bg-green-100 border border-green-200 text-green-700 rounded-xl">
+                {{ session('success') }}
+            </div>
+        @endif
 
-    @if (session()->has('error'))
-        <div class="mb-6 p-4 bg-red-100 border border-red-200 text-red-700 rounded-xl">
-            {{ session('error') }}
-        </div>
-    @endif
+        @if (session()->has('error'))
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 10000)" x-show="show" wire:key="flash-error"
+                class="mb-6 p-4 bg-red-100 border border-red-200 text-red-700 rounded-xl">
+                {{ session('error') }}
+            </div>
+        @endif
+    </div>
 
 
-    <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+    <div wire:key="management-grid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
         @forelse($menus as $menu)
             @php
                 $isDisabled = !$menu->esta_activo;
                 $hasActiveOrders = $menu->hasActiveOrders();
             @endphp
-            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-sm flex flex-col gap-4 relative
-                                                            transition-all duration-300
-                                                            {{ $isDisabled ? 'opacity-50 grayscale' : '' }}">
+            <div wire:key="manage-menu-{{ $menu->id_menu }}" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-sm flex flex-col gap-4 relative
+                                                                        transition-all duration-300
+                                                                        {{ $isDisabled ? 'opacity-50 grayscale' : '' }}">
                 <!-- Status Badge -->
                 @if($isDisabled)
                     <div class="absolute inset-0 bg-white/60 dark:bg-zinc-900/60 rounded-xl z-10">
@@ -96,7 +100,7 @@
                 </div>
             </div>
         @empty
-            <div
+            <div wire:key="no-menus-state"
                 class="col-span-full py-20 flex flex-col items-center justify-center text-center bg-white dark:bg-zinc-900 border border-dashed border-zinc-300 dark:border-zinc-700 rounded-2xl">
                 <div
                     class="size-20 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mb-6 text-blue-600 dark:text-blue-400">

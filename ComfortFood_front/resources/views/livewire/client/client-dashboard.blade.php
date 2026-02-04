@@ -1,19 +1,28 @@
 <div class="p-4 md:p-6">
-    @if(session()->has('success'))
-        <div
-            class="mb-4 p-3 bg-green-100 dark:bg-green-900 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 rounded-lg">
-            {{ session('success') }}
-        </div>
-    @endif
-    @if(session()->has('error'))
-        <div
-            class="mb-4 p-3 bg-red-100 dark:bg-red-900 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 rounded-lg">
-            {{ session('error') }}
-        </div>
-    @endif
+    <div wire:key="flash-container">
+        @if(session()->has('success'))
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 10000)" x-show="show"
+                wire:key="flash-success"
+                class="mb-4 p-3 bg-green-100 dark:bg-green-900 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 rounded-lg">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if(session()->has('error'))
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 10000)" x-show="show" wire:key="flash-error"
+                class="mb-4 p-3 bg-red-100 dark:bg-red-900 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 rounded-lg">
+                {{ session('error') }}
+            </div>
+        @endif
+    </div>
 
     <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
-        <h1 class="text-xl md:text-2xl font-bold text-zinc-900 dark:text-white">Explorar Menús</h1>
+        <h1 class="text-xl md:text-2xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+            <span wire:key="title-text">Explorar Menús</span>
+            @if($search)
+                <span wire:key="search-indicator" class="text-xs font-normal text-zinc-400">(Filtrando por:
+                    "{{ $search }}")</span>
+            @endif
+        </h1>
         <div class="w-full md:w-96">
             <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass"
                 placeholder="Buscar por menú o restaurante" class="w-full" />
@@ -22,30 +31,21 @@
 
     <!-- Empty State -->
     @if($menus->isEmpty())
-        <div class="text-center py-12">
+        <div wire:key="empty-state" class="text-center py-12">
             <flux:icon.magnifying-glass class="size-12 text-zinc-300 mx-auto mb-4" />
             <h3 class="text-lg font-bold text-zinc-900 dark:text-white">No se encontraron menús</h3>
             <p class="text-zinc-500">Intenta buscar con otros términos.</p>
         </div>
     @else
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 md:gap-6">
+        <div wire:key="menus-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 md:gap-6">
             @foreach($menus as $menu)
                 @php
                     $isDeactivated = in_array($menu->id_menu, $deactivatedIds);
-                    $isOpen = $menu->restaurante->isOpen();
-                    $cardClasses = '';
-
-                    if ($isDeactivated) {
-                        $cardClasses = 'opacity-40 scale-95 grayscale-[50%]';
-                    } elseif (!$isOpen) {
-                        $cardClasses = 'opacity-60 grayscale bg-zinc-50 dark:bg-zinc-900/50';
-                    }
+                    $isOpen = true; // Visibility handled in PHP logic
+                    $cardClasses = $isDeactivated ? 'opacity-40 scale-95 grayscale-[50%]' : '';
                 @endphp
 
-                @if($menu->stock <= 0 || !$isOpen)
-                    @continue
-                @endif
-                <div
+                <div wire:key="menu-card-{{ $menu->id_menu }}"
                     class="dark:bg-zinc-900 bg-white border-2 border-zinc-200 dark:border-zinc-800 rounded-xl p-3 md:p-4 shadow-sm flex flex-col gap-3 md:gap-4 relative group hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-500 {{ $cardClasses }}">
                     <div class="flex flex-col sm:flex-row justify-between items-start gap-2">
                         <div class="min-w-0">

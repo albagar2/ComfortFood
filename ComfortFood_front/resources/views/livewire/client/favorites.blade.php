@@ -1,6 +1,6 @@
 <div class="p-6">
     @if(session()->has('success'))
-        <div
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 10000)" x-show="show"
             class="mb-4 p-3 bg-green-100 dark:bg-green-900 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 rounded-lg">
             {{ session('success') }}
         </div>
@@ -11,7 +11,7 @@
 
     <!-- Empty State -->
     @if($menus->isEmpty())
-        <div
+        <div wire:key="empty-state-favs"
             class="text-center py-12 bg-white dark:bg-zinc-900 rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800">
             <flux:icon.heart class="size-12 text-zinc-300 mx-auto mb-4" />
             <h3 class="text-lg font-bold text-zinc-900 dark:text-white">Aún no tienes favoritos</h3>
@@ -20,9 +20,9 @@
             </flux:button>
         </div>
     @else
-        <div class="grid grid-cols-3  2xl:grid-cols-4 gap-6">
+        <div wire:key="favs-grid" class="grid grid-cols-2  2xl:grid-cols-4 gap-6">
             @foreach($menus as $menu)
-                <div
+                <div wire:key="fav-menu-{{ $menu->id_menu }}"
                     class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-sm flex flex-col gap-4 relative group hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors">
                     <div class="flex justify-between items-start">
                         <div>

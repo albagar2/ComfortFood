@@ -39,15 +39,14 @@ php artisan migrate --seed
 _Este comando creará todas las tablas y poblará la base de datos con:_
 
 - 1 Administrador.
-- 1 Cliente específico (Matilde).
-- 1 Restaurante específico (La Buena Mesa).
+- 1 Cliente.
+- 1 Restaurante.
 - **8 Restaurantes aleatorios** adicionales.
 - **Más de 40 Menús** distribuidos entre todos los restaurantes.
-- **Horarios comerciales** (L-V 8:00 - 21:00).
 
 ## 4. Ejecución
 
-Para visualizar la app con sus estilos modernos (Glassmorphism), debe tener abiertos dos terminales:
+Para visualizar la app debe tener abiertos dos terminales:
 
 **Terminal 1 (Servidor PHP):**
 
@@ -65,7 +64,7 @@ npm run dev
 
 ## Cuentas de Prueba
 
-- **Admin**: `admin@gmail.com` / `12345678m`
-- **Cliente**: `matilde@gmail.com` / `password123`
-- **Restaurante**: `labuenamesa@gmail.com` / `password123`
+- **Admin**: `admin@gmail.com` / `password123`
+- **Cliente**: `cliente@gmail.com` / `password123`
+- **Restaurante**: `restaurante@gmail.com` / `password123`
 - **Cuentas Aleatorias**: Use cualquier email generado en la tabla `usuario` con la contraseña `password123`.
