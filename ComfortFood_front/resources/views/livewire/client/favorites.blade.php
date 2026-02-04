@@ -1,4 +1,10 @@
 <div class="p-6">
+    @if(session()->has('success'))
+        <div
+            class="mb-4 p-3 bg-green-100 dark:bg-green-900 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 rounded-lg">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
         <h1 class="text-2xl font-bold text-zinc-900 dark:text-white">Mis Favoritos</h1>
     </div>

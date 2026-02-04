@@ -28,19 +28,24 @@ class ClientDashboard extends Component
         if (!$cliente)
             return;
 
-        $favorito = \App\Models\Favorito::where('id_cliente', $cliente->id_cliente)
-            ->where('id_menu', $menuId)
-            ->first();
+        $isFavorite = $cliente->menusFavoritos()->where('menu.id_menu', $menuId)->exists();
 
-        if ($favorito) {
-            $favorito->delete();
+        if ($isFavorite) {
+            $cliente->menusFavoritos()->detach($menuId);
+            session()->flash('success', 'Menú eliminado de favoritos');
         } else {
-            \App\Models\Favorito::create([
-                'id_cliente' => $cliente->id_cliente,
-                'id_menu' => $menuId,
-                'id_restaurante' => null
-            ]);
+            $menu = Menu::find($menuId);
+            if ($menu) {
+                // We use attach to include the id_restaurante in the pivot table if needed
+                $cliente->menusFavoritos()->attach($menuId, ['id_restaurante' => $menu->id_restaurante]);
+                session()->flash('success', '¡Su menú se ha añadido a favoritos correctamente!');
+            }
         }
+    }
+
+    public function isFavorite($menuId)
+    {
+        return auth()->user()->cliente?->menusFavoritos()->where('menu.id_menu', $menuId)->exists();
     }
 
     public function addToCart($menuId)

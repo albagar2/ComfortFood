@@ -14,31 +14,23 @@ class Favorites extends Component
         if (!$cliente)
             return;
 
-        $favorito = Favorito::where('id_cliente', $cliente->id_cliente)
-            ->where('id_menu', $menuId)
-            ->first();
-
-        if ($favorito) {
-            $favorito->delete();
-        }
+        $cliente->menusFavoritos()->detach($menuId);
+        session()->flash('success', 'Menú eliminado de favoritos');
     }
 
     public function render()
     {
         $cliente = auth()->user()->cliente;
-        $favorites = [];
+        $favorites = collect();
 
         if ($cliente) {
-            $favorites = Favorito::where('id_cliente', $cliente->id_cliente)
-                ->whereNotNull('id_menu')
-                ->whereHas('menu.restaurante.user', function ($query) {
+            $favorites = $cliente->menusFavoritos()
+                ->whereHas('restaurante.user', function ($query) {
                     $query->where('es_activo', true);
                 })
-                ->with(['menu.restaurante.user', 'menu.favoritos'])
+                ->with(['restaurante.user'])
                 ->latest()
-                ->get()
-                ->pluck('menu')
-                ->filter();
+                ->get();
         }
 
         return view('livewire.client.favorites', [
