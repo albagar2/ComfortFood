@@ -1,4 +1,4 @@
-<div wire:poll.15s class="relative inline-flex group/badge">
+<div wire:poll.15s wire:key="completed-orders-badge" class="relative inline-flex group/badge">
     @php $total = $cancelledCount + $completedCount; @endphp
 
     @if($total > 0)

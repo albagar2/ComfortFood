@@ -15,6 +15,9 @@ class NewCompletedOrdersBadge extends Component
 
     public function render()
     {
+        $cancelledCount = 0;
+        $completedCount = 0;
+
         if (auth()->check() && auth()->user()->isCliente()) {
             $clientId = auth()->user()->cliente->id_cliente;
 

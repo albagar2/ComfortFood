@@ -15,8 +15,9 @@
             <div class="flex gap-4 w-full md:w-auto">
                 <flux:select wire:model.live="status" class="min-w-[150px]">
                     <flux:select.option value="">{{ __('Todos los estados') }}</flux:select.option>
-                    <flux:select.option value="En espera">{{ __('En espera') }}</flux:select.option>
-                    <flux:select.option value="En preparación">{{ __('En preparación') }}</flux:select.option>
+                    <flux:select.option value="Pendiente">{{ __('Pendiente') }}</flux:select.option>
+                    <flux:select.option value="En Preparación">{{ __('En Cocina') }}</flux:select.option>
+                    <flux:select.option value="Entregado">{{ __('Entregado') }}</flux:select.option>
                     <flux:select.option value="Completado">{{ __('Completado') }}</flux:select.option>
                     <flux:select.option value="Cancelado">{{ __('Cancelado') }}</flux:select.option>
                 </flux:select>
@@ -98,10 +99,11 @@
                             <td class="px-6 py-5">
                                 @php
                                     $statusColor = match ($pedido->estado->nombre_estado) {
-                                        'En espera' => 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300',
-                                        'En preparación' => 'bg-cyan-100 dark:bg-cyan-900/40 text-cyan-700 dark:text-cyan-300',
-                                        'Completado' => 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300',
-                                        'Cancelado' => 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300',
+                                        'Pendiente' => 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300',
+                                        'En Preparación' => 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300',
+                                        'Entregado' => 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300',
+                                        'Completado' => 'bg-emerald-500 text-white border-emerald-600 dark:border-emerald-400',
+                                        'Cancelado' => 'bg-rose-500 text-white border-rose-600 dark:border-rose-400',
                                         default => 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
                                     };
                                 @endphp

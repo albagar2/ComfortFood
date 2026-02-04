@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // 3. Estados de Pedido
-        $estados = ['Pendiente', 'En Preparación', 'Viene en Camino', 'Entregado', 'Cancelado'];
+        $estados = ['Pendiente', 'En Preparación', 'Entregado', 'Completado', 'Cancelado'];
         foreach ($estados as $estado) {
             EstadoPedido::updateOrCreate(['nombre_estado' => $estado]);
         }

@@ -14,8 +14,8 @@
                 $status = $order->estado->nombre_estado;
                 $statusClasses = match ($status) {
                     'En espera', 'Pendiente' => 'bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-700',
-                    'En preparación' => 'bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-700',
-                    'Enviado' => 'bg-indigo-100 text-indigo-700 border-indigo-300 dark:bg-indigo-900/40 dark:text-indigo-300 dark:border-indigo-700',
+                    'En Preparación' => 'bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-700',
+                    'Entregado' => 'bg-emerald-100 text-emerald-700 border-emerald-300 dark:bg-emerald-900/40 dark:text-emerald-300 dark:border-emerald-700',
                     'Completado' => 'bg-emerald-500 text-white border-emerald-600 shadow-emerald-200/50 dark:border-emerald-400',
                     'Cancelado' => 'bg-rose-500 text-white border-rose-600 shadow-rose-200/50 dark:border-rose-400',
                     default => 'bg-zinc-100 text-zinc-600 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700'
@@ -204,10 +204,10 @@
                             
                             @php
                                 $actionConfig = match($order->estado->nombre_estado) {
-                                    'Pendiente' => ['text' => 'Aceptar Pedido', 'icon' => 'check', 'color' => 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/30'],
-                                    'En Preparación' => ['text' => 'Marcar Enviado/Entregado', 'icon' => 'truck', 'color' => 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/30'],
-                                    'Entregado' => ['text' => 'Completar Pedido', 'icon' => 'check-circle', 'color' => 'bg-zinc-600 hover:bg-zinc-700 shadow-zinc-500/30'],
-                                    default => ['text' => 'Avanzar Estado', 'icon' => 'arrow-right', 'color' => 'bg-emerald-600']
+                                    'Pendiente' => ['text' => 'Aceptar y Cocinar', 'icon' => 'check', 'color' => 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/30'],
+                                    'En Preparación' => ['text' => 'Marcar Entregado', 'icon' => 'truck', 'color' => 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/30'],
+                                    'Entregado' => ['text' => 'Finalizar y Archivar', 'icon' => 'check-circle', 'color' => 'bg-zinc-600 hover:bg-zinc-700 shadow-zinc-500/30'],
+                                    default => ['text' => 'Avanzar Estado', 'icon' => 'arrow-right', 'color' => 'bg-indigo-600']
                                 };
                             @endphp
 

@@ -38,7 +38,7 @@
                         $statusStyles = match($topOrder->estado->nombre_estado) {
                             'Completado' => 'border-emerald-500/30 bg-emerald-50 dark:bg-emerald-900/10',
                             'Cancelado' => 'border-rose-500/30 bg-rose-50 dark:bg-rose-900/10',
-                            'En preparación' => 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/10',
+                            'En Preparación' => 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/10',
                             default => 'border-zinc-200 bg-white dark:bg-zinc-800 dark:border-zinc-700'
                         };
                     @endphp
@@ -92,8 +92,10 @@
                         <!-- Card Status Badge -->
                         @php
                             $statusInfo = match ($order->estado->nombre_estado) {
-                                'En espera', 'Pendiente' => ['class' => 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', 'icon' => 'clock'],
-                                'En preparación' => ['class' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', 'icon' => 'fire'],
+                                'Pendiente' => ['class' => 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300', 'icon' => 'clock'],
+                                'En Preparación' => ['class' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300', 'icon' => 'fire'],
+                                'Viene en Camino' => ['class' => 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300', 'icon' => 'truck'],
+                                'Entregado' => ['class' => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300', 'icon' => 'home'],
                                 'Completado' => ['class' => 'bg-emerald-500 text-white', 'icon' => 'check-circle'],
                                 'Cancelado' => ['class' => 'bg-rose-500 text-white', 'icon' => 'x-circle'],
                                 default => ['class' => 'bg-zinc-100 text-zinc-600', 'icon' => 'hashtag']
@@ -158,10 +160,10 @@
 
                                     @php
                                         $actionConfig = match($order->estado->nombre_estado) {
-                                            'Pendiente' => ['title' => 'Aceptar', 'icon' => 'check', 'color' => 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20'],
-                                            'En Preparación' => ['title' => 'Entregar', 'icon' => 'truck', 'color' => 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/20'],
-                                            'Entregado' => ['title' => 'Completar', 'icon' => 'check-circle', 'color' => 'bg-zinc-600 hover:bg-zinc-700 shadow-zinc-500/20'],
-                                            default => ['title' => 'Avanzar', 'icon' => 'arrow-right', 'color' => 'bg-emerald-600']
+                                            'Pendiente' => ['title' => 'Aceptar y Cocinar', 'icon' => 'check', 'color' => 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20'],
+                                            'En Preparación' => ['title' => 'Marcar Entregado', 'icon' => 'truck', 'color' => 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/20'],
+                                            'Entregado' => ['title' => 'Finalizar y Archivar', 'icon' => 'check-circle', 'color' => 'bg-zinc-600 hover:bg-zinc-700 shadow-zinc-500/20'],
+                                            default => ['title' => 'Avanzar', 'icon' => 'arrow-right', 'color' => 'bg-indigo-600']
                                         };
                                     @endphp
                                     <button wire:click="advanceStatus({{ $order->id_pedido }})"  title="{{ $actionConfig['title'] }}" class="px-4 py-2 {{ $actionConfig['color'] }} text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg transition-all flex items-center gap-2">

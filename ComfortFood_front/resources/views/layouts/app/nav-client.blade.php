@@ -98,8 +98,9 @@
         data-[current]:border
         data-[current]:!border-pastel-orange
         !rounded-xl
-        font-medium tracking-wide
+        font-medium tracking-wide relative
     ">
+                <livewire:shared.badges.new-completed-orders-badge />
                 {{ __('Mis Pedidos') }}
             </flux:sidebar.item>
 
