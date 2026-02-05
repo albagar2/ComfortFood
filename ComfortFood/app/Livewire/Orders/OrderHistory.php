@@ -83,15 +83,18 @@ class OrderHistory extends Component
 
         // Mark as seen for client if viewing history
         if ($user->isCliente()) {
-            Pedido::where('id_cliente', $user->cliente->id_cliente)
+            $affected = Pedido::where('id_cliente', $user->cliente->id_cliente)
                 ->whereHas('estado', function ($q) {
                     $q->whereIn('nombre_estado', ['Completado', 'Cancelado']);
                 })
                 ->where('visto_completado', false)
                 ->update(['visto_completado' => true]);
 
-            // Dispatch event to refresh badge
-            $this->dispatch('refresh-badges');
+            // Only dispatch if something actually changed to avoid infinite loop
+            if ($affected > 0) {
+                // Dispatch event to refresh badge
+                $this->dispatch('refresh-badges');
+            }
         }
 
         $query = Pedido::with(['cliente.user', 'restaurante.user', 'estado', 'resena']);

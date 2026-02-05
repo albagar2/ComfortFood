@@ -5,6 +5,7 @@ namespace App\Livewire\Orders;
 use App\Models\EstadoPedido;
 use App\Models\Pedido;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class OrderDetails extends Component
@@ -57,22 +58,7 @@ class OrderDetails extends Component
         }
     }
 
-    protected $listeners = [
-        'cancelOrderConfirmed' => 'cancelOrder',
-        'refresh-badges' => '$refresh'
-    ];
-
-    public function confirmCancel()
-    {
-        $this->dispatch(
-            'show-confirmation',
-            title: '¿Cancelar Pedido?',
-            message: '¿Estás seguro de cancelar este pedido?',
-            confirmAction: 'cancelOrderConfirmed',
-            confirmParams: []
-        );
-    }
-
+    #[On('cancelOrderConfirmed')]
     public function cancelOrder()
     {
         $status = EstadoPedido::where('nombre_estado', 'Cancelado')->first();
@@ -91,6 +77,16 @@ class OrderDetails extends Component
             $this->dispatch('refresh-badges');
             $this->order->refresh();
         }
+    }
+
+    public function confirmCancel()
+    {
+        $this->dispatch('show-confirmation', [
+            'title' => '¿Cancelar Pedido?',
+            'message' => '¿Estás seguro de cancelar este pedido?',
+            'event' => 'cancelOrderConfirmed',
+            'params' => []
+        ]);
     }
 
     public function saveReview()

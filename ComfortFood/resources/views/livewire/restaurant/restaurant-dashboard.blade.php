@@ -1,13 +1,13 @@
 <div class="min-h-screen  px-4 py-8 md:px-8">
     <div class="max-w-7xl mx-auto space-y-10">
         <!-- Header Section -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white dark:bg-zinc-900 p-8 rounded-3xl border-2 border-zinc-200 dark:border-zinc-800 shadow-sm">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white dark:bg-zinc-900 p-8 rounded-3xl border-2 border-zinc-200 dark:border-zinc-800 shadow-sm">
             <div class="space-y-1">
                 <h1 class="text-3xl font-black text-zinc-950 dark:text-white tracking-tight">Panel de Gestión</h1>
                 <p class="text-zinc-500 font-medium">¡Hola, {{ auth()->user()->nombre_completo }}! Tienes <span class="text-indigo-600 dark:text-indigo-400 font-bold">{{ $orders->whereNotIn('estado.nombre_estado', ['Completado', 'Cancelado'])->count() }}</span> pedidos activos para hoy.</p>
             </div>
             
-            <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+            <div class="flex flex-wrap justify-start md:justify-end items-center gap-3 w-full md:w-auto">
                 <div class="flex-1 md:flex-none">
                     <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass" placeholder="Buscar pedido..." class="min-w-[240px] !rounded-xl" />
                 </div>

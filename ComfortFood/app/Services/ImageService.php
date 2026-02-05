@@ -28,7 +28,7 @@ class ImageService
         // Store the file using Laravel's native storage (No GD required)
         $path = $file->storeAs($directory, $filename, 'public');
 
-        // Return the full public URL
-        return asset('storage/' . $path);
+        // Return the relative path
+        return $path;
     }
 }

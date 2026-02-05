@@ -5,6 +5,7 @@ namespace App\Livewire\Restaurant;
 use App\Models\EstadoPedido;
 use App\Models\Pedido;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class RestaurantDashboard extends Component
@@ -40,22 +41,7 @@ class RestaurantDashboard extends Component
         }
     }
 
-    protected $listeners = [
-        'cancelOrderConfirmed' => 'cancelOrder',
-        'refresh-badges' => '$refresh'
-    ];
-
-    public function confirmCancel($orderId)
-    {
-        $this->dispatch(
-            'show-confirmation',
-            title: '¿Cancelar Pedido?',
-            message: '¿Estás seguro de cancelar este pedido?',
-            confirmAction: 'cancelOrderConfirmed',
-            confirmParams: [$orderId]
-        );
-    }
-
+    #[On('cancelOrderConfirmed')]
     public function cancelOrder($orderId)
     {
         $order = Pedido::where('id_pedido', $orderId)->first();
@@ -75,6 +61,17 @@ class RestaurantDashboard extends Component
             $this->dispatch('refresh-badges');
         }
     }
+
+    public function confirmCancel($orderId)
+    {
+        $this->dispatch('show-confirmation', [
+            'title' => '¿Cancelar Pedido?',
+            'message' => '¿Estás seguro de cancelar este pedido?',
+            'event' => 'cancelOrderConfirmed',
+            'params' => [$orderId]
+        ]);
+    }
+
 
     public $filterStatus = 'all';
 

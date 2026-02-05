@@ -112,14 +112,27 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getProfilePhotoUrlAttribute(): ?string
     {
-        if ($this->isCliente() && $this->cliente && $this->cliente->url_imagen_perfil) {
-            return asset($this->cliente->url_imagen_perfil);
+        $path = null;
+
+        if ($this->isCliente()) {
+            // Check if relation is loaded to avoid N+1
+            $cliente = $this->relationLoaded('cliente') ? $this->cliente : $this->cliente()->first();
+            $path = $cliente->url_imagen_perfil ?? null;
+        } elseif ($this->isRestaurante()) {
+            // Check if relation is loaded to avoid N+1
+            $restaurante = $this->relationLoaded('restaurante') ? $this->restaurante : $this->restaurante()->first();
+            $path = $restaurante->url_imagen_perfil ?? null;
         }
 
-        if ($this->isRestaurante() && $this->restaurante && $this->restaurante->url_imagen_perfil) {
-            return asset($this->restaurante->url_imagen_perfil);
+        if (!$path) {
+            return null;
         }
 
-        return null;
+        // Handle both absolute URLs (legacy) and relative paths
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+
+        return asset('storage/' . $path);
     }
 }
