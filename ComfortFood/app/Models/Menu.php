@@ -6,10 +6,43 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Menu extends Model
 {
     use HasFactory, SoftDeletes;
+
+    // ... (existing properties)
+
+    public function getUrlFotoAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        if (filter_var($value, FILTER_VALIDATE_URL)) {
+            return $value;
+        }
+
+        // Remove 'storage/' or '/storage/' prefix if present
+        $value = preg_replace('/^(\/)?storage\//', '', $value);
+
+        return Storage::url($value);
+    }
+
+    public function getUrlFotoCardAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        if (filter_var($value, FILTER_VALIDATE_URL)) {
+            return $value;
+        }
+
+        // Remove 'storage/' or '/storage/' prefix if present
+        $value = preg_replace('/^(\/)?storage\//', '', $value);
+
+        return Storage::url($value);
+    }
 
     protected $table = 'menu';
     protected $primaryKey = 'id_menu';

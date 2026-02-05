@@ -91,6 +91,9 @@ class Profile extends Component
             ];
 
             if ($this->foto_perfil) {
+                if ($user->cliente && $user->cliente->url_imagen_perfil) {
+                    $imageService->delete($user->cliente->url_imagen_perfil);
+                }
                 $clienteData['url_imagen_perfil'] = $imageService->processAndStore($this->foto_perfil, 'perfiles');
             }
 
@@ -110,6 +113,9 @@ class Profile extends Component
             ];
 
             if ($this->foto_perfil) {
+                if ($user->restaurante && $user->restaurante->url_imagen_perfil) {
+                    $imageService->delete($user->restaurante->url_imagen_perfil);
+                }
                 $restauranteData['url_imagen_perfil'] = $imageService->processAndStore($this->foto_perfil, 'restaurantes');
             }
 

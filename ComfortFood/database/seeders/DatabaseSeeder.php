@@ -106,8 +106,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 5. Datos Aleatorios Adicionales
-        // Generar 8 restaurantes nuevos, cada uno con 3-5 menús
-        for ($i = 0; $i < 8; $i++) {
+        // Generar 2 restaurantes nuevos, cada uno con 3-5 menús
+        for ($i = 0; $i < 2; $i++) {
             $email = fake()->unique()->safeEmail();
             $user = User::create([
                 'nombre_completo' => fake()->name(),

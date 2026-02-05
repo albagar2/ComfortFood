@@ -91,11 +91,19 @@ class MenuForm extends Component
         }
 
         if ($this->foto) {
+            // Delete old valid image if exists
+            if ($this->menu && $this->menu->url_foto) {
+                $imageService->delete($this->menu->url_foto);
+            }
             // High quality version
             $data['url_foto'] = $imageService->processAndStore($this->foto, 'menus');
         }
 
         if ($this->foto_card) {
+            // Delete old valid image if exists
+            if ($this->menu && $this->menu->url_foto_card) {
+                $imageService->delete($this->menu->url_foto_card);
+            }
             // Thumbnail version
             $data['url_foto_card'] = $imageService->processAndStore($this->foto_card, 'menus');
         }

@@ -31,4 +31,20 @@ class ImageService
         // Return the relative path
         return $path;
     }
+    /**
+     * Delete an image from storage.
+     *
+     * @param string|null $path The relative path to the image.
+     */
+    public function delete(?string $path): void
+    {
+        // Don't delete if it's a URL (placeholder), empty, or null
+        if (!$path || filter_var($path, FILTER_VALIDATE_URL)) {
+            return;
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
+    }
 }

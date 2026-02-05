@@ -133,6 +133,11 @@ class User extends Authenticatable implements MustVerifyEmail
             return $path;
         }
 
+        // If path already contains storage/, don't prepend it again
+        if (Str::startsWith($path, '/storage/') || Str::startsWith($path, 'storage/')) {
+            return asset($path);
+        }
+
         return asset('storage/' . $path);
     }
 }

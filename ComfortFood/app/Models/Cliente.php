@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Cliente extends Model
 {
@@ -44,5 +45,19 @@ class Cliente extends Model
     public function pedidos()
     {
         return $this->hasMany(Pedido::class, 'id_cliente', 'id_cliente');
+    }
+    public function getUrlImagenPerfilAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        if (filter_var($value, FILTER_VALIDATE_URL)) {
+            return $value;
+        }
+
+        // Remove 'storage/' or '/storage/' prefix if present
+        $value = preg_replace('/^(\/)?storage\//', '', $value);
+
+        return Storage::url($value);
     }
 }

@@ -156,7 +156,7 @@
                             <div class="py-6 first:pt-0 flex gap-6 group">
                                 <div class="size-20 bg-zinc-100 dark:bg-zinc-800 rounded-2xl overflow-hidden flex-shrink-0 group-hover:scale-105 transition-transform duration-500">
                                     @if($detalle->menu && $detalle->menu->url_foto)
-                                        <img src="{{ $detalle->menu->url_foto }}" class="w-full h-full object-cover">
+                                        <img src="{{ $detalle->menu->url_foto }}" class="w-full h-full object-cover" loading="lazy">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center">
                                             <flux:icon.photo class="size-8 text-zinc-300" />

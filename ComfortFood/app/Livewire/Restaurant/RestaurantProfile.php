@@ -370,6 +370,10 @@ class RestaurantProfile extends Component
 
         $url = $imageService->processAndStore($this->photo, 'restaurants', 800);
 
+        if ($this->restaurante->url_imagen_perfil) {
+            $imageService->delete($this->restaurante->url_imagen_perfil);
+        }
+
         $this->restaurante->update([
             'url_imagen_perfil' => $url,
         ]);

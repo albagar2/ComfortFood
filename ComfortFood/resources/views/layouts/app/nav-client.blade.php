@@ -31,7 +31,9 @@
             <flux:sidebar.item icon="clipboard-document-list" href="{{ route('orders.history') }}"
                 :current="request()->routeIs('orders.history')" wire:navigate
                 class="!text-white/80 hover:!text-white data-[current]:!text-pastel-orange data-[current]:!border-pastel-orange/50 data-[current]:border !rounded-xl !bg-transparent data-[current]:!bg-white/10 relative">
-                <livewire:shared.badges.new-completed-orders-badge />
+                @unless(request()->routeIs('orders.history'))
+                    <livewire:shared.badges.new-completed-orders-badge />
+                @endunless
                 {{ __('Mis Pedidos') }}
             </flux:sidebar.item>
             <flux:sidebar.item icon="heart" href="{{ route('favorites') }}" :current="request()->routeIs('favorites')"
@@ -100,7 +102,9 @@
         !rounded-xl
         font-medium tracking-wide relative
     ">
-                <livewire:shared.badges.new-completed-orders-badge />
+                @unless(request()->routeIs('orders.history'))
+                    <livewire:shared.badges.new-completed-orders-badge />
+                @endunless
                 {{ __('Mis Pedidos') }}
             </flux:sidebar.item>
 

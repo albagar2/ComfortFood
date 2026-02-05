@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Restaurante extends Model
 {
@@ -69,5 +70,19 @@ class Restaurante extends Model
         }
 
         return $currentTime >= $schedule->hora_apertura && $currentTime <= $schedule->hora_cierre;
+    }
+    public function getUrlImagenPerfilAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        if (filter_var($value, FILTER_VALIDATE_URL)) {
+            return $value;
+        }
+
+        // Remove 'storage/' or '/storage/' prefix if present to prevent double path
+        $value = preg_replace('/^(\/)?storage\//', '', $value);
+
+        return Storage::url($value);
     }
 }
