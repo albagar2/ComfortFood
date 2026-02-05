@@ -22,10 +22,17 @@ Este proyecto ha sido desarrollado con **Laravel 12**, **Livewire 4** y **Flux U
     ```
 4.  **Archivo de Entorno**:
     Cree una copia del archivo `.env`:
+
     ```bash
     copy .env.example .env
     ```
+
     _Asegúrese de configurar sus credenciales de base de datos en el `.env` (DB_DATABASE, DB_USERNAME, etc.)._
+
+5.  **Enlace Simbólico de Storage**:
+    ```bash
+    php artisan storage:link
+    ```
 
 ## 3. Base de Datos (Sin necesidad de .sql)
 
