@@ -24,8 +24,8 @@
                             value="{{ old('nombre_completo', $user->nombre_completo) }}" />
 
                         @if($user->isRestaurante())
-                            <flux:input name="propietario_mock" label="Propietario" value="{{ $user->nombre_completo }}"
-                                disabled />
+                        <flux:input name="propietario_mock" label="Propietario" value="{{ $user->nombre_completo }}"
+                            disabled />
                         @endif
 
                         <flux:input name="{{ $user->isRestaurante() ? 'NIF' : 'DNI' }}"
@@ -39,18 +39,16 @@
                         <flux:input name="email" label="Email" value="{{ old('email', $user->email) }}" />
 
                         @if($user->isRestaurante())
-                            <flux:input name="tipo_cocina" label="Tipo de cocina"
-                                value="{{ old('tipo_cocina', $user->restaurante->tipo_cocina) }}" />
-                            <flux:textarea name="descripcion" label="Descripción" class="md:col-span-2">
-                                {{ old('descripcion', $user->restaurante->descripcion) }}</flux:textarea>
+                        <flux:input name="tipo_cocina" label="Tipo de cocina"
+                            value="{{ old('tipo_cocina', $user->restaurante->tipo_cocina) }}" />
+                        <flux:textarea name="descripcion" label="Descripción" class="md:col-span-2">
+                            {{ old('descripcion', $user->restaurante->descripcion) }}
+                        </flux:textarea>
                         @endif
-
-                        <flux:select name="id_rol" label="Tipo de usuario">
-                            <flux:select.option value="2" :selected="old('id_rol', $user->id_rol) == 2">Cliente
-                            </flux:select.option>
-                            <flux:select.option value="3" :selected="old('id_rol', $user->id_rol) == 3">Restaurante
-                            </flux:select.option>
-                        </flux:select>
+                        <flux:input
+                            label="Tipo de usuario"
+                            value="{{ $user->id_rol == 2 ? 'Cliente' : 'Restaurante' }}"
+                            disabled />
 
                         <flux:select name="es_activo" label="Estado">
                             <flux:select.option value="1" :selected="old('es_activo', $user->es_activo) == '1'">Activo
@@ -61,14 +59,14 @@
                     </div>
 
                     @if ($errors->any())
-                        <div
-                            class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-4 rounded-lg text-sm">
-                            <ul class="list-disc list-inside">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
+                    <div
+                        class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-4 rounded-lg text-sm">
+                        <ul class="list-disc list-inside">
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                     @endif
 
                     <div class="flex items-center justify-end gap-4 pt-6 border-t border-zinc-100 dark:border-zinc-800">
