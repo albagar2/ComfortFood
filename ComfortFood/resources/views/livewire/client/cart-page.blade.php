@@ -1,4 +1,4 @@
-<div class="min-h-screen py-8">
+<div class="min-h-screen py-8" x-data="{ showConfirmModal: false }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Flash Messages -->
         <div wire:key="flash-container-cart">
@@ -28,7 +28,7 @@
                 @endif
             </div>
             @if(count($cartItems) > 0)
-                <button wire:click="clearCart" wire:confirm="¿Estás seguro de que quieres vaciar el carrito?"
+                <button @click="showConfirmModal = true"
                     class="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors">
                     <div class="flex items-center gap-2">
                         <flux:icon.trash class="size-4" />
@@ -126,9 +126,9 @@
 
                                     <!-- Observations (Inline Edit) -->
                                     <div class="mb-4" x-data="{ 
-                                                                        isEditing: false, 
-                                                                        observation: '{{ addslashes($item['observaciones'] ?? '') }}' 
-                                                                    }">
+                                                                                                isEditing: false, 
+                                                                                                observation: '{{ addslashes($item['observaciones'] ?? '') }}' 
+                                                                                            }">
                                         <!-- Display Mode -->
                                         <div x-show="!isEditing" class="flex flex-col gap-1">
                                             @if(!empty($item['observaciones']))
@@ -282,5 +282,42 @@
                 </div>
             </div>
         @endif
+        <!-- Custom Confirmation Modal -->
+        <div x-show="showConfirmModal" style="display: none;"
+            class="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/40 backdrop-blur-sm"
+            x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+
+            <div class="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl max-w-sm w-full p-6 text-center border border-zinc-100 dark:border-zinc-800"
+                @click.away="showConfirmModal = false" x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-90">
+
+                <div
+                    class="size-12 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <flux:icon.trash class="size-6" />
+                </div>
+
+                <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-2">
+                    ¿Vaciar Carrito?
+                </h3>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-6">
+                    ¿Estás seguro de que quieres eliminar todos los productos? Esta acción no se puede deshacer.
+                </p>
+
+                <div class="flex gap-3">
+                    <button @click="showConfirmModal = false"
+                        class="flex-1 py-2.5 px-4 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-xl font-bold text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
+                        Cancelar
+                    </button>
+                    <button wire:click="clearCart" @click="showConfirmModal = false"
+                        class="flex-1 py-2.5 px-4 bg-red-600 text-white rounded-xl font-bold text-sm hover:bg-red-700 transition-colors shadow-lg shadow-red-500/20">
+                        Sí, vaciar
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
