@@ -58,11 +58,11 @@
                 <div class="lg:col-span-2 space-y-4">
                     @foreach($cartItems as $item)
                         <div
-                            class="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 p-6 shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex gap-6">
+                            class="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
                                 <!-- Menu Image -->
                                 <div
-                                    class="size-32 bg-yellow-400 border-4 border-yellow-500/50 rounded-lg flex-shrink-0 overflow-hidden shadow-inner relative rotate-1">
+                                    class="w-full sm:size-32 bg-yellow-400 border-4 border-yellow-500/50 rounded-lg flex-shrink-0 overflow-hidden shadow-inner relative rotate-1 mx-auto sm:mx-0 aspect-square sm:aspect-auto max-w-[200px] sm:max-w-none">
                                     <div class="absolute inset-0 border-[6px] border-yellow-600/20 z-10 pointer-events-none">
                                     </div>
                                     @if($item['menu']['url_foto'])
@@ -77,65 +77,68 @@
 
                                 <!-- Menu Details -->
                                 <div class="flex-1 min-w-0">
-                                    <div class="flex items-start justify-between mb-3">
-                                        <div class="flex-1">
-                                            <h3 class="text-xl font-bold text-zinc-900 dark:text-white mb-2">
+                                    <div class="flex flex-col sm:flex-row sm:items-start justify-between mb-3 gap-2">
+                                        <div class="flex-1 min-w-0">
+                                            <h3
+                                                class="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white mb-1 sm:mb-2 truncate">
                                                 {{ $item['menu']['nombre_menu'] }}
                                             </h3>
-                                            <p class="text-sm text-zinc-500 line-clamp-2">
+                                            <p class="text-xs sm:text-sm text-zinc-500 line-clamp-2 break-words">
                                                 {{ $item['menu']['descripcion_menu'] }}
                                             </p>
                                         </div>
                                         <button wire:click="removeItem({{ $item['id_carrito'] }})"
-                                            class="ml-4 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors">
+                                            class="self-end sm:self-start sm:ml-4 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors p-1">
                                             <flux:icon.trash class="size-5" />
                                         </button>
                                     </div>
 
                                     <!-- Menu Components -->
-                                    <div class="grid grid-cols-2 gap-2 mb-4">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
                                         @if($item['menu']['plato_principal'])
-                                            <div class="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-400">
+                                            <div
+                                                class="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-400 overflow-hidden">
                                                 <span
-                                                    class="size-5 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold text-[10px]">1</span>
+                                                    class="size-5 rounded-full bg-orange-100 dark:bg-orange-900/30 flex-shrink-0 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold text-[10px]">1</span>
                                                 <span class="truncate">{{ $item['menu']['plato_principal'] }}</span>
                                             </div>
                                         @endif
                                         @if($item['menu']['segundo_plato'])
-                                            <div class="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-400">
+                                            <div
+                                                class="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-400 overflow-hidden">
                                                 <span
-                                                    class="size-5 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold text-[10px]">2</span>
+                                                    class="size-5 rounded-full bg-orange-100 dark:bg-orange-900/30 flex-shrink-0 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold text-[10px]">2</span>
                                                 <span class="truncate">{{ $item['menu']['segundo_plato'] }}</span>
                                             </div>
                                         @endif
                                         @if($item['menu']['postre'])
-                                            <div class="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-400">
+                                            <div
+                                                class="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-400 overflow-hidden">
                                                 <span
-                                                    class="size-5 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold text-[10px]">3</span>
+                                                    class="size-5 rounded-full bg-orange-100 dark:bg-orange-900/30 flex-shrink-0 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold text-[10px]">3</span>
                                                 <span class="truncate">{{ $item['menu']['postre'] }}</span>
                                             </div>
                                         @endif
                                         @if($item['menu']['bebida'])
-                                            <div class="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-400">
+                                            <div
+                                                class="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-400 overflow-hidden">
                                                 <span
-                                                    class="size-5 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold text-[10px]">4</span>
+                                                    class="size-5 rounded-full bg-orange-100 dark:bg-orange-900/30 flex-shrink-0 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold text-[10px]">4</span>
                                                 <span class="truncate">{{ $item['menu']['bebida'] }}</span>
                                             </div>
                                         @endif
                                     </div>
 
                                     <!-- Observations (Inline Edit) -->
-                                    <div class="mb-4" x-data="{ 
-                                                                                                isEditing: false, 
-                                                                                                observation: '{{ addslashes($item['observaciones'] ?? '') }}' 
-                                                                                            }">
+                                    <div class="mb-4"
+                                        x-data="{ isEditing: false, observation: '{{ addslashes($item['observaciones'] ?? '') }}' }">
                                         <!-- Display Mode -->
                                         <div x-show="!isEditing" class="flex flex-col gap-1">
                                             @if(!empty($item['observaciones']))
                                                 <div
                                                     class="flex items-start gap-2 text-sm text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-900/50 p-3 rounded-lg border border-zinc-100 dark:border-zinc-700/50">
                                                     <flux:icon.pencil-square class="size-4 mt-0.5 text-zinc-400 flex-shrink-0" />
-                                                    <p class="italic flex-1">"{{ $item['observaciones'] }}"</p>
+                                                    <p class="italic flex-1 break-words">"{{ $item['observaciones'] }}"</p>
                                                     <button @click="isEditing = true"
                                                         class="text-xs font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 ml-2">Editar</button>
                                                 </div>
@@ -156,29 +159,25 @@
                                             <div class="flex gap-2 justify-end">
                                                 <button
                                                     @click="isEditing = false; observation = '{{ addslashes($item['observaciones'] ?? '') }}'"
-                                                    class="px-3 py-1.5 text-xs font-bold text-zinc-500 hover:text-zinc-700">
-                                                    Cancelar
-                                                </button>
+                                                    class="px-3 py-1.5 text-xs font-bold text-zinc-500 hover:text-zinc-700">Cancelar</button>
                                                 <button
                                                     @click="$wire.updateObservation({{ $item['id_carrito'] }}, observation); isEditing = false"
-                                                    class="px-3 py-1.5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-xs font-bold hover:opacity-90">
-                                                    Guardar
-                                                </button>
+                                                    class="px-3 py-1.5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-xs font-bold hover:opacity-90">Guardar</button>
                                             </div>
                                         </div>
                                     </div>
 
                                     <!-- Quantity and Price -->
-                                    <div class="flex items-center justify-between">
+                                    <div class="flex flex-wrap items-center justify-between gap-4">
                                         <div class="flex items-center gap-3">
-                                            <span class="text-sm text-zinc-500">Cantidad:</span>
+                                            <span class="text-sm text-zinc-500 hidden sm:inline">Cantidad:</span>
                                             <div class="flex items-center gap-2">
                                                 <button wire:click="decreaseQuantity({{ $item['id_carrito'] }})"
                                                     class="size-8 flex items-center justify-center rounded-lg border-2 border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
                                                     <flux:icon.minus class="size-4" />
                                                 </button>
                                                 <span
-                                                    class="text-lg font-bold text-zinc-900 dark:text-white w-12 text-center">{{ $item['cantidad'] }}</span>
+                                                    class="text-lg font-bold text-zinc-900 dark:text-white w-8 sm:w-12 text-center">{{ $item['cantidad'] }}</span>
                                                 <button wire:click="increaseQuantity({{ $item['id_carrito'] }})"
                                                     class="size-8 flex items-center justify-center rounded-lg border-2 border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
                                                     <flux:icon.plus class="size-4" />
@@ -186,9 +185,9 @@
                                             </div>
                                         </div>
                                         <div class="text-right">
-                                            <p class="text-sm text-zinc-500">{{ number_format($item['menu']['precio'], 2) }}€ /
-                                                unidad</p>
-                                            <p class="text-2xl font-bold text-zinc-900 dark:text-white">
+                                            <p class="text-xs sm:text-sm text-zinc-500 hidden sm:block">
+                                                {{ number_format($item['menu']['precio'], 2) }}€ / unidad</p>
+                                            <p class="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-white">
                                                 {{ number_format($item['cantidad'] * $item['menu']['precio'], 2) }}€
                                             </p>
                                         </div>
