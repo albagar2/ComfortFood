@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 class CartPage extends Component
 {
     public $cartItems = [];
+    public $subtotal = 0;
+    public $shippingCost = 0;
     public $total = 0;
     public $restaurantName = '';
 
@@ -23,6 +25,8 @@ class CartPage extends Component
         $cliente = auth()->user()->cliente;
         if (!$cliente) {
             $this->cartItems = [];
+            $this->subtotal = 0;
+            $this->shippingCost = 0;
             $this->total = 0;
             return;
         }
@@ -41,9 +45,17 @@ class CartPage extends Component
 
     public function calculateTotal()
     {
-        $this->total = collect($this->cartItems)->sum(function ($item) {
+        $this->subtotal = collect($this->cartItems)->sum(function ($item) {
             return $item['cantidad'] * $item['menu']['precio'];
         });
+
+        if ($this->subtotal >= 20) {
+            $this->shippingCost = 0;
+        } else {
+            $this->shippingCost = 2.99;
+        }
+
+        $this->total = $this->subtotal + $this->shippingCost;
     }
 
     public function increaseQuantity($carritoId)

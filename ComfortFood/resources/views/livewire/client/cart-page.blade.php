@@ -126,9 +126,9 @@
 
                                     <!-- Observations (Inline Edit) -->
                                     <div class="mb-4" x-data="{ 
-                                                                isEditing: false, 
-                                                                observation: '{{ addslashes($item['observaciones'] ?? '') }}' 
-                                                            }">
+                                                                        isEditing: false, 
+                                                                        observation: '{{ addslashes($item['observaciones'] ?? '') }}' 
+                                                                    }">
                                         <!-- Display Mode -->
                                         <div x-show="!isEditing" class="flex flex-col gap-1">
                                             @if(!empty($item['observaciones']))
@@ -205,6 +205,37 @@
                         class="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 p-6 shadow-sm sticky top-6">
                         <h2 class="text-xl font-bold text-zinc-900 dark:text-white mb-6">Resumen del Pedido</h2>
 
+                        <!-- Dynamic Shipping Progress -->
+                        <div class="mb-6">
+                            @if($subtotal >= 20)
+                                <div
+                                    class="bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg p-3 flex items-center gap-3">
+                                    <div class="bg-green-500 text-white rounded-full p-1">
+                                        <flux:icon.check class="size-4" />
+                                    </div>
+                                    <p class="text-sm font-bold text-green-700 dark:text-green-400">
+                                        ¡Tienes envío gratis!
+                                    </p>
+                                </div>
+                            @else
+                                <div
+                                    class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <flux:icon.truck class="size-5 text-amber-500" />
+                                        <p class="text-sm font-medium text-amber-700 dark:text-amber-400">
+                                            Te faltan <span class="font-bold">{{ number_format(20 - $subtotal, 2) }}€</span>
+                                            para envío gratis
+                                        </p>
+                                    </div>
+                                    <!-- Progress Bar -->
+                                    <div class="w-full bg-amber-200 dark:bg-amber-800 rounded-full h-2">
+                                        <div class="bg-amber-500 h-2 rounded-full transition-all duration-500"
+                                            style="width: {{ ($subtotal / 20) * 100 }}%"></div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
                         <div class="space-y-3 mb-6">
                             @foreach($cartItems as $item)
                                 <div class="flex justify-between text-sm">
@@ -216,8 +247,23 @@
                             @endforeach
                         </div>
 
-                        <div class="border-t border-zinc-200 dark:border-zinc-700 pt-4 mb-6">
-                            <div class="flex justify-between items-center">
+                        <div class="border-t border-zinc-200 dark:border-zinc-700 pt-4 mb-6 space-y-2">
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-zinc-600 dark:text-zinc-400">Subtotal</span>
+                                <span
+                                    class="font-bold text-zinc-900 dark:text-white">{{ number_format($subtotal, 2) }}€</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-zinc-600 dark:text-zinc-400">Envío</span>
+                                @if($shippingCost == 0)
+                                    <span class="font-bold text-green-500">GRATIS</span>
+                                @else
+                                    <span
+                                        class="font-bold text-zinc-900 dark:text-white">{{ number_format($shippingCost, 2) }}€</span>
+                                @endif
+                            </div>
+                            <div
+                                class="flex justify-between items-center pt-2 border-t border-dashed border-zinc-200 dark:border-zinc-700 mt-2">
                                 <span class="text-lg font-bold text-zinc-900 dark:text-white">Total</span>
                                 <span class="text-3xl font-bold text-pastel-orange">{{ number_format($total, 2) }}€</span>
                             </div>
