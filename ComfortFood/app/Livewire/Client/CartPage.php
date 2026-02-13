@@ -53,7 +53,7 @@ class CartPage extends Component
             return;
 
         if ($carrito->cantidad >= $carrito->menu->stock) {
-            session()->flash('error', 'No hay suficiente stock disponible');
+            session()->flash('error', '¡Vaya! No quedan más unidades disponibles de este plato.');
             return;
         }
 

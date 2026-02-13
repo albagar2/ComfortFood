@@ -86,7 +86,7 @@ class ClientDashboard extends Component
         if ($carritoItem) {
             // Check if we can add more
             if ($carritoItem->cantidad >= $menu->stock) {
-                session()->flash('error', 'No hay suficiente stock disponible');
+                session()->flash('error', '¡Vaya! No quedan más unidades disponibles de este menú.');
                 return;
             }
             $carritoItem->cantidad++;

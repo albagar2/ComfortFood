@@ -106,8 +106,18 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4">
-                                <a href="{{ route('admin.users.show', $user) }}"
-                                    class="text-blue-500 hover:underline text-xs" wire:navigate>Ver</a>
+                                <div class="flex items-center gap-3">
+                                    <a href="{{ route('admin.users.show', $user) }}"
+                                        class="text-blue-500 hover:text-blue-700" wire:navigate
+                                        aria-label="Ver usuario" title="Ver">
+                                        <flux:icon.eye class="size-4" />
+                                    </a>
+                                    <a href="{{ route('admin.users.edit', $user) }}"
+                                        class="text-blue-500 hover:text-blue-700" wire:navigate
+                                        aria-label="Editar usuario" title="Editar">
+                                        <flux:icon.pencil-square class="size-4" />
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     @empty

@@ -26,6 +26,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('support', \App\Livewire\Client\Support::class)->name('support');
     Route::get('orders/history', OrderHistory::class)->name('orders.history');
     Route::get('orders/details/{order}', \App\Livewire\Orders\OrderDetails::class)->name('orders.details');
     Route::get('menu', \App\Livewire\Menus\MenuManagement::class)->name('menu.index');
@@ -33,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('menu/edit/{menu?}', \App\Livewire\Menus\MenuForm::class)->name('menu.edit');
     Route::get('favorites', \App\Livewire\Client\Favorites::class)->name('favorites');
     Route::get('cart', \App\Livewire\Client\CartPage::class)->name('cart.index');
+    Route::get('customer/support', \App\Livewire\Client\Support::class)->name('customer.support');
     Route::get('restaurant/statistics', \App\Livewire\Restaurant\Statistics::class)->name('restaurant.statistics');
     Route::get('restaurant/support', \App\Livewire\Restaurant\Support::class)->name('restaurant.support');
 

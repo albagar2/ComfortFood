@@ -1,7 +1,6 @@
 @component('mail::message')
 <div style="text-align: center;">
-    <img src="{{ config('app.url') }}/images/logo.png" alt="ComfortFood"
-        style="width: 80px; height: 80px; border-radius: 20px; margin-bottom: 20px;">
+    <img src="{{ $message->embed(public_path('images/logo.png')) }}" alt="Logo" width="50" height="50">
 </div>
 
 # ¡Hola, {{ $notifiable->nombre_completo }}!

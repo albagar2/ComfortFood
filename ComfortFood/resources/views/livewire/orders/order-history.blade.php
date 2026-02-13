@@ -17,8 +17,8 @@
                     <flux:select.option value="">{{ __('Todos los estados') }}</flux:select.option>
                     <flux:select.option value="Pendiente">{{ __('Pendiente') }}</flux:select.option>
                     <flux:select.option value="En Preparación">{{ __('En Cocina') }}</flux:select.option>
+                    <flux:select.option value="En Reparto">{{ __('En Reparto') }}</flux:select.option>
                     <flux:select.option value="Entregado">{{ __('Entregado') }}</flux:select.option>
-                    <flux:select.option value="Completado">{{ __('Completado') }}</flux:select.option>
                     <flux:select.option value="Cancelado">{{ __('Cancelado') }}</flux:select.option>
                 </flux:select>
 
@@ -63,7 +63,7 @@
                                                     {{ __('Pedido Cancelado') }}
                                                 </div>
                                             </div>
-                                        @elseif($pedido->estado->nombre_estado === 'Completado' && !$pedido->resena)
+                                        @elseif($pedido->estado->nombre_estado === 'Entregado' && !$pedido->resena)
                                             <div class="relative group/tooltip">
                                                 <div class="size-2 rounded-full bg-amber-500 shadow-sm shadow-amber-500/50"></div>
                                                 <div
@@ -101,8 +101,8 @@
                                     $statusColor = match ($pedido->estado->nombre_estado) {
                                         'Pendiente' => 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300',
                                         'En Preparación' => 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300',
-                                        'Entregado' => 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300',
-                                        'Completado' => 'bg-emerald-500 text-white border-emerald-600 dark:border-emerald-400',
+                                        'En Reparto' => 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300',
+                                        'Entregado' => 'bg-emerald-500 text-white border-emerald-600 dark:border-emerald-400',
                                         'Cancelado' => 'bg-rose-500 text-white border-rose-600 dark:border-rose-400',
                                         default => 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
                                     };
@@ -128,7 +128,7 @@
                                     href="{{ route('orders.details', $pedido->id_pedido) }}" wire:navigate
                                     class="text-zinc-400 hover:text-blue-600" />
 
-                                @if($pedido->estado->nombre_estado === 'Completado' && !$isRestaurant)
+                                @if($pedido->estado->nombre_estado === 'Entregado' && !$isRestaurant)
                                     @if($pedido->resena)
                                         <div
                                             class="flex items-center gap-0.5 text-yellow-500 bg-yellow-50 dark:bg-yellow-900/20 px-2 py-1 rounded-lg">

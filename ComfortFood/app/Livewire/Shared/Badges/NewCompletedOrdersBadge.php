@@ -29,11 +29,12 @@ class NewCompletedOrdersBadge extends Component
                 ->where('visto_completado', false)
                 ->count();
 
-            // Pedidos completados que requieren valoración (sin reseña)
+            // Pedidos entregados que requieren valoración (sin reseña)
             $completedCount = Pedido::where('id_cliente', $clientId)
                 ->whereHas('estado', function ($q) {
-                    $q->where('nombre_estado', 'Completado');
+                    $q->where('nombre_estado', 'Entregado');
                 })
+                ->where('visto_completado', false)
                 ->doesntHave('resena')
                 ->count();
         }

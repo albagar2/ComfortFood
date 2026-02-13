@@ -133,25 +133,25 @@ class RestaurantProfile extends Component
     {
         $cliente = auth()->user()->cliente;
         if (!$cliente) {
-            $this->dispatch('notify', 'Debes iniciar sesión para añadir al carrito');
+            session()->flash('error', 'Debes iniciar sesión para añadir al carrito');
             return;
         }
 
         $menu = \App\Models\Menu::find($menuId);
         if (!$menu) {
-            $this->dispatch('notify', 'Menú no encontrado');
+            session()->flash('error', 'Menú no encontrado');
             return;
         }
 
         if ($menu->stock <= 0) {
-            $this->dispatch('notify', 'Este menú no tiene stock disponible');
+            session()->flash('error', 'Este menú no tiene stock disponible');
             return;
         }
 
         // Check restaurant consistency
         $existingCart = \App\Models\Carrito::where('id_cliente', $cliente->id_cliente)->first();
         if ($existingCart && $existingCart->id_restaurante != $menu->id_restaurante) {
-            $this->dispatch('notify', 'Solo puedes añadir menús de un restaurante a la vez. Vacía tu carrito primero.');
+            session()->flash('error', 'Solo puedes añadir menús de un restaurante a la vez. Vacía tu carrito primero.');
             return;
         }
 
@@ -162,7 +162,7 @@ class RestaurantProfile extends Component
 
         if ($carritoItem) {
             if (($carritoItem->cantidad + 1) > $menu->stock) {
-                $this->dispatch('notify', 'No hay suficiente stock disponible');
+                session()->flash('error', '¡Vaya! No quedan más unidades disponibles de este plato.');
                 return;
             }
             $carritoItem->cantidad++;
@@ -177,7 +177,7 @@ class RestaurantProfile extends Component
         }
 
         $this->dispatch('cart-updated');
-        $this->dispatch('notify', 'Menú añadido al carrito.');
+        session()->flash('success', 'Menú añadido al carrito.');
     }
 
     // Client Action - Step 1: Open Modal

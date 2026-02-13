@@ -4,7 +4,13 @@ namespace App\Livewire\Orders;
 
 use App\Models\EstadoPedido;
 use App\Models\Pedido;
+use App\Mail\DeliveredOrderMail;
+use App\Mail\PreparingOrderMail;
+use App\Mail\OutForDeliveryMail;
+use App\Mail\CancelledOrderMail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -39,8 +45,8 @@ class OrderDetails extends Component
         $currentStatus = $this->order->estado->nombre_estado ?? '';
         $nextStatusName = match ($currentStatus) {
             'Pendiente' => 'En Preparación',
-            'En Preparación' => 'Entregado',
-            'Entregado' => 'Completado',
+            'En Preparación' => 'En Reparto',
+            'En Reparto' => 'Entregado',
             default => null
         };
 
@@ -54,6 +60,42 @@ class OrderDetails extends Component
             if ($status) {
                 $this->order->update(['id_estado_pedido' => $status->id_estado_pedido]);
                 $this->order->refresh();
+
+                if ($nextStatusName === 'En Preparación') {
+                    try {
+                        $this->order->loadMissing('cliente.user');
+                        if ($this->order->cliente && $this->order->cliente->user && $this->order->cliente->user->email) {
+                            Mail::to($this->order->cliente->user->email)->send(new PreparingOrderMail($this->order));
+                        }
+                    } catch (\Exception $e) {
+                        Log::error('Error enviando email de preparación: ' . $e->getMessage());
+                    }
+                }
+
+                if ($nextStatusName === 'En Reparto') {
+                    try {
+                        $this->order->loadMissing('cliente.user');
+                        if ($this->order->cliente && $this->order->cliente->user && $this->order->cliente->user->email) {
+                            Mail::to($this->order->cliente->user->email)->send(new OutForDeliveryMail($this->order));
+                        }
+                    } catch (\Exception $e) {
+                        Log::error('Error enviando email de reparto: ' . $e->getMessage());
+                    }
+                }
+
+                if ($nextStatusName === 'Entregado') {
+                    // Mark as complete for badges logic (formerly 'Completado' concept)
+                    $this->order->update(['visto_completado' => false]);
+
+                    try {
+                        $this->order->loadMissing('cliente.user', 'restaurante.user');
+                        if ($this->order->cliente && $this->order->cliente->user && $this->order->cliente->user->email) {
+                            Mail::to($this->order->cliente->user->email)->send(new DeliveredOrderMail($this->order));
+                        }
+                    } catch (\Exception $e) {
+                        Log::error('Error enviando email de entrega: ' . $e->getMessage());
+                    }
+                }
             }
         }
     }
@@ -74,6 +116,18 @@ class OrderDetails extends Component
                 'visto_completado' => false // Reset to notify client
             ]);
 
+            try {
+                $this->order->loadMissing('cliente.user');
+                if ($this->order->cliente && $this->order->cliente->user && $this->order->cliente->user->email) {
+                    Mail::to($this->order->cliente->user->email)->send(new CancelledOrderMail(
+                        $this->order,
+                        'Cancelado por el restaurante.'
+                    ));
+                }
+            } catch (\Exception $e) {
+                Log::error('Error enviando email de cancelación: ' . $e->getMessage());
+            }
+
             $this->dispatch('refresh-badges');
             $this->order->refresh();
         }
@@ -91,7 +145,7 @@ class OrderDetails extends Component
 
     public function saveReview()
     {
-        if (!auth()->user()->isCliente() || $this->order->estado->nombre_estado !== 'Completado') {
+        if (!auth()->user()->isCliente() || $this->order->estado->nombre_estado !== 'Entregado') {
             return;
         }
 
@@ -116,7 +170,7 @@ class OrderDetails extends Component
         $quickAccessOrders = collect();
         if (Auth::user()->isRestaurante()) {
             $quickAccessOrders = Pedido::where('id_restaurante', Auth::user()->restaurante->id_restaurante)
-                ->where('id_estado_pedido', '!=', EstadoPedido::where('nombre_estado', 'Completado')->first()->id_estado_pedido ?? 0) // Show pending/active
+                ->where('id_estado_pedido', '!=', EstadoPedido::where('nombre_estado', 'Entregado')->first()->id_estado_pedido ?? 0) // Show pending/active
                 ->latest()
                 ->take(10)
                 ->get();

@@ -38,10 +38,16 @@ class AppServiceProvider extends ServiceProvider
                 ->markdown('emails.verify-email', ['url' => $url, 'notifiable' => $notifiable]);
         });
 
-        // Redirect to home after verification
+        // Redirect to login after email verification
         $this->app->singleton(
             \Laravel\Fortify\Contracts\VerifyEmailResponse::class,
             \App\Http\Responses\VerifyEmailResponse::class
+        );
+
+        // Redirect to verification notice after registration (not dashboard)
+        $this->app->singleton(
+            \Laravel\Fortify\Contracts\RegisterResponse::class,
+            \App\Http\Responses\RegisterResponse::class
         );
     }
 

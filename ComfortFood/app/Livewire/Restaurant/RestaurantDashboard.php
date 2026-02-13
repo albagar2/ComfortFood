@@ -4,7 +4,13 @@ namespace App\Livewire\Restaurant;
 
 use App\Models\EstadoPedido;
 use App\Models\Pedido;
+use App\Mail\DeliveredOrderMail;
+use App\Mail\PreparingOrderMail;
+use App\Mail\OutForDeliveryMail;
+use App\Mail\CancelledOrderMail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -23,7 +29,8 @@ class RestaurantDashboard extends Component
         $currentStatus = $order->estado->nombre_estado ?? '';
         $nextStatusName = match ($currentStatus) {
             'Pendiente' => 'En Preparación',
-            'En Preparación' => 'Entregado',
+            'En Preparación' => 'En Reparto',
+            'En Reparto' => 'Entregado',
             'Entregado' => 'Completado',
             default => null
         };
@@ -37,6 +44,48 @@ class RestaurantDashboard extends Component
 
             if ($status) {
                 $order->update(['id_estado_pedido' => $status->id_estado_pedido]);
+
+                if ($nextStatusName === 'En Preparación') {
+                    // Deduct Stock
+                    foreach ($order->detalles as $detalle) {
+                        if ($detalle->menu) {
+                            $detalle->menu->decrement('stock', $detalle->cantidad);
+                        }
+                    }
+
+                    try {
+                        $order->loadMissing('cliente.user');
+                        if ($order->cliente && $order->cliente->user && $order->cliente->user->email) {
+                            Mail::to($order->cliente->user->email)->send(new PreparingOrderMail($order));
+                        }
+                    } catch (\Exception $e) {
+                        Log::error('Error enviando email de preparación: ' . $e->getMessage());
+                    }
+                }
+
+
+
+                if ($nextStatusName === 'En Reparto') {
+                    try {
+                        $order->loadMissing('cliente.user');
+                        if ($order->cliente && $order->cliente->user && $order->cliente->user->email) {
+                            Mail::to($order->cliente->user->email)->send(new OutForDeliveryMail($order));
+                        }
+                    } catch (\Exception $e) {
+                        Log::error('Error enviando email de reparto: ' . $e->getMessage());
+                    }
+                }
+
+                if ($nextStatusName === 'Entregado') {
+                    try {
+                        $order->loadMissing('cliente.user', 'restaurante.user');
+                        if ($order->cliente && $order->cliente->user && $order->cliente->user->email) {
+                            Mail::to($order->cliente->user->email)->send(new DeliveredOrderMail($order));
+                        }
+                    } catch (\Exception $e) {
+                        Log::error('Error enviando email de entrega: ' . $e->getMessage());
+                    }
+                }
             }
         }
     }
@@ -57,6 +106,18 @@ class RestaurantDashboard extends Component
                 'id_estado_pedido' => $status->id_estado_pedido,
                 'visto_completado' => false // Reset to notify client
             ]);
+
+            try {
+                $order->loadMissing('cliente.user');
+                if ($order->cliente && $order->cliente->user && $order->cliente->user->email) {
+                    Mail::to($order->cliente->user->email)->send(new CancelledOrderMail(
+                        $order,
+                        'Cancelado por el restaurante.'
+                    ));
+                }
+            } catch (\Exception $e) {
+                Log::error('Error enviando email de cancelación: ' . $e->getMessage());
+            }
 
             $this->dispatch('refresh-badges');
         }
@@ -114,9 +175,10 @@ class RestaurantDashboard extends Component
             $priorityMap = [
                 'Pendiente' => 1,
                 'En Preparación' => 2,
-                'Entregado' => 3,
-                'Completado' => 4,
-                'Cancelado' => 5
+                'En Reparto' => 3,
+                'Entregado' => 4,
+                'Completado' => 5,
+                'Cancelado' => 6
             ];
 
             $orders = $orders->sort(function ($a, $b) use ($priorityMap) {

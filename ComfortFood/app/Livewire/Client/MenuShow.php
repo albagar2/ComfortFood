@@ -35,19 +35,19 @@ class MenuShow extends Component
     {
         $cliente = auth()->user()->cliente;
         if (!$cliente) {
-            $this->dispatch('notify', 'Debes iniciar sesión para añadir al carrito');
+            session()->flash('error', 'Debes iniciar sesión para añadir al carrito');
             return;
         }
 
         $menu = \App\Models\Menu::find($menuId);
         if (!$menu) {
-            $this->dispatch('notify', 'Menú no encontrado');
+            session()->flash('error', 'Menú no encontrado');
             return;
         }
 
         // Check stock
         if ($menu->stock <= 0) {
-            $this->dispatch('notify', 'Este menú no tiene stock disponible');
+            session()->flash('error', 'Este menú no tiene stock disponible');
             return;
         }
 
@@ -55,7 +55,7 @@ class MenuShow extends Component
         $existingCart = \App\Models\Carrito::where('id_cliente', $cliente->id_cliente)->first();
 
         if ($existingCart && $existingCart->id_restaurante != $menu->id_restaurante) {
-            $this->dispatch('notify', 'Solo puedes añadir menús de un restaurante a la vez. Vacía tu carrito primero.');
+            session()->flash('error', 'Solo puedes añadir menús de un restaurante a la vez. Vacía tu carrito primero.');
             return;
         }
 
@@ -67,7 +67,7 @@ class MenuShow extends Component
         if ($carritoItem) {
             // Check if we can add more
             if ($carritoItem->cantidad >= $menu->stock) {
-                $this->dispatch('notify', 'No hay suficiente stock disponible');
+                session()->flash('error', '¡Vaya! No quedan más unidades disponibles de este plato.');
                 return;
             }
             $carritoItem->cantidad++;
@@ -88,7 +88,7 @@ class MenuShow extends Component
 
         $this->dispatch('cart-updated');
         $this->observacion = ''; // Reset
-        $this->dispatch('notify', 'Menú añadido al carrito');
+        session()->flash('success', 'Menú añadido al carrito');
     }
 
     public function render()

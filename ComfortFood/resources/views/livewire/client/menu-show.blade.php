@@ -1,4 +1,45 @@
 <div class="p-6">
+    <div wire:key="flash-container">
+        @if(session()->has('success'))
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+                x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-90"
+                x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90"
+                class="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/20 backdrop-blur-sm">
+                <div
+                    class="bg-white dark:bg-zinc-900 p-6 rounded-3xl shadow-2xl max-w-sm w-full text-center space-y-4 border border-zinc-100 dark:border-zinc-800">
+                    <div
+                        class="size-12 bg-green-100 dark:bg-green-900/30 text-green-600 rounded-2xl flex items-center justify-center mx-auto">
+                        <flux:icon.check-circle class="size-6" />
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-zinc-900 dark:text-white">¡Genial!</h3>
+                        <p class="text-zinc-500 font-medium">{{ session('success') }}</p>
+                    </div>
+                </div>
+            </div>
+        @endif
+        @if(session()->has('error'))
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+                x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-90"
+                x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90"
+                class="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/20 backdrop-blur-sm">
+                <div
+                    class="bg-white dark:bg-zinc-900 p-6 rounded-3xl shadow-2xl max-w-sm w-full text-center space-y-4 border border-zinc-100 dark:border-zinc-800">
+                    <div
+                        class="size-12 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-2xl flex items-center justify-center mx-auto">
+                        <flux:icon.exclamation-triangle class="size-6" />
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-zinc-900 dark:text-white">Vaya...</h3>
+                        <p class="text-zinc-500 font-medium">{{ session('error') }}</p>
+                    </div>
+                </div>
+            </div>
+        @endif
+    </div>
+
     <!-- Header with Back Arrow and Buttons -->
     <div class="flex items-center justify-between mb-6">
         <a href="javascript:history.back()" class="text-zinc-900 hover:text-zinc-600">

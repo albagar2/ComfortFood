@@ -3,9 +3,11 @@
 namespace App\Livewire\Orders;
 
 use App\Models\Pedido;
+use App\Mail\CancelledOrderMail;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class OrderHistory extends Component
 {
@@ -85,7 +87,7 @@ class OrderHistory extends Component
         if ($user->isCliente()) {
             $affected = Pedido::where('id_cliente', $user->cliente->id_cliente)
                 ->whereHas('estado', function ($q) {
-                    $q->whereIn('nombre_estado', ['Completado', 'Cancelado']);
+                    $q->whereIn('nombre_estado', ['Entregado', 'Cancelado', 'En Preparación', 'En Reparto']);
                 })
                 ->where('visto_completado', false)
                 ->update(['visto_completado' => true]);
@@ -177,6 +179,18 @@ class OrderHistory extends Component
                 'id_estado_pedido' => $canceledStatus->id_estado_pedido,
                 'visto_completado' => false // Reset to notify client
             ]);
+
+            try {
+                $order->loadMissing('cliente.user');
+                if ($order->cliente && $order->cliente->user && $order->cliente->user->email) {
+                    Mail::to($order->cliente->user->email)->send(new CancelledOrderMail(
+                        $order,
+                        'Cancelado por el cliente.'
+                    ));
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Error enviando email de cancelación: ' . $e->getMessage());
+            }
 
             $this->dispatch('refresh-badges');
             session()->flash('success', 'Pedido cancelado correctamente.');

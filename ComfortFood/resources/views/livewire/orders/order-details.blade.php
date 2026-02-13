@@ -15,8 +15,8 @@
                 $statusClasses = match ($status) {
                     'En espera', 'Pendiente' => 'bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-700',
                     'En Preparación' => 'bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-700',
-                    'Entregado' => 'bg-emerald-100 text-emerald-700 border-emerald-300 dark:bg-emerald-900/40 dark:text-emerald-300 dark:border-emerald-700',
-                    'Completado' => 'bg-emerald-500 text-white border-emerald-600 shadow-emerald-200/50 dark:border-emerald-400',
+                    'En Reparto' => 'bg-purple-100 text-purple-700 border-purple-300 dark:bg-purple-900/40 dark:text-purple-300 dark:border-purple-700',
+                    'Entregado' => 'bg-emerald-500 text-white border-emerald-600 shadow-emerald-200/50 dark:border-emerald-400',
                     'Cancelado' => 'bg-rose-500 text-white border-rose-600 shadow-rose-200/50 dark:border-rose-400',
                     default => 'bg-zinc-100 text-zinc-600 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700'
                 };
@@ -108,7 +108,7 @@
 
 
                     <!-- Review Section (Dynamic) -->
-                    @if($order->estado->nombre_estado === 'Completado')
+                    @if($order->estado->nombre_estado === 'Entregado')
                         <section class="space-y-4 pt-8 border-t border-zinc-100 dark:border-zinc-800">
                             <h4 class="text-xs font-black text-zinc-400 uppercase tracking-[0.2em]">Tu Valoración</h4>
                             
@@ -194,7 +194,7 @@
                     </div>
 
                     <!-- Actions for Restaurant -->
-                    @if(auth()->user()->isRestaurante() && !in_array($order->estado->nombre_estado, ['Completado', 'Cancelado']))
+                    @if(auth()->user()->isRestaurante() && !in_array($order->estado->nombre_estado, ['Entregado', 'Cancelado']))
                         <div class="pt-12 flex gap-4">
                             @if($order->estado->nombre_estado === 'Pendiente')
                                 <button wire:click="confirmCancel" class="flex-1 py-4 bg-zinc-50 hover:bg-rose-50 dark:bg-zinc-800 dark:hover:bg-rose-900/30 text-rose-600 font-black rounded-2xl border border-rose-100 dark:border-rose-900/50 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2">
@@ -205,8 +205,8 @@
                             @php
                                 $actionConfig = match($order->estado->nombre_estado) {
                                     'Pendiente' => ['text' => 'Aceptar y Cocinar', 'icon' => 'check', 'color' => 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/30'],
-                                    'En Preparación' => ['text' => 'Marcar Entregado', 'icon' => 'truck', 'color' => 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/30'],
-                                    'Entregado' => ['text' => 'Finalizar y Archivar', 'icon' => 'check-circle', 'color' => 'bg-zinc-600 hover:bg-zinc-700 shadow-zinc-500/30'],
+                                    'En Preparación' => ['text' => 'Enviar a Reparto', 'icon' => 'truck', 'color' => 'bg-purple-600 hover:bg-purple-700 shadow-purple-500/30'],
+                                    'En Reparto' => ['text' => 'Marcar Entregado', 'icon' => 'home', 'color' => 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/30'],
                                     default => ['text' => 'Avanzar Estado', 'icon' => 'arrow-right', 'color' => 'bg-indigo-600']
                                 };
                             @endphp

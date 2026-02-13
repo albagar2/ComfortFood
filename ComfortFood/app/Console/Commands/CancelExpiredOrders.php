@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\CancelledOrderMail;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Mail;
 
 class CancelExpiredOrders extends Command
 {
@@ -45,6 +47,14 @@ class CancelExpiredOrders extends Command
                 'id_estado_pedido' => $canceledStatus->id_estado_pedido,
                 'visto_completado' => false,
             ]);
+
+            $order->loadMissing('cliente.user');
+            if ($order->cliente && $order->cliente->user && $order->cliente->user->email) {
+                Mail::to($order->cliente->user->email)->send(new CancelledOrderMail(
+                    $order,
+                    'Cancelado por tiempo de espera.'
+                ));
+            }
 
             $this->info("Pedido #{$order->id_pedido} cancelado por expiración de tiempo.");
             \Illuminate\Support\Facades\Log::info("Pedido #{$order->id_pedido} cancelado automáticamente por expiración (10 min).");

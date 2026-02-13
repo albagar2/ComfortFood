@@ -41,6 +41,11 @@
                 class="!text-white/80 hover:!text-white data-[current]:!text-pastel-orange data-[current]:!border-pastel-orange/50 data-[current]:border !rounded-xl !bg-transparent data-[current]:!bg-white/10">
                 {{ __('Favoritos') }}
             </flux:sidebar.item>
+            <flux:sidebar.item icon="lifebuoy" href="{{ route('support') }}" :current="request()->routeIs('support')"
+                wire:navigate
+                class="!text-white/80 hover:!text-white data-[current]:!text-pastel-orange data-[current]:!border-pastel-orange/50 data-[current]:border !rounded-xl !bg-transparent data-[current]:!bg-white/10">
+                {{ __('Soporte') }}
+            </flux:sidebar.item>
         </flux:navbar>
         <flux:spacer />
 
@@ -120,6 +125,20 @@
         font-medium tracking-wide
     ">
                 {{ __('Favoritos') }}
+            </flux:sidebar.item>
+
+            <flux:sidebar.item icon="lifebuoy" href="{{ route('support') }}" :current="request()->routeIs('support')"
+                wire:navigate class="
+        !text-white/80
+        hover:!text-white hover:!bg-white/10
+        data-[current]:!bg-white/10
+        data-[current]:!text-pastel-orange
+        data-[current]:border
+        data-[current]:!border-pastel-orange
+        !rounded-xl
+        font-medium tracking-wide
+    ">
+                {{ __('Soporte') }}
             </flux:sidebar.item>
 
             <flux:sidebar.item icon="cog" href="{{ route('profile.edit') }}" wire:navigate class="
