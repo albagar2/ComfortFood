@@ -18,17 +18,7 @@ class MenuShow extends Component
     #[Livewire\Attributes\Computed]
     public function isRestaurantOpen()
     {
-        $now = now();
-        $currentDayId = $now->format('N');
-        $currentTime = $now->format('H:i:s');
-
-        $schedule = $this->menu->restaurante->horarios->where('id_dia', $currentDayId)->first();
-
-        if (!$schedule || !$schedule->esta_abierto) {
-            return false;
-        }
-
-        return $currentTime >= $schedule->hora_apertura && $currentTime <= $schedule->hora_cierre;
+        return $this->menu->restaurante->isOpen();
     }
 
     public function addToCart($menuId)

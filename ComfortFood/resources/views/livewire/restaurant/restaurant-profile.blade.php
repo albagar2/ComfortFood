@@ -1,5 +1,5 @@
-<div class="min-h-screen px-4 py-8 md:px-8">
-    <div class="max-w-7xl mx-auto space-y-12">
+<div class="min-h-screen px-4 md:px-8">
+    <div class="max-w-7xl mx-auto space-y-4">
         <div wire:key="flash-container">
             @if(session()->has('success'))
                 <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"

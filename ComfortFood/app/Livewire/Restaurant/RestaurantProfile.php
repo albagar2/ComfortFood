@@ -323,7 +323,7 @@ class RestaurantProfile extends Component
             ];
         }
 
-        if ($currentTime >= $todaySchedule->hora_apertura && $currentTime <= $todaySchedule->hora_cierre) {
+        if ($this->restaurante->isOpen()) {
             return [
                 'isOpen' => true,
                 'text' => 'Abierto hasta ' . date('H:i', strtotime($todaySchedule->hora_cierre)),

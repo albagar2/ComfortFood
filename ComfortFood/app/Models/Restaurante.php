@@ -69,7 +69,20 @@ class Restaurante extends Model
             return false;
         }
 
-        return $currentTime >= $schedule->hora_apertura && $currentTime <= $schedule->hora_cierre;
+        $openingTime = $schedule->hora_apertura;
+        $closingTime = $schedule->hora_cierre;
+
+        // Handle midnight (00:00:00) as the end of the day or full day
+        if ($closingTime === '00:00:00' || $closingTime === '23:59:59') {
+            $closingTime = '23:59:59';
+        }
+
+        if ($closingTime < $openingTime) {
+            // Spans across midnight
+            return $currentTime >= $openingTime || $currentTime <= $closingTime;
+        }
+
+        return $currentTime >= $openingTime && $currentTime <= $closingTime;
     }
     public function getUrlImagenPerfilAttribute($value)
     {

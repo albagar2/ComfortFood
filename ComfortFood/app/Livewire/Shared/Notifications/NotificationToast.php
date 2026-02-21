@@ -40,7 +40,7 @@ class NotificationToast extends Component
     {
         $newNotifications = Pedido::where('id_cliente', $user->cliente->id_cliente)
             ->whereHas('estado', function ($q) {
-                $q->whereIn('nombre_estado', ['Completado', 'Cancelado', 'En Preparación']);
+                $q->whereIn('nombre_estado', ['Entregado', 'Cancelado', 'En Preparación', 'En Reparto']);
             })
             ->where('visto_completado', false)
             ->with('estado', 'restaurante.user')
@@ -54,7 +54,7 @@ class NotificationToast extends Component
             $estado = $order->estado->nombre_estado;
             $restaurante = $order->restaurante->user->nombre_completo;
 
-            if ($estado === 'Completado') {
+            if ($estado === 'Entregado') {
                 $message = "¡Tu pedido #{$order->id_pedido} de {$restaurante} ha sido entregado!";
                 $type = "success";
                 $icon = "check-circle";
@@ -66,6 +66,10 @@ class NotificationToast extends Component
                 $message = "{$restaurante} está preparando tu pedido #{$order->id_pedido}.";
                 $type = "info";
                 $icon = "fire";
+            } elseif ($estado === 'En Reparto') {
+                $message = "¡Tu pedido #{$order->id_pedido} de {$restaurante} está en camino!";
+                $type = "info";
+                $icon = "truck";
             }
 
             if ($message) {
@@ -78,6 +82,11 @@ class NotificationToast extends Component
                         'sticky' => true
                     ]);
                     session([$cacheKey => true]);
+
+                    // Mark as seen in DB for statuses that are "final" or fully notified
+                    if (in_array($estado, ['Entregado', 'Cancelado'])) {
+                        $order->update(['visto_completado' => true]);
+                    }
                 }
             }
         }

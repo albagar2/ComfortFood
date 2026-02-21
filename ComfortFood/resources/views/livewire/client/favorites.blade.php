@@ -5,7 +5,11 @@
             {{ session('success') }}
         </div>
     @endif
-    <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+    <div class="flex items-center gap-4 mb-8">
+        <a href="{{ route('dashboard') }}" wire:navigate
+            class="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors">
+            <flux:icon.arrow-left class="size-6" />
+        </a>
         <h1 class="text-2xl font-bold text-zinc-900 dark:text-white">Mis Favoritos</h1>
     </div>
 
@@ -20,7 +24,7 @@
             </flux:button>
         </div>
     @else
-        <div wire:key="favs-grid" class="grid grid-cols-3  2xl:grid-cols-4 gap-6">
+        <div wire:key="favs-grid" class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-6">
             @foreach($menus as $menu)
                 <div wire:key="fav-menu-{{ $menu->id_menu }}"
                     class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-sm flex flex-col gap-4 relative group hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors">

@@ -11,7 +11,7 @@
 
     <!-- Main Card -->
     <div
-        class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-12 max-w-4xl mx-auto shadow-sm">
+        class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5 md:p-12 w-full max-w-4xl mx-auto shadow-sm">
         <h2 class="text-center text-xl font-bold mb-10 text-zinc-900 dark:text-white">
             {{ $menu && $menu->exists ? 'Editar menú' : 'Añadir menú' }}
         </h2>
@@ -62,7 +62,7 @@
                             class="w-full px-4 py-3 border border-zinc-300 rounded-2xl text-sm placeholder-zinc-300 resize-none focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300"></textarea>
                     </div>
 
-                    <div class="flex items-center justify-between pt-2 gap-4">
+                    <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between pt-2 gap-4">
                         <div
                             class="flex-1 flex justify-between items-center bg-zinc-50 dark:bg-zinc-800 px-4 py-2 rounded-xl border border-zinc-200">
                             <span class="text-sm font-bold text-zinc-700 dark:text-zinc-300">Stock</span>

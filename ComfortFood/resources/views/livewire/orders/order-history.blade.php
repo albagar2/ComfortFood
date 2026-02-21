@@ -5,15 +5,15 @@
             <h1 class="text-2xl font-bold text-zinc-900 dark:text-white">{{ __('Historial de pedidos') }}</h1>
         </div>
 
-        <div class="flex flex-col md:flex-row gap-4 items-center">
-            <div class="flex-1 w-full">
+        <div class="flex flex-col gap-4 items-stretch">
+            <div class="w-full">
                 <flux:input wire:model.live.debounce.500ms="search" icon="magnifying-glass"
                     placeholder="{{ __('Buscar pedido por ID, ' . ($isRestaurant ? 'cliente' : 'restaurante') . '...') }}"
                     class="w-full" />
             </div>
 
-            <div class="flex gap-4 w-full md:w-auto">
-                <flux:select wire:model.live="status" class="min-w-[150px]">
+            <div class="flex flex-col md:flex-row gap-4 w-full">
+                <flux:select wire:model.live="status" class="w-full md:min-w-[150px] md:w-auto">
                     <flux:select.option value="">{{ __('Todos los estados') }}</flux:select.option>
                     <flux:select.option value="Pendiente">{{ __('Pendiente') }}</flux:select.option>
                     <flux:select.option value="En Preparación">{{ __('En Cocina') }}</flux:select.option>
@@ -22,7 +22,7 @@
                     <flux:select.option value="Cancelado">{{ __('Cancelado') }}</flux:select.option>
                 </flux:select>
 
-                <flux:input type="date" wire:model.live="date" class="min-w-[180px]" />
+                <flux:input type="date" wire:model.live="date" class="w-full md:min-w-[180px] md:w-auto" />
             </div>
         </div>
     </div>

@@ -1,4 +1,4 @@
-<div class="p-6">
+<div class="p-2 md:p-6">
     <div wire:key="flash-container">
         @if(session()->has('success'))
             <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
@@ -61,7 +61,7 @@
 
     <!-- Main Card -->
     <div
-        class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-12 max-w-4xl mx-auto shadow-sm">
+        class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 md:p-12 w-full shadow-sm">
         <h2 class="text-center text-xl font-bold mb-10 text-zinc-900 dark:text-white">
             {{ $menu->nombre_menu }}
 

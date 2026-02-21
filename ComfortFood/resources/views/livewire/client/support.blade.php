@@ -1,5 +1,5 @@
 <div class="p-6">
-    <div class="max-w-7xl mx-auto space-y-12">
+    <div class="w-full space-y-12">
         <div class="flex items-center gap-4">
             <a href="{{ route('dashboard') }}" wire:navigate class="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors">
                 <flux:icon.arrow-left class="size-6" />
@@ -7,7 +7,7 @@
             <h1 class="text-2xl font-bold text-zinc-900 dark:text-white">Ayuda y soporte</h1>
         </div>
 
-        <div class="flex flex-col items-center justify-center space-y-8 py-12 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-sm">
+        <div class="flex flex-col items-center justify-center space-y-8  p-6 md:p-12 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-sm">
             <h2 class="text-3xl font-medium text-zinc-900 dark:text-white">En que podemos ayudarte?</h2>
             <div class="w-full max-w-xl px-6">
                 <flux:input

@@ -37,7 +37,7 @@
             <p class="text-zinc-500">Intenta buscar con otros términos.</p>
         </div>
     @else
-        <div wire:key="menus-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 md:gap-6">
+        <div wire:key="menus-grid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 md:gap-6">
             @foreach($menus as $menu)
                 @php
                     $isDeactivated = in_array($menu->id_menu, $deactivatedIds);

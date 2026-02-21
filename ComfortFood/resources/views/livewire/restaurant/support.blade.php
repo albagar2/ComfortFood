@@ -9,7 +9,7 @@
         </div>
 
         <!-- Search Section -->
-        <div class="flex flex-col items-center justify-center space-y-8 py-12 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-sm">
+        <div class="flex flex-col items-center justify-center space-y-8 p-4 md:p-12 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-sm">
             <h2 class="text-3xl font-medium text-zinc-900 dark:text-white">¿Cómo podemos ayudarte?</h2>
             <div class="w-full max-w-xl px-6">
                 <flux:input 

@@ -24,15 +24,16 @@
     </div>
 
 
-    <div wire:key="management-grid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+    <div wire:key="management-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
         @forelse($menus as $menu)
             @php
                 $isDisabled = !$menu->esta_activo;
                 $hasActiveOrders = $menu->hasActiveOrders();
             @endphp
-            <div wire:key="manage-menu-{{ $menu->id_menu }}" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-sm flex flex-col gap-4 relative
-                                                                        transition-all duration-300
-                                                                        {{ $isDisabled ? 'opacity-50 grayscale' : '' }}">
+            <div wire:key="manage-menu-{{ $menu->id_menu }}"
+                class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-sm flex flex-col gap-4 relative
+                                                                                transition-all duration-300
+                                                                                {{ $isDisabled ? 'opacity-50 grayscale' : '' }}">
                 <!-- Status Badge -->
                 @if($isDisabled)
                     <div class="absolute inset-0 bg-white/60 dark:bg-zinc-900/60 rounded-xl z-10">
