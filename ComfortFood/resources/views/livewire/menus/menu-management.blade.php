@@ -31,51 +31,52 @@
                 $hasActiveOrders = $menu->hasActiveOrders();
             @endphp
             <div wire:key="manage-menu-{{ $menu->id_menu }}"
-                class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-sm flex flex-col gap-4 relative
-                                                                                transition-all duration-300
-                                                                                {{ $isDisabled ? 'opacity-50 grayscale' : '' }}">
+                class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-sm flex flex-col gap-4 relative transition-all duration-300">
+
                 <!-- Status Badge -->
-                @if($isDisabled)
-                    <div class="absolute inset-0 bg-white/60 dark:bg-zinc-900/60 rounded-xl z-10">
-                        @if($menu->esta_activo)
-                            <span
-                                class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium">
-                                Activo
-                                <flux:icon.check class="size-3" />
-                            </span>
-                        @else
-                            <span
-                                class="inline-flex items-center gap-1 bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-medium">
-                                No disponible <flux:icon.x-mark class="size-3" />
-                            </span>
-                        @endif
-                    </div>
-                @endif
+                <div class="absolute top-4 right-4 z-20">
+                    @if($menu->esta_activo)
+                        <span
+                            class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider shadow-sm border border-green-200">
+                            Activo
+                        </span>
+                    @else
+                        <span
+                            class="inline-flex items-center gap-1 bg-zinc-100 text-zinc-500 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider shadow-sm border border-zinc-200">
+                            No disponible
+                        </span>
+                    @endif
+                </div>
+
                 <!-- Header -->
                 <div class="mt-2">
                     <span class="text-xs font-bold text-zinc-500 uppercase tracking-wider">Menú</span>
                 </div>
 
-                <!-- Image -->
-                <a href="{{ route('menu.show', $menu->id_menu) }}" wire:navigate
-                    class="aspect-square bg-zinc-100 dark:bg-zinc-800 rounded-lg flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
-                    @if($menu->url_foto)
-                        <img src="{{ $menu->url_foto }}" alt="{{ $menu->nombre_menu }}" class="w-full h-full object-cover">
-                    @else
-                        <flux:icon.photo class="size-16 text-zinc-300" />
-                    @endif
-                </a>
-
-                <!-- Details -->
-                <div class="flex-1">
+                <!-- Image & Content Wrapper with conditional styling -->
+                <div class="flex flex-col gap-4 {{ $isDisabled ? 'opacity-50 grayscale' : '' }}">
+                    <!-- Image -->
                     <a href="{{ route('menu.show', $menu->id_menu) }}" wire:navigate
-                        class="font-bold text-lg text-zinc-900 dark:text-white mb-1 hover:text-blue-600 hover:underline">{{ $menu->nombre_menu }}</a>
-                    <p class="text-xs text-zinc-500 line-clamp-2 mb-1">{{ $menu->descripcion_menu }}</p>
-                    <p class="text-xs text-zinc-400 line-clamp-1">Propiedades: {{ $menu->propiedades_nutricionales }}</p>
+                        class="aspect-square bg-zinc-100 dark:bg-zinc-800 rounded-lg flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
+                        @if($menu->url_foto)
+                            <img src="{{ $menu->url_foto }}" alt="{{ $menu->nombre_menu }}" class="w-full h-full object-cover">
+                        @else
+                            <flux:icon.photo class="size-16 text-zinc-300" />
+                        @endif
+                    </a>
+
+                    <!-- Details -->
+                    <div class="flex-1">
+                        <a href="{{ route('menu.show', $menu->id_menu) }}" wire:navigate
+                            class="font-bold text-lg text-zinc-900 dark:text-white mb-1 hover:text-blue-600 hover:underline">{{ $menu->nombre_menu }}</a>
+                        <p class="text-xs text-zinc-500 line-clamp-2 mb-1">{{ $menu->descripcion_menu }}</p>
+                        <p class="text-xs text-zinc-400 line-clamp-1">Propiedades: {{ $menu->propiedades_nutricionales }}
+                        </p>
+                    </div>
                 </div>
 
-                <!-- Footer / Actions -->
-                <div class="flex items-center justify-between pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                <!-- Footer / Actions (Always visible/opaque) -->
+                <div class="flex items-center justify-between pt-4 border-t border-zinc-100 dark:border-zinc-800 mt-auto">
                     <div class="flex flex-col">
                         <span
                             class="font-bold text-xs md:text-base text-zinc-900 dark:text-white">{{ number_format($menu->precio, 2) }}€</span>
@@ -90,13 +91,13 @@
                             <flux:icon.pencil class="size-4" />
                         </a>
 
-                        @if(!$hasActiveOrders)
-                            <button wire:click="toggleStatus({{ $menu->id_menu }})" title="Cambiar estado"
-                                class="size-9 flex items-center justify-center rounded-lg border border-zinc-200 text-zinc-500 hover:bg-zinc-50 transition-colors relative z-20">
-                                <flux:icon.arrow-path class="size-4" />
-                            </button>
-                        @endif
-
+                        <button wire:click="toggleStatus({{ $menu->id_menu }})"
+                            title="{{ $hasActiveOrders ? 'No se puede cambiar el estado: hay pedidos activos' : ($menu->esta_activo ? 'Desactivar menú' : 'Activar menú') }}"
+                            @if($hasActiveOrders) disabled @endif
+                            class="size-9 flex items-center justify-center rounded-lg border transition-colors 
+                                {{ $hasActiveOrders ? 'border-zinc-100 text-zinc-200 cursor-not-allowed' : ($menu->esta_activo ? 'border-zinc-200 text-zinc-400 hover:bg-red-50 hover:text-red-500 hover:border-red-200' : 'border-green-200 text-green-500 hover:bg-green-50') }}">
+                            <flux:icon.arrow-path class="size-4 {{ $hasActiveOrders ? '' : 'animate-hover' }}" />
+                        </button>
                     </div>
                 </div>
             </div>
