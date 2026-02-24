@@ -76,42 +76,54 @@
                 <!-- Dishes List -->
                 <div class="space-y-4">
                     <!-- Plato Principal -->
-                    <div class="flex items-center gap-3">
-                        <span
-                            class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs">1</span>
-                        <div
-                            class="flex-1 px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full text-sm text-zinc-700 dark:text-zinc-300">
-                            {{ $menu->plato_principal ?? 'Plato principal no especificado' }}
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-zinc-500 ml-1 uppercase">Plato Principal</label>
+                        <div class="flex items-center gap-3">
+                            <span
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs flex-shrink-0">1</span>
+                            <div
+                                class="flex-1 px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full text-sm text-zinc-700 dark:text-zinc-300">
+                                {{ $menu->plato_principal ?? 'Plato principal no especificado' }}
+                            </div>
                         </div>
                     </div>
 
                     <!-- Segundo Plato -->
-                    <div class="flex items-center gap-3">
-                        <span
-                            class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs">2</span>
-                        <div
-                            class="flex-1 px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full text-sm text-zinc-700 dark:text-zinc-300">
-                            {{ $menu->segundo_plato ?? 'Segundo plato no especificado' }}
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-zinc-500 ml-1 uppercase">Segundo Plato</label>
+                        <div class="flex items-center gap-3">
+                            <span
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs flex-shrink-0">2</span>
+                            <div
+                                class="flex-1 px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full text-sm text-zinc-700 dark:text-zinc-300">
+                                {{ $menu->segundo_plato ?? 'Segundo plato no especificado' }}
+                            </div>
                         </div>
                     </div>
 
                     <!-- Postre -->
-                    <div class="flex items-center gap-3">
-                        <span
-                            class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs">3</span>
-                        <div
-                            class="flex-1 px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full text-sm text-zinc-700 dark:text-zinc-300">
-                            {{ $menu->postre ?? 'Postre no especificado' }}
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-zinc-500 ml-1 uppercase">Postre</label>
+                        <div class="flex items-center gap-3">
+                            <span
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs flex-shrink-0">3</span>
+                            <div
+                                class="flex-1 px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full text-sm text-zinc-700 dark:text-zinc-300">
+                                {{ $menu->postre ?? 'Postre no especificado' }}
+                            </div>
                         </div>
                     </div>
 
                     <!-- Bebida -->
-                    <div class="flex items-center gap-3">
-                        <span
-                            class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs">4</span>
-                        <div
-                            class="flex-1 px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full text-sm text-zinc-700 dark:text-zinc-300">
-                            {{ $menu->bebida ?? 'Bebida no especificada' }}
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-zinc-500 ml-1 uppercase">Bebida</label>
+                        <div class="flex items-center gap-3">
+                            <span
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs flex-shrink-0">4</span>
+                            <div
+                                class="flex-1 px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full text-sm text-zinc-700 dark:text-zinc-300">
+                                {{ $menu->bebida ?? 'Bebida no especificada' }}
+                            </div>
                         </div>
                     </div>
                 </div>
