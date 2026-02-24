@@ -240,9 +240,6 @@
 
                                         <div class="flex items-center gap-2 mt-auto">
                                             <span
-                                                class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{{ $menu->updated_at->translatedFormat('d M') }}</span>
-                                            <span class="size-1 rounded-full bg-zinc-300 dark:bg-zinc-700"></span>
-                                            <span
                                                 class="text-xs text-zinc-500 dark:text-zinc-400 truncate">{{ Str::limit($menu->propiedades_nutricionales, 20) }}</span>
                                         </div>
                                     </div>
@@ -250,11 +247,14 @@
 
                                 @if(auth()->check() && auth()->user()->id_usuario === $restaurante->id_usuario)
                                     <!-- Owner Actions -->
-                                    <!-- Owner Actions -->
                                     <div class="mt-4 flex gap-2">
-                                        <a href="{{ route('menu.show', $menu->id_menu) }}" wire:navigate class="flex-1 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
+                                        <a href="{{ route('menu.show', $menu->id_menu) }}" wire:navigate class="flex-1 bg-cyan-500/10 backdrop-blur-md border border-cyan-200 dark:border-cyan-800/20 text-cyan-700 dark:text-cyan-400 hover:bg-cyan-500/20 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
                                             <flux:icon.eye class="size-4" />
                                             Ver
+                                        </a>
+                                        <a href="{{ route('menu.edit', $menu->id_menu) }}" wire:navigate class="flex-1 bg-orange-500 hover:bg-orange-600 text-white shadow-md shadow-orange-500/20 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
+                                            <flux:icon.pencil-square class="size-4" />
+                                            Editar
                                         </a>
                                     </div>
                                 @elseif(auth()->check() && auth()->user()->isCliente())
