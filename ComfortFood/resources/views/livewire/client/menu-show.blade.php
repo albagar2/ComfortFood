@@ -61,7 +61,7 @@
 
     <!-- Main Card -->
     <div
-        class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 md:p-12 w-full shadow-sm">
+        class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 md:p-12 w-full max-w-4xl mx-auto shadow-sm">
         <h2 class="text-center text-xl font-bold mb-10 text-zinc-900 dark:text-white">
             {{ $menu->nombre_menu }}
 
