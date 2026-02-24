@@ -8,6 +8,7 @@ use Livewire\Component;
 class ClientDashboard extends Component
 {
     public $search = '';
+    public $sort = 'random';
     public $deactivatedIds = [];
 
     public function moveCardToBottom($menuId)
@@ -119,8 +120,17 @@ class ClientDashboard extends Component
                 'favoritos' => function ($q) {
                     $q->where('id_cliente', auth()->user()->cliente?->id_cliente);
                 }
-            ])
-            ->latest();
+            ]);
+
+        // Apply Sorting before search/get for DB optimization
+        if ($this->sort === 'price_asc') {
+            $query->orderBy('precio', 'asc');
+        } elseif ($this->sort === 'price_desc') {
+            $query->orderBy('precio', 'desc');
+        } else {
+            // Default: Random order as requested
+            $query->inRandomOrder();
+        }
 
         if ($this->search) {
             $query->where(function ($q) {
@@ -134,11 +144,9 @@ class ClientDashboard extends Component
         }
 
         $menus = $query->get()->filter(function ($menu) {
-            // Filter out items that ARE closed or out of stock (unless we want to show closed ones)
-            // But per user request before, they should be hidden if closed.
-            // Let's keep them if OPEN and HAVE STOCK.
             return $menu->stock > 0 && $menu->restaurante->isOpen();
         })->sort(function ($a, $b) {
+            // Keep the 'moved to bottom' logic as the final sorting layer
             $aDeactivated = in_array($a->id_menu, $this->deactivatedIds);
             $bDeactivated = in_array($b->id_menu, $this->deactivatedIds);
 

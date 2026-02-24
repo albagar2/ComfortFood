@@ -23,9 +23,18 @@
                     "{{ $search }}")</span>
             @endif
         </h1>
-        <div class="w-full md:w-96">
-            <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass"
-                placeholder="Buscar por menú o restaurante" class="w-full" />
+        <div class="w-full md:w-auto flex flex-col sm:flex-row gap-3">
+            <div class="min-w-[180px]">
+                <flux:select wire:model.live="sort" class="w-full">
+                    <flux:select.option value="random">🌟 Recomendados</flux:select.option>
+                    <flux:select.option value="price_asc">💰 Menor Precio</flux:select.option>
+                    <flux:select.option value="price_desc">📈 Mayor Precio</flux:select.option>
+                </flux:select>
+            </div>
+            <div class="w-full md:w-80">
+                <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass"
+                    placeholder="Buscar por menú o restaurante" class="w-full" />
+            </div>
         </div>
     </div>
 
