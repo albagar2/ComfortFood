@@ -16,7 +16,33 @@
             {{ $menu && $menu->exists ? 'Editar menú' : 'Añadir menú' }}
         </h2>
 
-        <form wire:submit="save">
+        <form wire:submit="save" x-data="{
+                isUploading: false,
+                async handleFileSelect(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    this.isUploading = true;
+                    try {
+                        const versions = await ImageOptimizer.processMenu(file);
+                        
+                        // Upload single optimized version to Livewire
+                        @this.upload('foto', versions.original, 
+                            (uploadedName) => { this.isUploading = false; }, 
+                            () => { this.isUploading = false; }
+                        );
+                    } catch (error) {
+                        console.error('Error processing image:', error);
+                        // Fallback: try to upload the original file if compression fails
+                        @this.upload('foto', file, 
+                            () => { this.isUploading = false; }, 
+                            () => { this.isUploading = false; }
+                        );
+                    }
+                }
+            }">
+
+
             <div class="flex flex-col md:flex-row gap-12">
                 <!-- Left Column: Inputs -->
                 <div class="flex-1 space-y-5">
@@ -91,24 +117,7 @@
                 </div>
 
                 <!-- Right Column: Image Upload -->
-                <div class="w-full md:w-48 lg:w-56 flex flex-col items-center" x-data="{
-                        async handleFileSelect(event) {
-                            const file = event.target.files[0];
-                            if (!file) return;
-
-                            try {
-                                const versions = await ImageOptimizer.processMenu(file);
-                                
-                                // Upload both versions to Livewire
-                                @this.upload('foto', versions.original);
-                                @this.upload('foto_card', versions.card);
-                            } catch (error) {
-                                console.error('Error processing image:', error);
-                                // Fallback: try to upload the original file if compression fails
-                                @this.upload('foto', file);
-                            }
-                        }
-                    }">
+                <div class="w-full md:w-48 lg:w-56 flex flex-col items-center">
                     <label
                         class="w-28 h-28 bg-yellow-400 border-4 border-yellow-500/50 rounded-lg mb-2 flex items-center justify-center cursor-pointer overflow-hidden shadow-inner relative group">
                         <input type="file" x-on:change="handleFileSelect" class="hidden" accept="image/*">
@@ -131,15 +140,36 @@
                         @endif
 
                         <!-- Loading -->
-                        <div wire:loading wire:target="foto"
-                            class="absolute inset-0 bg-black/20 flex items-center justify-center z-20">
+                        <div x-show="isUploading"
+                            class="absolute inset-0 bg-black/40 flex items-center justify-center z-20">
                             <flux:icon.arrow-path class="size-6 animate-spin text-white" />
                         </div>
                     </label>
-                    <span class="text-xs text-zinc-900 font-medium">Añadir Imagen</span>
+                    <span class="text-xs text-zinc-900 font-medium">
+                        <span x-show="isUploading" x-cloak>Procesando...</span>
+                        <span x-show="!isUploading">Añadir Imagen</span>
+                    </span>
                     @error('foto') <span class="text-sm text-red-500 mt-1 text-center">{{ $message }}</span> @enderror
                 </div>
             </div>
+
+            <!-- General Error Message -->
+            @if ($errors->any())
+                <div class="my-8 p-4 bg-red-50 border border-red-200 rounded-xl">
+                    <div class="flex items-center gap-3 text-red-700 font-bold mb-2">
+                        <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Atención: Por favor revisa los errores</span>
+                    </div>
+                    <ul class="list-disc list-inside text-sm text-red-600 space-y-1 ml-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
             <!-- Action Buttons -->
             <div class="flex justify-end gap-6 mt-12 pr-4">
@@ -154,14 +184,20 @@
                 </button>
 
                 <!-- Save -->
-                <button type="submit"
-                    class="size-12 flex items-center justify-center bg-white border-2 border-green-200/50 rounded-lg hover:bg-green-50 transition-colors shadow-sm group">
-                    <!-- Floppy Disk Icon -->
-                    <svg class="size-6 text-zinc-500 group-hover:text-green-600" fill="currentColor"
-                        viewBox="0 0 24 24">
-                        <path
-                            d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z" />
-                    </svg>
+                <button type="submit" x-bind:disabled="isUploading"
+                    x-bind:class="isUploading ? 'opacity-50 cursor-not-allowed bg-zinc-100' : 'bg-white hover:bg-green-50'"
+                    class="size-12 flex items-center justify-center border-2 border-green-200/50 rounded-lg transition-colors shadow-sm group">
+                    <span x-show="!isUploading" class="flex items-center justify-center">
+                        <!-- Floppy Disk Icon -->
+                        <svg class="size-6 text-zinc-500 group-hover:text-green-600" fill="currentColor"
+                            viewBox="0 0 24 24">
+                            <path
+                                d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z" />
+                        </svg>
+                    </span>
+                    <span x-show="isUploading" x-cloak class="flex items-center justify-center">
+                        <flux:icon.arrow-path class="size-6 animate-spin text-green-600" />
+                    </span>
                 </button>
             </div>
         </form>

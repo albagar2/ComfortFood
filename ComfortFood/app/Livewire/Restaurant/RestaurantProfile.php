@@ -368,7 +368,10 @@ class RestaurantProfile extends Component
             'photo' => 'image|max:10240', // Increased to 10MB
         ]);
 
-        $url = $imageService->processAndStore($this->photo, 'restaurants', 800);
+        $restaurantName = \Illuminate\Support\Str::slug($this->restaurante->user->nombre_completo);
+        $customName = $restaurantName . '-' . time();
+
+        $url = $imageService->processAndStore($this->photo, 'restaurants', null, null, 80, $customName);
 
         if ($this->restaurante->url_imagen_perfil) {
             $imageService->delete($this->restaurante->url_imagen_perfil);

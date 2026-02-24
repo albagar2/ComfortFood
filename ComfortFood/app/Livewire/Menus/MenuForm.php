@@ -24,14 +24,14 @@ class MenuForm extends Component
     public $propiedades_nutricionales;
     public $precio;
     public $foto;
-    public $foto_card; // New property for thumbnail
     public $current_foto;
-    public $current_foto_card; // New property for current thumbnail
     public $stock = 0; // Default stock
+    public $isEditing = false;
 
     public function mount(?Menu $menu = null)
     {
         if ($menu && $menu->exists) {
+            $this->isEditing = true;
             $this->menu = $menu;
             $this->nombre_menu = $menu->nombre_menu;
             $this->plato_principal = $menu->plato_principal;
@@ -43,7 +43,6 @@ class MenuForm extends Component
             $this->precio = $menu->precio;
             $this->stock = $menu->stock;
             $this->current_foto = $menu->url_foto;
-            $this->current_foto_card = $menu->url_foto_card;
         }
     }
 
@@ -60,11 +59,10 @@ class MenuForm extends Component
             'propiedades_nutricionales' => 'nullable|string',
             'precio' => 'required|numeric|between:1,50',
             'stock' => 'required|integer|min:1',
-            'foto_card' => 'nullable|image|max:10240',
         ];
 
         // Foto obligatoria solo en creación, opcional en edición
-        if (!$this->menu || !$this->menu->exists) {
+        if (!$this->isEditing) {
             $rules['foto'] = 'required|image|max:10240';
         } else {
             $rules['foto'] = 'nullable|image|max:10240';
@@ -84,37 +82,44 @@ class MenuForm extends Component
             'stock' => $this->stock,
         ];
 
-        // Only set id_restaurante for new creations OR ensure it matches the user
-        if (!$this->menu || !$this->menu->exists) {
+        // Handle Image before save
+        if ($this->foto) {
+            $timestamp = time();
+            $restaurantName = Auth::user()->nombre_completo;
+            $baseCustomName = \Illuminate\Support\Str::slug($this->nombre_menu . '-' . $restaurantName) . '-' . $timestamp;
+
+            // Store new image
+            $path = $imageService->processAndStore($this->foto, 'menus', null, null, 80, $baseCustomName);
+
+            $data['url_foto'] = $path;
+            $data['url_foto_card'] = $path;
+
+            // Keep track of old images to delete later if this is an update
+            $oldFoto = ($this->menu && $this->menu->exists) ? $this->menu->url_foto : null;
+            $oldFotoCard = $this->isEditing ? $this->menu->url_foto_card : null;
+        }
+
+        if ($this->isEditing) {
+            $this->menu->update($data);
+            $wasUpdate = true;
+        } else {
             $data['id_restaurante'] = Auth::user()->restaurante->id_restaurante;
             $data['esta_activo'] = true;
+            $this->menu = Menu::create($data);
+            $wasUpdate = false;
         }
 
-        if ($this->foto) {
-            // Delete old valid image if exists
-            if ($this->menu && $this->menu->url_foto) {
-                $imageService->delete($this->menu->url_foto);
+        // Cleanup old images only if update was successful and we have new ones
+        if ($this->foto && $wasUpdate) {
+            if ($oldFoto) {
+                $imageService->delete($oldFoto);
             }
-            // High quality version
-            $data['url_foto'] = $imageService->processAndStore($this->foto, 'menus');
-        }
-
-        if ($this->foto_card) {
-            // Delete old valid image if exists
-            if ($this->menu && $this->menu->url_foto_card) {
-                $imageService->delete($this->menu->url_foto_card);
+            if ($oldFotoCard && $oldFotoCard !== $oldFoto) {
+                $imageService->delete($oldFotoCard);
             }
-            // Thumbnail version
-            $data['url_foto_card'] = $imageService->processAndStore($this->foto_card, 'menus');
         }
 
-        if ($this->menu && $this->menu->exists) {
-            $this->menu->update($data);
-            session()->flash('success', 'Menú actualizado correctamente.');
-        } else {
-            Menu::create($data);
-            session()->flash('success', 'Menú creado correctamente.');
-        }
+        session()->flash('success', $wasUpdate ? 'Menú actualizado correctamente.' : 'Menú creado correctamente.');
 
         return redirect()->route('menu.index');
     }

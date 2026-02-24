@@ -94,7 +94,11 @@ class Profile extends Component
                 if ($user->cliente && $user->cliente->url_imagen_perfil) {
                     $imageService->delete($user->cliente->url_imagen_perfil);
                 }
-                $clienteData['url_imagen_perfil'] = $imageService->processAndStore($this->foto_perfil, 'perfiles');
+
+                $clientSlug = \Illuminate\Support\Str::slug($user->nombre_completo);
+                $customName = $clientSlug . '-' . $user->cliente->id_cliente . '-' . time();
+
+                $clienteData['url_imagen_perfil'] = $imageService->processAndStore($this->foto_perfil, 'perfiles', null, null, 80, $customName);
             }
 
             $user->cliente()->updateOrCreate(
@@ -116,7 +120,11 @@ class Profile extends Component
                 if ($user->restaurante && $user->restaurante->url_imagen_perfil) {
                     $imageService->delete($user->restaurante->url_imagen_perfil);
                 }
-                $restauranteData['url_imagen_perfil'] = $imageService->processAndStore($this->foto_perfil, 'restaurantes');
+
+                $restaurantSlug = \Illuminate\Support\Str::slug($user->nombre_completo);
+                $customName = $restaurantSlug . '-' . time();
+
+                $restauranteData['url_imagen_perfil'] = $imageService->processAndStore($this->foto_perfil, 'restaurantes', null, null, 80, $customName);
             }
 
             $user->restaurante()->updateOrCreate(

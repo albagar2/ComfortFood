@@ -29,6 +29,12 @@ window.ImageOptimizer = {
             maxWidthOrHeight: 400,
             initialQuality: 0.6,
             fileType: 'image/webp'
+        },
+        MENU: {
+            maxSizeMB: 0.6,
+            maxWidthOrHeight: 1000,
+            initialQuality: 0.8,
+            fileType: 'image/webp'
         }
     },
 
@@ -40,10 +46,10 @@ window.ImageOptimizer = {
      */
     async compress(file, presetName = 'AVATAR') {
         const options = this.PRESETS[presetName] || this.PRESETS.AVATAR;
-        options.useWebWorker = true;
+        const compressionOptions = { ...options, useWebWorker: true };
 
         try {
-            const compressedBlob = await imageCompression(file, options);
+            const compressedBlob = await imageCompression(file, compressionOptions);
             const fileName = file.name.replace(/\.[^/.]+$/, "") + ".webp";
             return new File([compressedBlob], fileName, { type: 'image/webp' });
         } catch (error) {
@@ -53,16 +59,12 @@ window.ImageOptimizer = {
     },
 
     /**
-     * Special handler for Menu items that need both original and card versions
+     * Special handler for Menu items - Simplified to a single high quality version
      * @param {File} file 
-     * @returns {Promise<{original: File, card: File}>}
+     * @returns {Promise<{original: File}>}
      */
     async processMenu(file) {
-        const [original, card] = await Promise.all([
-            this.compress(file, 'MENU_ORIGINAL'),
-            this.compress(file, 'MENU_CARD')
-        ]);
-
-        return { original, card };
+        const optimized = await this.compress(file, 'MENU');
+        return { original: optimized };
     }
 };
