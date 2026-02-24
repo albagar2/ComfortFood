@@ -142,9 +142,10 @@
                             <!-- Items Preview -->
                             <div class="space-y-4">
                                 @foreach($order->detalles->take(2) as $detalle)
-                                    <div class="flex items-center gap-3">
+                                    <div class="flex items-start gap-3" x-data="{ showObs: false }" @mouseenter="showObs = true"
+                                        @mouseleave="showObs = false">
                                         <div
-                                            class="size-10 rounded-xl bg-zinc-50 dark:bg-zinc-800 overflow-hidden border-2 border-zinc-100 dark:border-zinc-700 shrink-0">
+                                            class="size-10 rounded-xl bg-zinc-50 dark:bg-zinc-800 overflow-hidden border-2 border-zinc-100 dark:border-zinc-700 shrink-0 mt-0.5">
                                             @if($detalle->menu && $detalle->menu->url_foto)
                                                 <img src="{{ $detalle->menu->url_foto }}" class="w-full h-full object-cover">
                                             @else
@@ -160,6 +161,19 @@
                                             <p class="text-[10px] text-zinc-500 tracking-tight">Cantidad:
                                                 {{ $detalle->cantidad }}
                                             </p>
+                                            @if(!empty($detalle->observaciones))
+                                                {{-- Static badge: always visible, hints to hover --}}
+                                                <span
+                                                    class="inline-flex items-center gap-1 mt-1 text-[9px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400">
+                                                    <flux:icon.chat-bubble-bottom-center-text class="size-3" />
+                                                    Observación
+                                                </span>
+                                                {{-- Detail: only visible on hover --}}
+                                                <div x-show="showObs" x-cloak x-transition
+                                                    class="mt-1.5 p-2.5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-xl text-[11px] leading-relaxed text-blue-800 dark:text-blue-200">
+                                                    {{ $detalle->observaciones }}
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 @endforeach
@@ -167,6 +181,30 @@
                                 @if($order->detalles->count() > 2)
                                     <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">
                                         +{{ $order->detalles->count() - 2 }} artículos más</p>
+                                @endif
+
+                                @php
+                                    $detallesConObs = $order->detalles->filter(fn($d) => !empty($d->observaciones));
+                                @endphp
+                                @if($detallesConObs->isNotEmpty())
+                                    <div x-data="{ showAllObs: false }" @mouseenter="showAllObs = true"
+                                        @mouseleave="showAllObs = false">
+                                        <span
+                                            class="inline-flex items-center gap-1 mt-1 text-[9px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 cursor-default">
+                                            <flux:icon.chat-bubble-bottom-center-text class="size-3" />
+                                            {{ $detallesConObs->count() }}
+                                            observacion{{ $detallesConObs->count() > 1 ? 'es' : '' }}
+                                        </span>
+                                        <div x-show="showAllObs" x-cloak x-transition
+                                            class="mt-1.5 space-y-1.5 p-2.5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-xl">
+                                            @foreach($detallesConObs as $d)
+                                                <div class="text-[11px] text-blue-800 dark:text-blue-200">
+                                                    <span class="font-bold">{{ $d->menu->nombre_menu ?? 'Item' }}:</span>
+                                                    {{ $d->observaciones }}
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
                                 @endif
                             </div>
                         </a>
