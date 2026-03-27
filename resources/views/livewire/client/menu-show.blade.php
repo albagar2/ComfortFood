@@ -1,0 +1,215 @@
+<div class="p-2 md:p-6">
+    <div wire:key="flash-container">
+        @if(session()->has('success'))
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+                x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-90"
+                x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90"
+                class="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/20 backdrop-blur-sm">
+                <div
+                    class="bg-white dark:bg-zinc-900 p-6 rounded-3xl shadow-2xl max-w-sm w-full text-center space-y-4 border border-zinc-100 dark:border-zinc-800">
+                    <div
+                        class="size-12 bg-green-100 dark:bg-green-900/30 text-green-600 rounded-2xl flex items-center justify-center mx-auto">
+                        <flux:icon.check-circle class="size-6" />
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-zinc-900 dark:text-white">¡Genial!</h3>
+                        <p class="text-zinc-500 font-medium">{{ session('success') }}</p>
+                    </div>
+                </div>
+            </div>
+        @endif
+        @if(session()->has('error'))
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+                x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-90"
+                x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90"
+                class="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/20 backdrop-blur-sm">
+                <div
+                    class="bg-white dark:bg-zinc-900 p-6 rounded-3xl shadow-2xl max-w-sm w-full text-center space-y-4 border border-zinc-100 dark:border-zinc-800">
+                    <div
+                        class="size-12 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-2xl flex items-center justify-center mx-auto">
+                        <flux:icon.exclamation-triangle class="size-6" />
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-zinc-900 dark:text-white">Vaya...</h3>
+                        <p class="text-zinc-500 font-medium">{{ session('error') }}</p>
+                    </div>
+                </div>
+            </div>
+        @endif
+    </div>
+
+    <!-- Header with Back Arrow and Buttons -->
+    <div class="flex items-center justify-between mb-6">
+        <a href="javascript:history.back()" class="text-zinc-900 hover:text-zinc-600">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor" class="size-8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+        </a>
+
+        @if(auth()->check() && auth()->user()->isRestaurante() && auth()->user()->id_usuario == $menu->restaurante->id_usuario)
+            <div class="flex gap-4">
+                <a href="{{ route('menu.edit', $menu->id_menu) }}" wire:navigate
+                    class="px-6 py-2.5 text-sm font-bold text-white bg-orange-400 border border-orange-400 rounded-lg hover:bg-orange-500 transition-colors uppercase shadow-sm">
+                    EDITAR MENÚ
+                </a>
+            </div>
+        @endif
+    </div>
+
+    <!-- Main Card -->
+    <div
+        class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 md:p-12 w-full max-w-4xl mx-auto shadow-sm">
+        <h2 class="text-center text-xl font-bold mb-10 text-zinc-900 dark:text-white">
+            {{ $menu->nombre_menu }}
+
+            <span class="text-[10px] md:text-sm text-zinc-500 float-right">
+                Stock: {{ $menu->stock }}
+            </span>
+        </h2>
+
+        <div class="flex flex-col md:flex-row gap-12">
+            <!-- Left Column: Details -->
+            <div class="flex-1 space-y-6">
+                <!-- Dishes List -->
+                <div class="space-y-4">
+                    <!-- Plato Principal -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-zinc-500 ml-1 uppercase">Plato Principal</label>
+                        <div class="flex items-center gap-3">
+                            <span
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs flex-shrink-0">1</span>
+                            <div
+                                class="flex-1 px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full text-sm text-zinc-700 dark:text-zinc-300">
+                                {{ $menu->plato_principal ?? 'Plato principal no especificado' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Segundo Plato -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-zinc-500 ml-1 uppercase">Segundo Plato</label>
+                        <div class="flex items-center gap-3">
+                            <span
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs flex-shrink-0">2</span>
+                            <div
+                                class="flex-1 px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full text-sm text-zinc-700 dark:text-zinc-300">
+                                {{ $menu->segundo_plato ?? 'Segundo plato no especificado' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Postre -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-zinc-500 ml-1 uppercase">Postre</label>
+                        <div class="flex items-center gap-3">
+                            <span
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs flex-shrink-0">3</span>
+                            <div
+                                class="flex-1 px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full text-sm text-zinc-700 dark:text-zinc-300">
+                                {{ $menu->postre ?? 'Postre no especificado' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bebida -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-zinc-500 ml-1 uppercase">Bebida</label>
+                        <div class="flex items-center gap-3">
+                            <span
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs flex-shrink-0">4</span>
+                            <div
+                                class="flex-1 px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full text-sm text-zinc-700 dark:text-zinc-300">
+                                {{ $menu->bebida ?? 'Bebida no especificada' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-zinc-900 dark:text-white ml-1">Descripción:</label>
+                    <div
+                        class="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                        {{ $menu->descripcion_menu ?: 'Sin descripción.' }}
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-zinc-900 dark:text-white ml-1">Propiedades
+                        Nutricionales:</label>
+                    <div
+                        class="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                        {{ $menu->propiedades_nutricionales ?: 'Sin información nutricional.' }}
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-4">
+                    <span class="text-lg font-bold text-zinc-900 dark:text-white">Precio</span>
+                    <div class="flex items-center gap-1">
+                        <span
+                            class="text-2xl font-bold text-zinc-900 dark:text-white">{{ number_format($menu->precio, 2) }}</span>
+                        <span class="text-xl font-bold text-zinc-900 dark:text-white">€</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Image -->
+            <div class="w-full md:w-48 lg:w-56 flex flex-col items-center">
+                <div
+                    class="w-48 h-48 bg-yellow-400 border-4 border-yellow-500/50 rounded-lg mb-2 flex items-center justify-center overflow-hidden shadow-inner relative group rotate-1 hover:rotate-0 transition-transform duration-300">
+
+                    <!-- Frame Effect -->
+                    <div class="absolute inset-0 border-[6px] border-yellow-600/20 z-10 pointer-events-none"></div>
+
+                    @if($menu->url_foto)
+                        <img src="{{ $menu->url_foto }}" class="w-full h-full object-cover">
+                    @else
+                        <!-- Placeholder Landscape Icon logic -->
+                        <div class="text-white text-opacity-80">
+                            <svg class="size-20" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+                            </svg>
+                        </div>
+                    @endif
+                </div>
+
+                @if(auth()->check() && auth()->user()->isRestaurante() && auth()->user()->id_usuario == $menu->restaurante->id_usuario)
+                    <span class="text-xs text-zinc-500 font-medium mt-2">Vista previa de imagen</span>
+                @else
+
+                    <!-- Observation Input -->
+                    <div class="w-full mt-4">
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-2">Observaciones
+                            (Opcional)</label>
+                        <textarea wire:model="observacion"
+                            class="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-s text-zinc-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent placeholder-zinc-400 resize-none h-20"
+                            placeholder="Ej: Sin cebolla, salsa aparte..."></textarea>
+                    </div>
+
+                    <button wire:click="addToCart({{ $menu->id_menu }})" @if($menu->stock <= 0 || !$this->isRestaurantOpen())
+                    disabled @endif
+                        class="mt-4 w-full py-3 {{ ($menu->stock > 0 && $this->isRestaurantOpen()) ? 'bg-zinc-900 hover:bg-zinc-800' : 'bg-zinc-300 cursor-not-allowed' }} text-white font-bold rounded-xl shadow-lg shadow-zinc-200 transition-all active:scale-95 disabled:opacity-50">
+                        @if(!$this->isRestaurantOpen())
+                            Cerrado
+                        @elseif($menu->stock <= 0)
+                            Agotado
+                        @else
+                            Añadir al carrito
+                        @endif
+                    </button>
+                    <!-- Restaurant Name Link -->
+                    <div class="mt-4 text-center">
+                        <a href="{{ route('restaurant.show', $menu->restaurante->id_restaurante) }}" wire:navigate
+                            class="text-sm font-medium text-zinc-500 hover:text-blue-600 hover:underline">
+                            {{ $menu->restaurante->user->nombre_completo }}
+                        </a>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
