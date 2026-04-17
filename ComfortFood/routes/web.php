@@ -1,45 +1,68 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Client\ClientDashboard;
+use App\Livewire\Client\CartPage;
+use App\Livewire\Client\Favorites;
+use App\Livewire\Client\MenuShow;
+use App\Livewire\Client\Support as ClientSupport;
+use App\Livewire\Restaurant\RestaurantDashboard;
+use App\Livewire\Restaurant\RestaurantProfile;
+use App\Livewire\Restaurant\Statistics;
+use App\Livewire\Restaurant\Support as RestaurantSupport;
+use App\Livewire\Admin\UserList;
+use App\Livewire\Settings\Profile;
+use App\Livewire\Settings\Password;
+use App\Livewire\Settings\Appearance;
+use App\Livewire\Settings\TwoFactor;
+use App\Livewire\Orders\OrderDetails;
 use App\Livewire\Orders\OrderHistory;
 
-Route::middleware('guest')->group(function () {
-    Route::get('/', function () {
-        return view('welcome');
-    })->name('home');
+Route::get('/', function () {
+    return redirect('/login');
 });
 
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Dashboard redirection logic can be handled here or in a controller
+    Route::get('/dashboard', function () {
+        $user = auth()->user();
+        if ($user->hasRole('admin')) return redirect()->route('admin.users');
+        if ($user->hasRole('restaurante')) return redirect()->route('restaurant.dashboard');
+        return redirect()->route('client.dashboard');
+    })->name('dashboard');
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+    // Client Routes
+    Route::prefix('client')->name('client.')->group(function () {
+        Route::get('/dashboard', ClientDashboard::class)->name('dashboard');
+        Route::get('/cart', CartPage::class)->name('cart');
+        Route::get('/favorites', Favorites::class)->name('favorites');
+        Route::get('/menu/{id}', MenuShow::class)->name('menu.show');
+        Route::get('/support', ClientSupport::class)->name('support');
+    });
 
+    // Restaurant Routes
+    Route::prefix('restaurant')->name('restaurant.')->group(function () {
+        Route::get('/dashboard', RestaurantDashboard::class)->name('dashboard');
+        Route::get('/profile', RestaurantProfile::class)->name('profile');
+        Route::get('/support', RestaurantSupport::class)->name('support');
+    });
 
-use App\Http\Controllers\Admin\UserController as AdminUserController;
+    // Admin Routes
+    Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
+        Route::get('/users', UserList::class)->name('users');
+    });
 
-// Admin Routes
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    Route::view('users', 'admin.users.index')->name('admin.users.index');
-    Route::get('users/{user}', [AdminUserController::class, 'show'])->name('admin.users.show');
-    Route::get('users/{user}/edit', [AdminUserController::class, 'edit'])->name('admin.users.edit');
-    Route::patch('users/{user}', [AdminUserController::class, 'update'])->name('admin.users.update');
+    // Orders
+    Route::get('/orders/history', OrderHistory::class)->name('orders.history');
+    Route::get('/orders/{id}', OrderDetails::class)->name('orders.details');
+
+    // Settings
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/profile', Profile::class)->name('profile');
+        Route::get('/password', Password::class)->name('password');
+        Route::get('/appearance', Appearance::class)->name('appearance');
+        Route::get('/two-factor', TwoFactor::class)->name('two-factor');
+    });
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('support', \App\Livewire\Client\Support::class)->name('support');
-    Route::get('orders/history', OrderHistory::class)->name('orders.history');
-    Route::get('orders/details/{order}', \App\Livewire\Orders\OrderDetails::class)->name('orders.details');
-    Route::get('menu', \App\Livewire\Menus\MenuManagement::class)->name('menu.index');
-    Route::get('menu/show/{menu}', \App\Livewire\Client\MenuShow::class)->name('menu.show');
-    Route::get('menu/edit/{menu?}', \App\Livewire\Menus\MenuForm::class)->name('menu.edit');
-    Route::get('favorites', \App\Livewire\Client\Favorites::class)->name('favorites');
-    Route::get('cart', \App\Livewire\Client\CartPage::class)->name('cart.index');
-    Route::get('customer/support', \App\Livewire\Client\Support::class)->name('customer.support');
-    Route::get('restaurant/statistics', \App\Livewire\Restaurant\Statistics::class)->name('restaurant.statistics');
-    Route::get('restaurant/support', \App\Livewire\Restaurant\Support::class)->name('restaurant.support');
-
-    Route::get('restaurant/{restaurante}', \App\Livewire\Restaurant\RestaurantProfile::class)->name('restaurant.show');
-    Route::view('customer/orders/details', 'customer.orders.details')->name('customer.orders.details');
-});
-
-require __DIR__ . '/settings.php';
+require __DIR__.'/fortify.php';

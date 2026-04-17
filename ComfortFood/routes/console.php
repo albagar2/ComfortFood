@@ -1,11 +1,12 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use App\Console\Commands\CancelExpiredOrders;
 
 Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
+    $this->comment(\Illuminate\Foundation\Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-use Illuminate\Support\Facades\Schedule;
-Schedule::command('app:cancel-expired-orders')->everyMinute();
+Artisan::command('orders:cancel-expired', function () {
+    $this->call(CancelExpiredOrders::class);
+})->purpose('Cancel orders that have been in pending for too long');

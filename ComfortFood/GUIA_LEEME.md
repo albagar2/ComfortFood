@@ -19,6 +19,7 @@ Este proyecto ha sido desarrollado con **Laravel 12**, **Livewire 4** y **Flux U
 3.  **Dependencias Frontend**:
     ```bash
     npm install
+    npm run dev
     ```
 4.  **Archivo de Entorno**:
     Cree una copia del archivo `.env`:
@@ -29,7 +30,13 @@ Este proyecto ha sido desarrollado con **Laravel 12**, **Livewire 4** y **Flux U
 
     _Asegúrese de configurar sus credenciales de base de datos en el `.env` (DB_DATABASE, DB_USERNAME, etc.)._
 
-5.  **Enlace Simbólico de Storage**:
+5.  **Generar la Clave de Aplicación** _(obligatorio, sin esto la app no arranca)_:
+
+    ```bash
+    php artisan key:generate
+    ```
+
+6.  **Enlace Simbólico de Storage**:
     ```bash
     php artisan storage:link
     ```
@@ -61,11 +68,16 @@ Para visualizar la app debe tener abiertos dos terminales:
 php artisan serve
 ```
 
-**Terminal 2 (Compilación de Estilos):**
+**Terminal 2 (Assets CSS/JS en tiempo real):**
 
 ```bash
 npm run dev
 ```
+
+> **Diferencia entre `npm run dev` y `npm run build`:**
+>
+> - `npm run dev` → Activa Vite en modo desarrollo (hot reload, recomendado para probar la app).
+> - `npm run build` → Compila los assets una sola vez y genera la carpeta `public/build/`. Usar si no se quiere mantener el terminal abierto.
 
 ---
 
